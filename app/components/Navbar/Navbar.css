@@ -1,0 +1,150 @@
+.pin-spacer {
+  background-color: var(--pallet-cream);
+}
+
+.navbar-outer {
+  position: fixed;
+  z-index: 10000;
+  top: 0%;
+  left: 0%;
+  width: 100vw;
+  height: 70px;
+  padding: 0 8vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  transition: background-color 2s ease;
+}
+
+.navbar-outer.scrolled {
+  background-color: #031139;
+}
+
+.navbar-inner {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.2vw 1.5vw;
+}
+
+.nav-links li.scrolled {
+  color: aliceblue;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.navbar-logo {
+  font-size: 28px;
+  font-weight: 450;
+  color: white;
+  margin: 0;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2vw;
+}
+
+.nav-links li {
+  display: flex;
+  color: #202050;
+  font-weight: 400;
+  transition: color ease 1s;
+}
+
+.nav-links li.scrolled {
+  color: aliceblue;
+  font-weight: 300;
+}
+
+.analyze-btn button {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  background-color: var(--pallet-nila);
+  color: white;
+  border: none;
+  padding: 0.5vw 1.5vw;
+  border-radius: var(--radius);
+  transition: background-color 2s ease;
+  transition: font-weight 2s ease;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.analyze-btn button.scrolled {
+  background-color: aliceblue;
+  color: var(--pallet-nila);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.dropdown-btn-hp {
+  display: none;
+  background-color: #e3be4a;
+  border: none;
+  border-radius: 2px;
+  color: #202050;
+}
+
+.nav-hp {
+  display: flex;
+  gap: 2vw;
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .nav-logo {
+    width: 20%;
+  }
+
+  .navbar-logo {
+    font-size: var(--text-paragraf);
+  }
+
+  .nav-logo img {
+    width: 15px;
+  }
+
+  .navbar-outer {
+    align-items: start;
+    margin-top: 0;
+    padding: 0 3.5vw;
+  }
+
+  .navbar-inner {
+    justify-content: space-between;
+    align-items: center;
+    padding: 3vw 0;
+  }
+
+  .navbar-inner.scrolled {
+    border-radius: 0;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .dropdown-btn-hp {
+    display: block;
+  }
+
+  .analyze-btn button {
+    padding: 2vw 3vw;
+    border-radius: 2px;
+  }
+}

@@ -1,0 +1,149 @@
+.home-section {
+  width: 100vw;
+  min-height: 100vh;
+}
+
+.absolute-div {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+  background: linear-gradient(180deg, #7269e0, #d0c9f3);
+}
+
+.absolute-div img {
+  position: absolute;
+}
+
+.layer1 {
+  z-index: 10;
+  width: 100%;
+  bottom: -450px;
+}
+
+.layer2 {
+  z-index: 9;
+  width: 55%;
+  right: 0px;
+  bottom: 0px;
+}
+
+.layer3 {
+  z-index: 8;
+  bottom: 0px;
+  right: 120px;
+}
+
+.hero-text-con {
+  position: absolute;
+  width: 40%;
+  top: 30%;
+  left: 10%;
+}
+
+.hero-text-con p:first-child {
+  font-size: var(--text-header);
+  padding-right: 2vw;
+  color: #070f39;
+  font-weight: 500;
+  margin-bottom: 0.5vw;
+}
+
+.hero-text-con p {
+  font-size: var(--text-paragraf);
+  color: #070f39;
+  margin: 0%;
+}
+
+.analyze-btn-hero {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  background-color: var(--pallet-nila);
+  color: white;
+  border: none;
+  padding: 0.5vw 1.5vw;
+  border-radius: var(--radius);
+  transition: background-color 2s ease;
+  transition: font-weight 2s ease;
+  font-weight: 600;
+  margin: 3vw 0;
+}
+
+@media (max-width: 1024px) {
+  .hero-text-con {
+    width: 50%;
+    top: 20%;
+    left: 5%;
+  }
+
+  .hero-text-con p:first-child {
+    padding-right: 0;
+  }
+
+  .layer1 {
+    bottom: -250px;
+  }
+
+  .layer2 {
+    width: 70%;
+  }
+
+  .layer3 {
+    width: 40%;
+    right: 50px;
+  }
+
+  .analyze-btn-hero {
+    padding: 10px 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-section {
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .hero-text-con {
+    position: absolute;
+    width: 90%;
+    top: 20%;
+    left: 5%;
+    z-index: 20;
+  }
+
+  .hero-text-con p:first-child {
+    padding-right: 0;
+    font-size: clamp(40px, 4.2vw, 65px);
+  }
+
+  .analyze-btn-hero {
+    padding: 12px 24px;
+    margin-top: 2rem;
+  }
+
+  .layer1 {
+    width: 250%;
+    bottom: -300px;
+    left: -50%;
+  }
+
+  .layer2 {
+    width: 100%;
+    bottom: 0;
+  }
+
+  .layer3 {
+    width: 50%;
+    left: 0;
+    bottom: 50px;
+  }
+}
+
+@media (max-width: 768px) and (min-height: 800px) {
+  .hero-text-con {
+    top: 30%;
+    width: 85%;
+  }
+}
