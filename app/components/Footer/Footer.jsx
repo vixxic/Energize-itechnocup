@@ -31,14 +31,11 @@ export default function Footer() {
           <Link href="/dashboard">Mulai Analisis</Link>
           <a href="#">Dashboard</a>
           <a href="#">Riwayat</a>
-          <a href="#">Penggunaan</a>
         </div>
 
         <div className="footer-column">
           <h3>Tentang</h3>
-          <a href="#">Tentang Kami</a>
-          <a href="#">SDGs</a>
-          <a href="#">Kontak</a>
+          <Link href="/Tentang">SDGs</Link>
         </div>
       </div>
 
