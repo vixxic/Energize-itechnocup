@@ -1,0 +1,99 @@
+.how-it-works-section {
+  position: relative;
+  background-color: #f8f5f5;
+  height: 155vh;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.how-it-works-section h2 {
+  position: absolute;
+  top: 4%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  font-family: var(--font-averia);
+  color: var(--pallet-dark-blue);
+  white-space: nowrap;
+}
+
+.kabel {
+  position: absolute;
+  width: 20px;
+  height: 100%;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #28214a;
+  border-radius: 80px;
+  z-index: 300;
+}
+
+.stop-contacts-div {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 220px;
+  height: 220px;
+  background-color: #2f2174;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 200;
+}
+
+.circle {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #372e63, #1f193a);
+  position: absolute;
+  top: 48px;
+  left: 47px;
+}
+
+.step-con {
+  position: absolute;
+  z-index: 1000;
+  width: 230px;
+  color: var(--pallet-dark-blue);
+}
+
+.step-con h3 {
+  font-size: var(--text-paragraf);
+  margin-bottom: 0.5rem;
+}
+
+.step-con p {
+  font-size: 1vw;
+  line-height: 1.5;
+}
+
+/* STEP 1 */
+
+.con1 {
+  top: 25%;
+  left: 62%;
+}
+
+/* STEP 2 */
+
+.con2 {
+  top: 35%;
+  left: 20%;
+}
+
+/* STEP 3 */
+
+.con3 {
+  top: 50%;
+  left: 62%;
+}
+
+/* STEP 4 */
+
+.con4 {
+  top: 65%;
+  left: 20%;
+}

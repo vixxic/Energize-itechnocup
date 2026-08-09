@@ -1,0 +1,72 @@
+.cta-section {
+  position: relative;
+  width: 100vw;
+  height: max-content;
+  background-color: #f8f5f5;
+}
+
+.cta-kabel {
+  background-color: #28214a;
+  height: 20px;
+}
+
+.following-kabel1 {
+  position: absolute;
+  right: 0;
+  width: 51%;
+}
+
+.following-kabel2 {
+  width: 45.5%;
+}
+
+.cta-main-con {
+  min-height: max-content;
+  padding: 4vw 0;
+  width: 100%;
+  justify-content: end;
+}
+
+.cta-main-con p {
+  text-align: center;
+}
+
+.cta-main-con div {
+  justify-content: end;
+  align-items: center;
+}
+
+.cta-text-con {
+  padding: 4vw;
+  padding-top: 0;
+  max-width: 50%;
+  margin: 0 auto;
+}
+
+.cta-text-con p {
+  text-align: center;
+}
+
+.cta-text-con p:first-child {
+  font-size: var(--text-header);
+  padding-right: 2vw;
+  color: #2f2174;
+  font-weight: 500;
+  margin-bottom: 0.5vw;
+}
+
+.analisis-btn-cta-con {
+  position: relative;
+  display: flex;
+}
+
+.analisis-btn-cta-con button {
+  background-color: #756ce0;
+  color: #000000;
+  font-weight: bold;
+  font-size: 15px;
+  border: 0;
+  padding: 1vw 2vw;
+  border-radius: 8px;
+  box-shadow: none;
+}

@@ -1,0 +1,189 @@
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.fitur-section {
+  width: 100%;
+  background: #f8f5f5;
+  padding-bottom: 5vw;
+}
+
+.fitur-text-con {
+  margin-bottom: 4vw;
+}
+
+.fitur-text-con p {
+  text-align: center;
+}
+
+.fitur-text-con p:first-child {
+  font-size: var(--text-header);
+  padding-right: 2vw;
+  color: #2f2174;
+  font-weight: 500;
+  margin-bottom: 0.5vw;
+  padding-top: 4vw;
+}
+
+.sub-title {
+  max-width: 50vw;
+  margin: 0 auto;
+}
+
+.fitur-card {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 5vw;
+  width: 100%;
+  gap: 5px;
+}
+
+.main-fitur {
+  width: 40%;
+  height: 500px;
+  background-color: #2f2174;
+}
+
+.sub-fitur-con {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+}
+
+.sub-fitur {
+  width: 100%;
+  min-height: 247px;
+  background-color: #2f2174;
+}
+
+.badge-text {
+  text-align: center;
+  margin-bottom: 2.5vw;
+  font-weight: 400;
+}
+
+.badge-con {
+  width: 100%;
+  height: 150px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  max-width: 60vw;
+  margin: 0 auto;
+}
+
+.badge-con img {
+  width: auto;
+  height: 100%;
+  flex-shrink: 0;
+}
+
+@media (max-width: 1024px) {
+  .fitur-section {
+    padding-bottom: 7vw;
+  }
+
+  .fitur-text-con p:first-child {
+    padding-top: 6vw;
+  }
+
+  .sub-title {
+    max-width: 75vw;
+  }
+
+  .fitur-card {
+    gap: 4px;
+  }
+
+  .main-fitur {
+    height: 400px;
+  }
+
+  .sub-fitur {
+    min-height: 198px;
+  }
+
+  .badge-con {
+    max-width: 80vw;
+    height: 130px;
+  }
+}
+
+@media (max-width: 768px) {
+  .fitur-section {
+    padding-bottom: 12vw;
+  }
+
+  .fitur-text-con {
+    margin-bottom: 8vw;
+    padding: 0 5vw;
+  }
+
+  .fitur-text-con p:first-child {
+    padding-top: 10vw;
+    padding-right: 0;
+    font-size: clamp(28px, 7vw, 40px);
+    line-height: 1.1;
+  }
+
+  .sub-title {
+    max-width: 100%;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .fitur-card {
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 12vw;
+  }
+
+  .main-fitur {
+    width: 100%;
+    height: 300px;
+  }
+
+  .sub-fitur-con {
+    width: 100%;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+  }
+
+  .sub-fitur {
+    min-height: 160px;
+  }
+
+  .badge-text {
+    margin-bottom: 6vw;
+    padding: 0 5vw;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .badge-con {
+    width: 100%;
+    max-width: none;
+    height: 110px;
+    justify-content: flex-start;
+    gap: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0 5vw;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .badge-con::-webkit-scrollbar {
+    display: none;
+  }
+
+  .badge-con img {
+    height: 110px;
+    width: auto;
+    flex-shrink: 0;
+  }
+}

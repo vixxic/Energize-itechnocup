@@ -1,6 +1,7 @@
 "use client";
 
 import "./Hero.css";
+import Link from "next/link";
 import { useEffect } from "react";
 
 import gsap from "gsap";
@@ -68,7 +69,9 @@ function Hero() {
             Kenali pola penggunaan listrik, temukan peluang penghematan, dan
             bangun kebiasaan energi yang lebih bijak.
           </p>
-          <button className="analyze-btn-hero">Analisis Sekarang</button>
+          <Link href="/dashboard">
+            <button className="analyze-btn-hero">Analisis Sekarang</button>
+          </Link>
         </div>
         <img
           className="layer1"

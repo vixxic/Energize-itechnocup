@@ -16,43 +16,47 @@
 }
 
 .layer1 {
-  z-index: 10;
+  z-index: 100;
   width: 100%;
   bottom: -450px;
 }
 
 .layer2 {
-  z-index: 9;
+  z-index: 90;
   width: 55%;
   right: 0px;
   bottom: 0px;
 }
 
 .layer3 {
-  z-index: 8;
+  z-index: 80;
   bottom: 0px;
   right: 120px;
 }
 
 .hero-text-con {
   position: absolute;
-  width: 40%;
+  width: min(40%, 620px);
   top: 30%;
   left: 10%;
+  z-index: 20;
 }
 
 .hero-text-con p:first-child {
-  font-size: var(--text-header);
-  padding-right: 2vw;
+  margin: 0 0 clamp(8px, 1vw, 16px);
   color: #070f39;
+  font-size: clamp(32px, 3.5vw, 64px);
+  line-height: 1.05;
   font-weight: 500;
-  margin-bottom: 0.5vw;
+  padding-right: 0;
 }
 
-.hero-text-con p {
-  font-size: var(--text-paragraf);
+.hero-text-con p:nth-child(2) {
+  max-width: 520px;
+  margin: 0;
   color: #070f39;
-  margin: 0%;
+  font-size: clamp(14px, 1.15vw, 18px);
+  line-height: 1.55;
 }
 
 .analyze-btn-hero {
@@ -72,13 +76,17 @@
 
 @media (max-width: 1024px) {
   .hero-text-con {
-    width: 50%;
+    width: min(50%, 520px);
     top: 20%;
     left: 5%;
   }
 
   .hero-text-con p:first-child {
-    padding-right: 0;
+    font-size: clamp(30px, 4.5vw, 48px);
+  }
+
+  .hero-text-con p:nth-child(2) {
+    font-size: clamp(13px, 1.5vw, 16px);
   }
 
   .layer1 {
@@ -108,19 +116,26 @@
   .hero-text-con {
     position: absolute;
     width: 90%;
-    top: 20%;
+    max-width: 500px;
+    top: 30%;
     left: 5%;
     z-index: 20;
   }
 
   .hero-text-con p:first-child {
-    padding-right: 0;
-    font-size: clamp(40px, 4.2vw, 65px);
+    font-size: clamp(30px, 8vw, 42px);
+    line-height: 1.05;
+  }
+
+  .hero-text-con p:nth-child(2) {
+    max-width: 430px;
+    font-size: clamp(13px, 3.5vw, 16px);
+    line-height: 1.5;
   }
 
   .analyze-btn-hero {
-    padding: 12px 24px;
-    margin-top: 2rem;
+    margin-top: clamp(20px, 5vw, 32px);
+    padding: 11px 20px;
   }
 
   .layer1 {
@@ -145,5 +160,27 @@
   .hero-text-con {
     top: 30%;
     width: 85%;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-text-con {
+    width: 90%;
+    top: 30%;
+    left: 5%;
+  }
+
+  .hero-text-con p:first-child {
+    font-size: clamp(28px, 8.5vw, 36px);
+  }
+
+  .hero-text-con p:nth-child(2) {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  .analyze-btn-hero {
+    margin-top: 18px;
+    padding: 10px 18px;
   }
 }
