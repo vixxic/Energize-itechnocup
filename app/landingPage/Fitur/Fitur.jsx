@@ -2,7 +2,7 @@ import "./Fitur.css";
 
 function Fitur() {
   return (
-    <div className="fitur-section padding">
+    <div id="fitur-section" className="padding">
       <div className="fitur-text-con">
         <p>Kenali Pola Penggunaan Energi Anda</p>
         <p className="sub-title">

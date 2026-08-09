@@ -2,7 +2,7 @@ import "./Impact.css";
 
 function Impact() {
   return (
-    <div className="impact-section">
+    <div id="impact-section">
       <div className="impact-text-con">
         <p>Dampak yang Kita Ciptakan</p>
         <p>

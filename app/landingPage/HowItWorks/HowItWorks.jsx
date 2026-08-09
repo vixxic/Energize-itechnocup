@@ -78,7 +78,7 @@ function HowItWorks() {
   }, []);
 
   return (
-    <div ref={sectionRef} className="how-it-works-section">
+    <div ref={sectionRef} id="how-it-works-section">
       <h2>Bagaimana Kami Membantu</h2>
 
       <div ref={kabelRef} className="kabel"></div>

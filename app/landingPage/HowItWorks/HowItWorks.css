@@ -1,4 +1,4 @@
-.how-it-works-section {
+#how-it-works-section {
   position: relative;
   background-color: #f8f5f5;
   height: 155vh;
@@ -6,7 +6,7 @@
   overflow: hidden;
 }
 
-.how-it-works-section h2 {
+#how-it-works-section h2 {
   position: absolute;
   top: 4%;
   left: 50%;

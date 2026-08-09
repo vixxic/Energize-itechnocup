@@ -2,6 +2,7 @@
 
 import "./CTA.css";
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -42,7 +43,9 @@ function CTA() {
           </p>
         </div>
         <div className="analisis-btn-cta-con ">
-          <button ref={buttonRef}>Analisis Sekarang </button>
+          <Link href="/dashboard">
+            <button ref={buttonRef}>Analisis Sekarang </button>
+          </Link>
           <div className="following-kabel2 cta-kabel"></div>
         </div>
       </div>

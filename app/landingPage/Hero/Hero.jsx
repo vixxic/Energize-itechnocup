@@ -61,7 +61,7 @@ function Hero() {
   }, []);
 
   return (
-    <div className="home-section">
+    <div id="home-section">
       <div className="absolute-div">
         <div className="hero-text-con">
           <p>Pahami Energi Anda</p>

@@ -1,4 +1,5 @@
 import "./Footer.css";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -18,16 +19,16 @@ export default function Footer() {
 
         <div className="footer-column">
           <h3>Navigasi</h3>
-          <a href="#">Beranda</a>
-          <a href="#">Cara Kerja</a>
-          <a href="#">Fitur</a>
-          <a href="#">Dampak</a>
-          <a href="#">Analisis Energi</a>
+          <a href="#home-section">Beranda</a>
+          <a href="#problem-section">Tantangan</a>
+          <a href="#fitur-section">Fitur</a>
+          <a href="#how-it-works-section">Cara Kerja</a>
+          <a href="#impact-section">Dampak</a>
         </div>
 
         <div className="footer-column">
           <h3>Aplikasi</h3>
-          <a href="#">Mulai Analisis</a>
+          <Link href="/dashboard">Mulai Analisis</Link>
           <a href="#">Dashboard</a>
           <a href="#">Riwayat</a>
           <a href="#">Penggunaan</a>

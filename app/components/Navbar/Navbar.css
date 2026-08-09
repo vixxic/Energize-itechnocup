@@ -57,6 +57,10 @@
   gap: 2vw;
 }
 
+.nav-links a {
+  text-decoration: none;
+}
+
 .nav-links li {
   display: flex;
   color: #202050;

@@ -32,16 +32,19 @@ function Navbar() {
         </div>
 
         <ul className="nav-links">
-          <a>
+          <a href="#home-section">
             <li className={`${scrolled ? "scrolled" : ""}`}>Beranda</li>
           </a>
-          <a>
+          <a href="#problem-section">
+            <li className={`${scrolled ? "scrolled" : ""}`}>Tantangan</li>
+          </a>
+          <a href="#fitur-section">
             <li className={`${scrolled ? "scrolled" : ""}`}>Fitur</li>
           </a>
-          <a>
+          <a href="#how-it-works-section">
             <li className={`${scrolled ? "scrolled" : ""}`}>Cara Kerja</li>
           </a>
-          <a>
+          <a href="#impact-section">
             <li className={`${scrolled ? "scrolled" : ""}`}>Dampak</li>
           </a>
         </ul>
