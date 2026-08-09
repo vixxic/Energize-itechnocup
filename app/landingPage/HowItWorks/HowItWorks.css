@@ -57,7 +57,7 @@
   position: absolute;
   z-index: 1000;
   width: 230px;
-  color: var(--pallet-dark-blue);
+  color: #2f2174;
 }
 
 .step-con h3 {
@@ -96,4 +96,42 @@
 .con4 {
   top: 65%;
   left: 20%;
+}
+
+@media (max-width: 768px) {
+  .con1 {
+    top: 35%;
+    left: 22%;
+  }
+
+  .con2 {
+    top: 50%;
+    left: 22%;
+  }
+
+  .con3 {
+    top: 65%;
+    left: 22%;
+  }
+
+  .con4 {
+    top: 80%;
+    left: 22%;
+  }
+
+  .con1,
+  .con2,
+  .con3,
+  .con4 {
+    background-color: #3b2673;
+    padding: 5vw;
+    box-sizing: border-box;
+    color: aliceblue;
+    font-weight: 50;
+  }
+
+  .step-con p {
+    font-size: 3.5vw;
+    line-height: 1.5;
+  }
 }

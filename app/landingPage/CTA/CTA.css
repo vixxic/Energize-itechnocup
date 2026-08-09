@@ -70,3 +70,31 @@
   border-radius: 8px;
   box-shadow: none;
 }
+
+@media (max-width: 768px) {
+  .cta-section {
+    margin-bottom: 30px;
+  }
+
+  .cta-text-con {
+    max-width: 80%;
+  }
+
+  .cta-text-con p:first-child {
+    display: block;
+    font-size: clamp(28px, 7vw, 40px);
+    margin: 25px 0;
+  }
+
+  .cta-text-con p {
+    display: none;
+  }
+
+  .following-kabel2 {
+    width: 30%;
+  }
+
+  .analisis-btn-cta-con button {
+    padding: 2vw 4vw;
+  }
+}
