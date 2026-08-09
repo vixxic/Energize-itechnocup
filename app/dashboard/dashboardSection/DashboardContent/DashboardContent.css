@@ -1,0 +1,175 @@
+.header-text-con-dashboard p:first-child {
+  margin: 0%;
+  font-size: clamp(20px, 1.5vw, 30px);
+  font-weight: bold;
+  color: var(--pallet-nila);
+}
+
+.header-text-con-dashboard p {
+  margin: 0.7vw 0;
+  color: var(--pallet-nila);
+  font-weight: 400;
+}
+
+.data-listrik-user {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin: 2vw 0;
+}
+
+.data-con {
+  background-color: #fdfcfa;
+  padding: 0.7vw;
+  display: flex;
+  gap: 1vw;
+  border: 1px solid #f4eadd;
+  box-shadow: 0 8px 24px rgba(170, 140, 110, 0.08);
+  border-radius: 10px;
+}
+
+.data-con div:first-child {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1vw;
+  border-radius: 15px;
+}
+
+.div-2-con {
+  display: flex;
+  gap: 2vw;
+}
+
+.div-3-con {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+@media (max-width: 900px) {
+  .data-listrik-user {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .data-con {
+    width: 100%;
+    box-sizing: border-box;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .data-con div:first-child {
+    padding: 12px;
+  }
+
+  .div-2-con {
+    gap: 15px;
+  }
+
+  .div-3-con {
+    gap: 15px;
+  }
+}
+
+@media (max-width: 600px) {
+  .header-text-con-dashboard p:first-child {
+    font-size: 22px;
+    line-height: 1.3;
+  }
+
+  .header-text-con-dashboard p {
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 8px 0;
+  }
+
+  .data-listrik-user {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 20px 0;
+  }
+
+  .data-con {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 8px;
+    gap: 8px;
+    border-radius: 10px;
+  }
+
+  .data-con div:first-child {
+    padding: 10px;
+    border-radius: 12px;
+    flex-shrink: 0;
+  }
+
+  .data-con div:last-child {
+    min-width: 0;
+  }
+
+  .data-con p {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .div-2-con {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .div-3-con {
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
+  }
+
+  .pilihan-tantangan > div {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 18px;
+    border-radius: 12px;
+  }
+
+  .pilihan-tantangan p {
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .pilihan-tantangan button {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 400px) {
+  .header-text-con-dashboard p:first-child {
+    font-size: 20px;
+  }
+
+  .header-text-con-dashboard p {
+    font-size: 13px;
+  }
+
+  .data-listrik-user {
+    gap: 8px;
+  }
+
+  .data-con {
+    padding: 7px;
+    gap: 6px;
+  }
+
+  .data-con div:first-child {
+    padding: 8px;
+  }
+
+  .data-con p {
+    font-size: 11px;
+  }
+}

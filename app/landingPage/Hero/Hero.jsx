@@ -17,7 +17,7 @@ function Hero() {
       y: -50,
       ease: "none",
       scrollTrigger: {
-        trigger: ".home-section",
+        trigger: "#home-section",
         start: "10% top",
         end: "bottom top",
         scrub: true,
@@ -27,7 +27,7 @@ function Hero() {
       y: 120,
       ease: "none",
       scrollTrigger: {
-        trigger: ".home-section",
+        trigger: "#home-section",
         start: "10% top",
         end: "bottom top",
         scrub: true,
@@ -37,7 +37,7 @@ function Hero() {
       y: 120,
       ease: "none",
       scrollTrigger: {
-        trigger: ".home-section",
+        trigger: "#home-section",
         start: "10% top",
         end: "bottom top",
         scrub: true,
@@ -48,7 +48,7 @@ function Hero() {
       y: 250,
       ease: "none",
       scrollTrigger: {
-        trigger: ".home-section",
+        trigger: "#home-section",
         start: "10% top",
         end: "bottom top",
         scrub: true,

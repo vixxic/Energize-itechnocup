@@ -1,0 +1,133 @@
+.sider-link-dashboard {
+  padding: 2vw;
+  width: 20%;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.3vw;
+
+  position: fixed;
+}
+
+.logo-sider-dashboard {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 24px;
+  margin-left: -12px; 
+}
+
+.logo-sider-dashboard img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  flex-shrink: 0;
+  display: block;
+}
+
+.logo-sider-dashboard p {
+  margin: 0;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.sider-link-dashboard .ant-menu {
+  background: transparent !important;
+  border-inline-end: none !important;
+}
+
+.sider-link-dashboard .ant-menu-title-content div {
+  color: white !important;
+
+  display: flex;
+  align-items: center;
+  gap: 1vw;
+}
+
+.sider-link-dashboard .ant-menu-item:hover,
+.sider-link-dashboard .ant-menu-item-active,
+.sider-link-dashboard .ant-menu-item-selected {
+  background-color: var(--pallet-ungu) !important;
+}
+
+/* ======================= BOTTOM NAV ======================= */
+
+.bottom-nav-dashboard {
+  display: none !important;
+}
+
+/* ======================= MOBILE ======================= */
+
+@media screen and (max-width: 768px) {
+  .sider-link-dashboard {
+    display: none;
+  }
+
+  .bottom-nav-dashboard {
+    display: flex !important;
+
+    position: fixed;
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    height: 82px;
+
+    justify-content: space-around;
+    align-items: center;
+
+    padding: 0;
+
+    background-color: #fff !important;
+
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+
+    z-index: 999;
+  }
+
+  .bottom-nav-dashboard .ant-menu-overflow {
+    width: 100%;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .bottom-nav-dashboard .ant-menu-overflow-item {
+    flex: 1;
+  }
+
+  .bottom-nav-dashboard .ant-menu-item {
+    width: 100%;
+    margin: 0 !important;
+    padding: 0 !important;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .bottom-menu-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+
+    color: #2b0e34;
+    font-size: 11px;
+  }
+
+  .bottom-menu-item svg {
+    font-size: 22px;
+  }
+
+  .bottom-nav-dashboard .ant-menu-item-selected .bottom-menu-item {
+    color: var(--pallet-ungu) !important;
+  }
+
+  .bottom-nav-dashboard .ant-menu-item::after {
+    display: none !important;
+  }
+}
