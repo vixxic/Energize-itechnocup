@@ -159,6 +159,14 @@ export default function FormContent() {
   };
 
   const handleStartAnalysis = () => {
+    if (profilInfo.penghuni <= 0 || !profilInfo.dayaListrikRumah) {
+      setErrorProfil("Harap lengkapi data profil rumah.");
+      message.warning(
+        "Harap lengkapi data profil rumah.",
+      );
+      return;
+    }
+    setErrorProfil("")
     message.warning(
       "Jangan tutup halaman atau refresh halaman selama analisis berlangsung!",
     );

@@ -16,8 +16,18 @@ import { Layout } from "antd";
 
 const { Sider, Content, Footer } = Layout;
 
+function BlokirAnalisis({ setCurrentMenu }) {
+  return (
+    <div className="blokir-analisis">
+      <h3>Anda belum melakukan analisis</h3>
+      <button type="button" onClick={() => setCurrentMenu("analisis")}>Lakukan Analisis</button>
+    </div>
+  );
+}
+
 function Dashboard() {
-  const { currentMenu } = useContext(DashboardContext);
+  const { currentMenu, setCurrentMenu, analysis } = useContext(DashboardContext);
+  const terkunci = !analysis && currentMenu !== "analisis" && currentMenu !== "dashboard";
 
   return (
     <Layout>
@@ -26,24 +36,20 @@ function Dashboard() {
       </Sider>
 
       <Content className="content-dashboard">
-        {currentMenu === "dashboard" ? (
+        {currentMenu === "analisis" ? (
+          <FormContent />
+        ) : currentMenu === "dashboard" ? (
           <DashboardContent />
-        ) : currentMenu === "analisis" ? (
-          <div>
-            <FormContent />
-          </div>
+        ) : terkunci ? (
+          <BlokirAnalisis setCurrentMenu={setCurrentMenu} />
         ) : currentMenu === "tantangan" ? (
-          <div>
-            <ChallengeContent />
-          </div>
+          <ChallengeContent />
         ) : currentMenu === "riwayat" ? (
           <div>
             <p>halaman riwayat</p>
           </div>
         ) : currentMenu === "profil" ? (
-          <div>
-            <ProfileContent />
-          </div>
+          <ProfileContent />
         ) : (
           "404 Halaman Tidak di Temukan"
         )}
