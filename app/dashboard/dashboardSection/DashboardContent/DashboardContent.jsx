@@ -77,12 +77,17 @@ function DashboardContent() {
               <p>{data.title}</p>
               <p>
                 {index === 0 && dashboardStats?.penghuni}
-                {index === 1 && (dashboardStats?.totalKwhPerDay ?? "-") + " kWh"}
+                {index === 1 &&
+                  (dashboardStats?.totalKwhPerDay ?? "-") + " kWh"}
                 {index === 2 && dashboardStats?.estimasiBiaya != null
                   ? "Rp" + dashboardStats.estimasiBiaya.toLocaleString("id-ID")
                   : "-"}
-                {index === 3 && (dashboardStats?.rataPerPenghuni ?? "-") + " kWh"}
-                {index === 4 && (dashboardStats?.dibandingSebelumnya != null ? `${dashboardStats.dibandingSebelumnya}%` : "-")}
+                {index === 3 &&
+                  (dashboardStats?.rataPerPenghuni ?? "-") + " kWh"}
+                {index === 4 &&
+                  (dashboardStats?.dibandingSebelumnya != null
+                    ? `${dashboardStats.dibandingSebelumnya}%`
+                    : "-")}
               </p>
             </div>
           </div>
@@ -110,8 +115,13 @@ function DashboardContent() {
                   (tantangan.tantangan || tantangan.title),
               );
               return (
-                <div key={tantangan.urutan ?? tantangan.id}>
-                  <p>{tantangan.tantangan || tantangan.title}</p>
+                <div
+                  className="tantangan-box"
+                  key={tantangan.urutan ?? tantangan.id}
+                >
+                  <p className="title">
+                    {tantangan.tantangan || tantangan.title}
+                  </p>
                   <p>{tantangan.des || tantangan.description}</p>
 
                   <button
