@@ -9,7 +9,7 @@ import { TbPercentage25 } from "react-icons/tb";
 import { IoMdPeople } from "react-icons/io";
 
 // components
-import { Skeleton } from "antd";
+import { App, Skeleton } from "antd";
 
 // context
 import { useContext } from "react";
@@ -61,9 +61,27 @@ function DashboardContent() {
     acceptChallenge,
   } = useContext(DashboardContext);
 
+  const { message } = App.useApp();
+
   if (analysisLoading) return <Skeleton active paragraph={{ rows: 4 }} />;
 
   const tantanganAi = challenge?.challenges || challengeData;
+
+  const handleAccept = (tantangan) => {
+    const nama = tantangan.tantangan || tantangan.title;
+
+    const sudahada = activeChallenges.some(
+      (c) => (c.tantangan || c.title) === nama,
+    );
+    if (sudahada) return;
+
+    const sukses = acceptChallenge(tantangan);
+    if (!sukses) {
+      message.warning(
+        "Kamu hanya bisa pilih 1 sampai tantangan itu selesai",
+      );
+    }
+  };
 
   return (
     <div>
@@ -119,9 +137,9 @@ function DashboardContent() {
                   <p>{tantangan.des || tantangan.description}</p>
 
                   <button
-                    disabled={diterima}
-                    onClick={() => acceptChallenge(tantangan)}
-                  >
+                  disabled={diterima}
+                  onClick={() => handleAccept(tantangan)}
+                >
                     {diterima ? "Sudah diterima ✓" : "Terima tantangan"}
                   </button>
                 </div>

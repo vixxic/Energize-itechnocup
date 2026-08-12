@@ -52,7 +52,7 @@ export default function FormContent() {
     quantity: 1,
     devicePower: "",
     estimatedPower: false,
-    usageDuration: 0,
+    usageDuration: "",
   });
 
   const handleChange = (e) => {
@@ -61,11 +61,7 @@ export default function FormContent() {
     setDeviceData((prev) => ({
       ...prev,
       [name]:
-        type === "checkbox"
-          ? checked
-          : type === "number"
-            ? Number(value)
-            : value,
+        type === "checkbox" ? checked : type === "number" ? value === "" ? "" : Number(value) : value,
     }));
   };
 
@@ -83,7 +79,6 @@ export default function FormContent() {
 
     if (profilInfo.penghuni <= 0 || !profilInfo.dayaListrikRumah) {
       setErrorProfil("Harap lengkapi semua data yang wajib diisi.");
-
       return;
     }
 
@@ -146,7 +141,7 @@ export default function FormContent() {
       quantity: 1,
       devicePower: "",
       estimatedPower: false,
-      usageDuration: 0,
+      usageDuration: "",
     });
 
     setErrorName("");

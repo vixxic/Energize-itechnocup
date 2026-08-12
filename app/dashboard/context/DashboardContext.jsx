@@ -66,20 +66,27 @@ export function DashboardProvider({ children }) {
   useEffect(() => saveState("analysisHistory", analysisHistory), [analysisHistory]);
 
   const acceptChallenge = (tantangan) => {
-    setActiveChallenges((prev) => {
-      const sudahAda = prev.some(
-        (c) => (c.tantangan || c.title) === (tantangan.tantangan || tantangan.title),
-      );
-      if (sudahAda) return prev;
-      return [
-        ...prev,
-        {
-          ...tantangan,
-          acceptedAt: new Date().toISOString(),
-          status: "berlangsung",
-        },
-      ];
-    });
+    const nama = tantangan.tantangan || tantangan.title;
+
+    const sudahada = activeChallenges.some(
+      (c) => (c.tantangan || c.title) === nama,
+    );
+    if (sudahada) return true;
+
+    const adajalan = activeChallenges.some(
+      (c) => c.status === "berlangsung",
+    );
+    if (adajalan) return false;
+
+    setActiveChallenges((prev) => [
+      ...prev,
+      {
+        ...tantangan,
+        acceptedAt: new Date().toISOString(),
+        status: "berlangsung",
+      },
+    ]);
+    return true;
   };
 
   const runAnalysis = async () => {
