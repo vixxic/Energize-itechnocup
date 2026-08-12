@@ -8,6 +8,9 @@ import { HiOutlineChartBar } from "react-icons/hi";
 import { TbPercentage25 } from "react-icons/tb";
 import { IoMdPeople } from "react-icons/io";
 
+// components
+import { Skeleton } from "antd";
+
 // context
 import { useContext } from "react";
 import { DashboardContext } from "../../context/DashboardContext";
@@ -45,11 +48,15 @@ const userDataListrik = [
 function DashboardContent() {
   const {
     analysis,
+    analysisLoading,
+    dashboardStats,
     challenge,
     devicesData,
     activeChallenges,
     acceptChallenge,
   } = useContext(DashboardContext);
+
+  if (analysisLoading) return <Skeleton active paragraph={{ rows: 4 }} />;
 
   const tantanganAi = challenge?.challenges || challengeData;
 
@@ -69,11 +76,13 @@ function DashboardContent() {
             <div>
               <p>{data.title}</p>
               <p>
-                {index === 0 && analysis?.totalKwhPerDay}
-                {index === 1 && challenge?.impactPrediction}
-                {index === 2 && analysis?.totalKwhPerDay}
-                {index === 3 && analysis?.totalKwhPerDay}
-                {index === 4 && "-"}
+                {index === 0 && dashboardStats?.penghuni}
+                {index === 1 && (dashboardStats?.totalKwhPerDay ?? "-") + " kWh"}
+                {index === 2 && dashboardStats?.estimasiBiaya != null
+                  ? "Rp" + dashboardStats.estimasiBiaya.toLocaleString("id-ID")
+                  : "-"}
+                {index === 3 && (dashboardStats?.rataPerPenghuni ?? "-") + " kWh"}
+                {index === 4 && (dashboardStats?.dibandingSebelumnya != null ? `${dashboardStats.dibandingSebelumnya}%` : "-")}
               </p>
             </div>
           </div>

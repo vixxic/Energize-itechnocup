@@ -1,38 +1,65 @@
 import React from "react";
 import "./PresentaseBoros.css";
-import { AirConditionerOutlined, DashboardOutlined } from "@ant-design/icons";
+import { Progress } from "antd";
 
 const colors = ["#6A3EF5", "#FF9F1C", "#4CAF50"];
 
 function PresentaseBoros({ analysis, devicesData }) {
-  const defaultData = "";
+  const defaultData = [];
 
   const wasteful = analysis?.wastefulDevices || [];
 
-  const data =
-    wasteful.length > 0
-      ? wasteful.slice(0, 3).map((nama, i) => {
-          const device = (devicesData || []).find(
-            (d) => d.deviceName?.toLowerCase() === nama?.toLowerCase(),
-          );
-          const kwh = device
-            ? ((device.devicePower || 0) *
-                (device.quantity || 1) *
-                (device.usageDuration || 0)) /
-              1000
-            : 0;
-          return {
-            no: i + 1,
-            nama,
-            waktu: device ? `${device.usageDuration} jam/hari` : "-",
-            watt: device ? `${device.devicePower || "?"} W` : "-",
-            konsumsi: device ? `${kwh.toFixed(2)} kWh/hari` : "-",
-            persen: Math.max(1, 33 - i * 10),
-            color: colors[i] || "#6A3EF5",
-            icon: "🔌",
-          };
-        })
-      : defaultData;
+  const normalize = (s) => (s || "").toLowerCase().trim().replace(/\s+/g, " ");
+
+  const findDevice = (nama) => {
+    const target = normalize(nama);
+
+    return (devicesData || []).find(
+      (d) =>
+        normalize(d.deviceName) === target ||
+        normalize(d.deviceName).includes(target) ||
+        target.includes(normalize(d.deviceName)),
+    );
+  };
+
+  let data = defaultData;
+
+  if (wasteful.length > 0) {
+    const totalKwhLokal = (devicesData || []).reduce(
+      (sum, d) =>
+        sum +
+        ((Number(d.devicePower) || 0) *
+          (Number(d.quantity) || 1) *
+          (Number(d.usageDuration) || 0)) /
+          1000,
+      0,
+    );
+
+    const grandTotal = totalKwhLokal;
+
+    data = wasteful.slice(0, 3).map((nama, i) => {
+      const device = findDevice(nama);
+
+      const kwh = device
+        ? ((Number(device.devicePower) || 0) *
+            (Number(device.quantity) || 1) *
+            (Number(device.usageDuration) || 0)) /
+          1000
+        : 0;
+
+      return {
+        no: i + 1,
+        nama,
+        waktu: device ? `${device.usageDuration} jam/hari` : "-",
+        watt: device ? `${device.devicePower || "?"} W` : "-",
+        konsumsi: device ? `${kwh.toFixed(2)} kWh/hari` : "-",
+        kwh,
+        persen: grandTotal > 0 ? Math.round((kwh / grandTotal) * 100) : 0,
+        color: colors[i] || "#6A3EF5",
+        icon: "🔌",
+      };
+    });
+  }
 
   return (
     <div className="borosCard">
@@ -64,22 +91,16 @@ function PresentaseBoros({ analysis, devicesData }) {
               <div className="right">
                 <strong>{item.konsumsi}</strong>
 
-                <div className="progress">
-                  <div
-                    className="fill"
-                    style={{
-                      width: `${item.persen}%`,
-                      background: item.color,
-                    }}
-                  />
-                </div>
+                <Progress percent={item.persen} strokeColor={item.color} />
 
                 <span>{item.persen}%</span>
               </div>
             </div>
           ))}
 
-          <div className="lihatSemua">Lihat semua perangkat (7) →</div>
+          <div className="lihatSemua">
+            Lihat semua perangkat ({devicesData?.length || 0}) →
+          </div>
         </div>
       </div>
     </div>

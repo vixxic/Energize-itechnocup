@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 
+import challengeData from "../../dashboard/data/challengeData";
+
 export async function POST(request) {
   try {
-    const { profilInfo, devicesData } = await request.json();
+    const { analysis, answer } = await request.json();
 
-    if (!devicesData || !Array.isArray(devicesData) || devicesData.length === 0) {
+    if (!analysis || !answer) {
       return NextResponse.json(
-        { error: "tidak ada data" },
+        { error: "data tidak lengkap" },
         { status: 400 },
       );
     }
@@ -19,36 +21,27 @@ export async function POST(request) {
       );
     }
 
-    const perangkat = devicesData.map((d, i) => {
-      const watts = d.estimatedPower ? "(estimasi perangkat)" : `${d.devicePower} W`;
-      return `${i + 1}. ${d.deviceName} — jumlah: ${d.quantity}, daya: ${watts}, durasi: ${d.usageDuration} jam/hari`;
-    }).join("\n");
-
     const prompt = `
-Kamu analis energi listrik rumah tangga Indonesia.
+Kamu coach hemat energi untuk rumah tangga di Indonesia.
 
-PROFIL:
-- Penghuni: ${profilInfo.penghuni} orang
-- Daya pln: ${profilInfo.dayaListrikRumah} VA
-- Biaya bulanan: ${profilInfo.biayaListrikBulanan || "tidak tahu"}
+HASIL ANALISIS PENGGUNAAN ENERGI:
+- Total konsumsi: ${analysis.totalKwhPerDay ?? "-"} kWh/hari
+- Perangkat paling boros: ${(analysis.wastefulDevices || []).join(", ") || "-"}
+- Pertanyaan penyebab boros: ${analysis.followUpQuestion || "-"}
+- Jawaban pengguna: ${answer}
 
-DAFTAR PERANGKAT:
-${perangkat}
-  
 TUGAS:
-1. Hitung konsumsi tiap perangkat: (watt × jumlah × jam/hari) / 1000 = kWh/hari.
-   Untuk device bertanda "estimasi", perkirakan daya wajar perangkat tsb.
-2. Pilih 3 perangkat PALING BOROS yang BISA DIIKURANGI pemakaiannya.
-   JANGAN pilih kulkas/lemari es, lampu, atau benda yang memang wajib nyala 24 jam.
-3. Buat 1 pertanyaan untuk menggali PENYEBAB pemborosan device paling boros,
-   lengkap dengan pilihan jawaban (AI yang nentuin opsinya).
+Buat 3 tantangan/langkah konkret yang bisa dilakukan pengguna untuk menghemat energi,
+diurutkan dari yang paling berdampak. Sesuaikan dengan perangkat boros dan alasan
+yang diberikan pengguna. Tulis dalam bahasa Indonesia, singkat dan spesifik.
 
 Balas HANYA JSON (tanpa teks lain), format:
 {
-  "totalKwhPerDay": "12.5",
-  "wastefulDevices": ["nama boros 1", "nama boros 2", "nama boros 3"],
-  "followUpQuestion": "Mengapa AC dipakai 8 jam sehari?",
-  "followUpChoices": ["Untuk tidur", "Untuk bekerja/belajar", "Karena suhu panas", "Lainnya"]
+  "challenges": [
+    { "urutan": 1, "tantangan": "judul pendek", "des": "penjelasan singkat" },
+    { "urutan": 2, "tantangan": "judul pendek", "des": "penjelasan singkat" },
+    { "urutan": 3, "tantangan": "judul pendek", "des": "penjelasan singkat" }
+  ]
 }`
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`, {
         method: "POST",
@@ -74,9 +67,17 @@ Balas HANYA JSON (tanpa teks lain), format:
 
     const text = data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
     const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/) || text.match(/\{[\s\S]*\}/);
-    const parsed = jsonMatch ? JSON.parse(jsonMatch[1] ?? jsonMatch[0]) : { summary: text };
+    const parsed = jsonMatch ? JSON.parse(jsonMatch[1] ?? jsonMatch[0]) : {};
 
-    return NextResponse.json(parsed);
+    const isChallengesValid =
+      Array.isArray(parsed?.challenges) &&
+      parsed.challenges.every(
+        (c) => c && typeof (c.tantangan || c.title) === "string",
+      );
+
+    return NextResponse.json(
+      isChallengesValid ? parsed : { challenges: challengeData },
+    );
   } catch (error) {
     console.error(error);
     return NextResponse.json(

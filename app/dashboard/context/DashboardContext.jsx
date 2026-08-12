@@ -31,7 +31,9 @@ export function DashboardProvider({ children }) {
     loadState("activeChallenges", []),
   );
 
-  const [currentMenu, setCurrentMenu] = useState("dashboard");
+  const [currentMenu, setCurrentMenu] = useState(
+    () => (loadState("analysis", null) ? "dashboard" : "analisis"),
+  );
   const [devicesData, setDevicesData] = useState(() =>
     loadState("devicesData", []),
   );
@@ -45,10 +47,18 @@ export function DashboardProvider({ children }) {
     }),
   );
 
+  const [dashboardStats, setDashboardStats] = useState(() =>
+    loadState("dashboardStats", null)
+  );
+  const [analysisHistory, setAnalysisHistory] = useState(() =>
+    loadState("analysisHistory", [])
+  );
+
   useEffect(() => saveState("devicesData", devicesData), [devicesData]);
   useEffect(() => saveState("profilInfo", profilInfo), [profilInfo]);
   useEffect(() => saveState("analysis", analysis), [analysis]);
   useEffect(() => saveState("challenge", challenge), [challenge]);
+<<<<<<< HEAD
   useEffect(
     () => saveState("analysisLoading", analysisLoading),
     [analysisLoading],
@@ -57,6 +67,16 @@ export function DashboardProvider({ children }) {
     () => saveState("activeChallenges", activeChallenges),
     [activeChallenges],
   );
+=======
+  useEffect(() => saveState("analysisLoading", analysisLoading), [
+    analysisLoading,
+  ]);
+  useEffect(() => saveState("activeChallenges", activeChallenges), [
+    activeChallenges,
+  ]);
+  useEffect(() => saveState("dashboardStats", dashboardStats), [dashboardStats]);
+  useEffect(() => saveState("analysisHistory", analysisHistory), [analysisHistory]);
+>>>>>>> d6c64a9c75f496e1993a81568457865ca178a5c6
 
   const acceptChallenge = (tantangan) => {
     setActiveChallenges((prev) => {
@@ -82,6 +102,7 @@ export function DashboardProvider({ children }) {
       return;
     }
 
+    setCurrentMenu("dashboard");
     setAnalysisLoading(true);
     setAnalysisError("");
 
@@ -99,9 +120,26 @@ export function DashboardProvider({ children }) {
       }
 
       setAnalysis(data);
-      setCurrentMenu("dashboard");
+
+      const totalKwh = parseFloat(data.totalKwhPerDay) || 0
+      const biaya = Math.round(totalKwh * 30 * 1.444)
+      const rataKwh = profilInfo.penghuni > 0 ? totalKwh / profilInfo.penghuni : 0
+
+      const terakhir = analysisHistory[analysisHistory.length - 1]?.totalKwhPerDay
+      const dibanding = terakhir ? Math.round(((totalKwh - terakhir) / terakhir) * 100) : null
+
+      setDashboardStats({
+        penghuni: profilInfo.penghuni,
+        totalKwhPerDay: Math.round(totalKwh * 100) / 100,
+        estimasiBiaya: biaya,
+        rataPerPenghuni: Math.round(rataKwh * 100) / 100,
+        dibandingSebelumnya: dibanding,
+      })
+
+      setAnalysisHistory((prev) => [...prev, { totalKwhPerDay: Math.round(totalKwh * 100) / 100, tanggal: new Date().toISOString() }]);
     } catch (error) {
       setAnalysisError(error.message || "Error saat menganalisis data.");
+      setCurrentMenu("analisis");
     } finally {
       setAnalysisLoading(false);
     }
@@ -128,6 +166,9 @@ export function DashboardProvider({ children }) {
         acceptChallenge,
         profilInfo,
         setProfilInfo,
+        dashboardStats,
+        setDashboardStats,
+        analysisHistory
       }}
     >
       {children}
