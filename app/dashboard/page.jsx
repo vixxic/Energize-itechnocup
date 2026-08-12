@@ -10,6 +10,7 @@ import SiderNav from "./components/SiderNav/SiderNav";
 import FormContent from "./dashboardSection/FormContent/FormContent";
 import DashboardContent from "./dashboardSection/DashboardContent/DashboardContent";
 import ChallengeContent from "./dashboardSection/ChallengeContent/ChallengeContent";
+import HistoryContent from "./dashboardSection/HistoryContent/HistoryContent";
 import ProfileContent from "./dashboardSection/Profile/ProfileContent";
 
 import { Layout } from "antd";
@@ -46,7 +47,7 @@ function Dashboard() {
           <ChallengeContent />
         ) : currentMenu === "riwayat" ? (
           <div>
-            <p>halaman riwayat</p>
+            <HistoryContent />
           </div>
         ) : currentMenu === "profil" ? (
           <ProfileContent />

@@ -27,53 +27,6 @@
   margin-top: 22px;
 }
 
-.donutWrapper {
-  width: 280px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.donut {
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background: conic-gradient(
-    #6a3ef5 0deg 255deg,
-    #ffa726 255deg 330deg,
-    #7bc96f 330deg 360deg
-  );
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.donutCenter {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-  background: #fff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.donutCenter h1 {
-  font-size: 42px;
-  color: #1e2154;
-  margin: 0;
-}
-
-.donutCenter p {
-  width: 100px;
-  text-align: center;
-  color: #777;
-  margin-top: 8px;
-  font-size: 13px;
-  line-height: 1.4;
-}
-
 .deviceList {
   flex: 1;
 }
@@ -197,24 +150,6 @@
 
   .right {
     width: 100%;
-  }
-
-  .donutWrapper {
-    width: 100%;
-  }
-
-  .donut {
-    width: 200px;
-    height: 200px;
-  }
-
-  .donutCenter {
-    width: 135px;
-    height: 135px;
-  }
-
-  .donutCenter h1 {
-    font-size: 36px;
   }
 
   .borosTitle h2 {
