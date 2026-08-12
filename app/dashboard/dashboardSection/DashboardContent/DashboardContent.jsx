@@ -21,28 +21,23 @@ import FollowUpAi from "../../components/FollowUpAi/FollowUpAi";
 
 const userDataListrik = [
   {
-    icon: <IoMdPeople color="#0C0850" size={30} />,
-    bgColor: "#f1f1f9",
+    icon: <IoMdPeople size={30} />,
     title: "Jumlah Penghuni",
   },
   {
-    icon: <BsFillLightningChargeFill color="#7956EA" size={30} />,
-    bgColor: "#F8F2FA",
+    icon: <BsFillLightningChargeFill size={30} />,
     title: "Total konsumsi Estimasi",
   },
   {
-    icon: <IoWallet color="#34A749" size={30} />,
-    bgColor: "#F6F6EA",
+    icon: <IoWallet size={30} />,
     title: "Estimasi Biaya Listrik",
   },
   {
-    icon: <HiOutlineChartBar color="#F4A94E" size={30} />,
-    bgColor: "#FDF6E8",
+    icon: <HiOutlineChartBar size={30} />,
     title: "Rata-rata per Hari",
   },
   {
-    icon: <TbPercentage25 color="#0592F8" size={30} />,
-    bgColor: "#F1F4F9",
+    icon: <TbPercentage25 size={30} />,
     title: "Dibanding Sebelumnya",
   },
 ];
@@ -66,10 +61,11 @@ function DashboardContent() {
         </p>
         <p>Berikut adalah hasil analisis penggunaan energi rumah anda</p>
       </div>
+
       <div className="div-1-con data-listrik-user">
         {userDataListrik.map((data, index) => (
           <div key={index} className="data-con">
-            <div style={{ backgroundColor: data.bgColor }}>{data.icon}</div>
+            <div>{data.icon}</div>
             <div>
               <p>{data.title}</p>
               <p>

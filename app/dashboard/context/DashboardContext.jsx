@@ -24,7 +24,9 @@ function saveState(key, value) {
 
 export function DashboardProvider({ children }) {
   const [analysis, setAnalysis] = useState(() => loadState("analysis", null));
-  const [challenge, setChallenge] = useState(() => loadState("challenge", null));
+  const [challenge, setChallenge] = useState(() =>
+    loadState("challenge", null),
+  );
   const [activeChallenges, setActiveChallenges] = useState(() =>
     loadState("activeChallenges", []),
   );
@@ -47,17 +49,20 @@ export function DashboardProvider({ children }) {
   useEffect(() => saveState("profilInfo", profilInfo), [profilInfo]);
   useEffect(() => saveState("analysis", analysis), [analysis]);
   useEffect(() => saveState("challenge", challenge), [challenge]);
-  useEffect(() => saveState("analysisLoading", analysisLoading), [
-    analysisLoading,
-  ]);
-  useEffect(() => saveState("activeChallenges", activeChallenges), [
-    activeChallenges,
-  ]);
+  useEffect(
+    () => saveState("analysisLoading", analysisLoading),
+    [analysisLoading],
+  );
+  useEffect(
+    () => saveState("activeChallenges", activeChallenges),
+    [activeChallenges],
+  );
 
   const acceptChallenge = (tantangan) => {
     setActiveChallenges((prev) => {
       const sudahAda = prev.some(
-        (c) => (c.tantangan || c.title) === (tantangan.tantangan || tantangan.title),
+        (c) =>
+          (c.tantangan || c.title) === (tantangan.tantangan || tantangan.title),
       );
       if (sudahAda) return prev;
       return [
@@ -101,7 +106,7 @@ export function DashboardProvider({ children }) {
       setAnalysisLoading(false);
     }
   };
-  
+
   return (
     <DashboardContext.Provider
       value={{
