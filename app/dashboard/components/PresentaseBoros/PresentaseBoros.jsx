@@ -1,65 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 import "./PresentaseBoros.css";
 import { Progress } from "antd";
+import { ApiFilled } from "@ant-design/icons"
 
 const colors = ["#6A3EF5", "#FF9F1C", "#4CAF50"];
 
-function PresentaseBoros({ analysis, devicesData }) {
-  const defaultData = [];
+function PresentaseBoros({ devicesData }) {
+  const [lihatSemua, setLihatSemua] = useState(false);
 
-  const wasteful = analysis?.wastefulDevices || [];
+  const grandTotal = (devicesData || []).reduce(
+    (sum, d) =>
+      sum +
+      ((Number(d.devicePower) || 0) *
+        (Number(d.quantity) || 1) *
+        (Number(d.usageDuration) || 0)) /
+        1000,
+    0,
+  );
 
-  const normalize = (s) => (s || "").toLowerCase().trim().replace(/\s+/g, " ");
-
-  const findDevice = (nama) => {
-    const target = normalize(nama);
-
-    return (devicesData || []).find(
-      (d) =>
-        normalize(d.deviceName) === target ||
-        normalize(d.deviceName).includes(target) ||
-        target.includes(normalize(d.deviceName)),
-    );
-  };
-
-  let data = defaultData;
-
-  if (wasteful.length > 0) {
-    const totalKwhLokal = (devicesData || []).reduce(
-      (sum, d) =>
-        sum +
-        ((Number(d.devicePower) || 0) *
-          (Number(d.quantity) || 1) *
-          (Number(d.usageDuration) || 0)) /
-          1000,
-      0,
-    );
-
-    const grandTotal = totalKwhLokal;
-
-    data = wasteful.slice(0, 3).map((nama, i) => {
-      const device = findDevice(nama);
-
-      const kwh = device
-        ? ((Number(device.devicePower) || 0) *
-            (Number(device.quantity) || 1) *
-            (Number(device.usageDuration) || 0)) /
-          1000
-        : 0;
+  const ranked = (devicesData || [])
+    .map((device) => {
+      const kwh =
+        ((Number(device.devicePower) || 0) *
+          (Number(device.quantity) || 1) *
+          (Number(device.usageDuration) || 0)) /
+        1000;
 
       return {
-        no: i + 1,
-        nama,
-        waktu: device ? `${device.usageDuration} jam/hari` : "-",
-        watt: device ? `${device.devicePower || "?"} W` : "-",
-        konsumsi: device ? `${kwh.toFixed(2)} kWh/hari` : "-",
+        nama: device.deviceName,
+        waktu: `${device.usageDuration} jam/hari`,
+        watt: `${device.devicePower || "?"} W`,
         kwh,
-        persen: grandTotal > 0 ? Math.round((kwh / grandTotal) * 100) : 0,
-        color: colors[i] || "#6A3EF5",
-        icon: "🔌",
       };
-    });
-  }
+    })
+    .sort((a, b) => b.kwh - a.kwh)
+    .map((item, index) => ({
+      ...item,
+      no: index + 1,
+      konsumsi: `${item.kwh.toFixed(2)} kWh/hari`,
+      persen: grandTotal > 0 ? Math.round((item.kwh / grandTotal) * 100) : 0,
+      color: colors[index] || "#6A3EF5",
+      icon: <ApiFilled />,
+    }));
+
+  const data = lihatSemua ? ranked : ranked.slice(0, 3);
 
   return (
     <div className="borosCard">
@@ -98,9 +82,24 @@ function PresentaseBoros({ analysis, devicesData }) {
             </div>
           ))}
 
-          <div className="lihatSemua">
-            Lihat semua perangkat ({devicesData?.length || 0}) →
-          </div>
+          {ranked.length > 3 && (
+            <div
+              className="lihatSemua"
+              role="button"
+              tabIndex={0}
+              onClick={() => setLihatSemua((prev) => !prev)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  setLihatSemua((prev) => !prev);
+                  e.preventDefault();
+                }
+              }}
+            >
+              {lihatSemua
+                ? "Sembunyikan perangkat lain"
+                : `Lihat semua perangkat (${ranked.length})`}
+            </div>
+          )}
         </div>
       </div>
     </div>

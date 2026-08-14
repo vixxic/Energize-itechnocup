@@ -23,102 +23,53 @@ function saveState(key, value) {
 }
 
 export function DashboardProvider({ children }) {
-  // const [analysis, setAnalysis] = useState(() => loadState("analysis", null));
+  const [analysis, setAnalysis] = useState(() => loadState("analysis", null));
 
-  const [analysis, setAnalysis] = useState(null);
+  const [challenge, setChallenge] = useState(() =>
+    loadState("challenge", null),
+  );
 
-  useEffect(() => {
-    setAnalysis(loadState("analysis", null));
-  }, []);
+  const [activeChallenges, setActiveChallenges] = useState(() =>
+    loadState("activeChallenges", []),
+  );
 
-  // const [challenge, setChallenge] = useState(() =>
-  //   loadState("challenge", null),
-  // );
+  const [currentMenu, setCurrentMenu] = useState(() =>
+    loadState("analysis", null) ? "dashboard" : "analisis",
+  );
 
-  const [challenge, setChallenge] = useState(null);
-
-  useEffect(() => {
-    setChallenge(loadState("challenge", null));
-  }, []);
-
-  // const [activeChallenges, setActiveChallenges] = useState(() =>
-  //   loadState("activeChallenges", []),
-  // );
-
-  const [activeChallenges, setActiveChallenges] = useState([]);
-
-  useEffect(() => {
-    setActiveChallenges(loadState("activeChallenges", []));
-  }, []);
-
-  // const [currentMenu, setCurrentMenu] = useState(() =>
-  //   loadState("analysis", null) ? "dashboard" : "analisis",
-  // );
-
-  const [currentMenu, setCurrentMenu] = useState("analisis");
-
-  useEffect(() => {
-    const savedAnalysis = loadState("analysis", null);
-
-    if (savedAnalysis) {
-      setCurrentMenu("dashboard");
-    }
-  }, []);
-
-  // const [devicesData, setDevicesData] = useState(() =>
-  //   loadState("devicesData", []),
-  // );
-
-  const [devicesData, setDevicesData] = useState([]);
-
-  useEffect(() => {
-    setDevicesData(loadState("devicesData", []));
-  }, []);
+  const [devicesData, setDevicesData] = useState(() =>
+    loadState("devicesData", []),
+  );
 
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [analysisError, setAnalysisError] = useState("");
 
-  // const [profilInfo, setProfilInfo] = useState(() =>
-  //   loadState("profilInfo", {
-  //     penghuni: 1,
-  //     dayaListrikRumah: "",
-  //     biayaListikBulanan: "",
-  //   }),
-  // );
+  const [profilInfo, setProfilInfo] = useState(() =>
+    loadState("profilInfo", {
+      penghuni: 1,
+      dayaListrikRumah: "",
+      biayaListikBulanan: "",
+    }),
+  );
 
-  const [profilInfo, setProfilInfo] = useState({
-    penghuni: 1,
-    dayaListrikRumah: "",
-    biayaListikBulanan: "",
+  const [dashboardStats, setDashboardStats] = useState(() => {
+    const saved = loadState("dashboardStats", null);
+    if (!saved) return null;
+
+    const totalKwh = parseFloat(saved.totalKwhPerDay) || 0;
+
+    return {
+      ...saved,
+      estimasiBiaya:
+        totalKwh > 0
+          ? Math.round(totalKwh * 30 * 1444.7)
+          : saved.estimasiBiaya,
+    };
   });
 
-  useEffect(() => {
-    const savedProfilInfo = loadState("profilInfo", null);
-
-    if (savedProfilInfo) {
-      setProfilInfo(savedProfilInfo);
-    }
-  }, []);
-
-  // const [dashboardStats, setDashboardStats] = useState(() =>
-  //   loadState("dashboardStats", null),
-  // );
-
-  const [dashboardStats, setDashboardStats] = useState(null);
-
-  useEffect(() => {
-    setDashboardStats(loadState("dashboardStats", null));
-  }, []);
-
-  // const [analysisHistory, setAnalysisHistory] = useState(() =>
-  //   loadState("analysisHistory", []),
-  // );
-
-  const [analysisHistory, setAnalysisHistory] = useState([]);
-
-  useEffect(() => {
-    setAnalysisHistory(loadState("analysisHistory", []));
-  }, []);
+  const [analysisHistory, setAnalysisHistory] = useState(() =>
+    loadState("analysisHistory", []),
+  );
 
   useEffect(() => saveState("devicesData", devicesData), [devicesData]);
   useEffect(() => saveState("profilInfo", profilInfo), [profilInfo]);
@@ -192,7 +143,7 @@ export function DashboardProvider({ children }) {
       setAnalysis(data);
 
       const totalKwh = parseFloat(data.totalKwhPerDay) || 0;
-      const biaya = Math.round(totalKwh * 30 * 1.444);
+      const biaya = Math.round(totalKwh * 30 * 1444.7);
       const rataKwh =
         profilInfo.penghuni > 0 ? totalKwh / profilInfo.penghuni : 0;
 
@@ -215,6 +166,10 @@ export function DashboardProvider({ children }) {
         {
           totalKwhPerDay: Math.round(totalKwh * 100) / 100,
           tanggal: new Date().toISOString(),
+          dayaListrik: profilInfo.dayaListrikRumah || "",
+          biayaBulanan: biaya,
+          perangkat: devicesData.length,
+          wastePart: data.wastefulDevices || [],
         },
       ]);
     } catch (error) {

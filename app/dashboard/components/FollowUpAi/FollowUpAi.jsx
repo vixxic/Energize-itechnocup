@@ -13,11 +13,13 @@ export default function FollowUpAi() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const options = analysis?.followUpChoices || [
+  const baseChoices = analysis?.followUpChoices || [
     "Untuk tidur",
     "Untuk bekerja / belajar",
-    "Lainnya",
   ];
+  const options = baseChoices.includes("Lainnya")
+    ? baseChoices
+    : [...baseChoices, "Lainnya"];
 
   const topDevices = analysis?.wastefulDevices?.[0];
   const question = analysis?.followUpQuestion || `Mengapa ${topDevices} dipakai setiap hari?`;
