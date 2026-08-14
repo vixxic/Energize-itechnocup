@@ -2,6 +2,7 @@
 
 import "./SiderNav.css";
 import { useContext } from "react";
+import { useRouter } from "next/navigation";
 
 import { Menu } from "antd";
 
@@ -13,8 +14,14 @@ import { DashboardContext } from "../../context/DashboardContext";
 
 function SiderNav() {
   const { currentMenu, setCurrentMenu } = useContext(DashboardContext);
+  const router = useRouter();
 
   const onClick = (e) => {
+    if (e.key === "back") {
+      router.push("/");
+      return;
+    }
+
     setCurrentMenu(e.key);
   };
 

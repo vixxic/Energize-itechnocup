@@ -44,6 +44,20 @@
   gap: 2vw;
 }
 
+hr {
+  margin: 2vw 0;
+}
+
+.text-container-challenge h3 {
+  color: #191839;
+  margin-bottom: 0;
+}
+
+.text-container-challenge p {
+  color: rgb(58, 58, 58);
+  margin-top: 0%;
+}
+
 .div-3-con {
   display: flex;
   width: 100%;
@@ -58,11 +72,16 @@
   padding: 1vw;
 
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .tantangan-box .title {
   font-weight: bold;
   color: #2f2074;
+
+  font-size: 20px;
   margin-bottom: 0.5vw;
 }
 
@@ -74,6 +93,7 @@
 
   border: none;
   border-radius: 10px;
+  width: max-content;
 }
 
 @media (max-width: 900px) {

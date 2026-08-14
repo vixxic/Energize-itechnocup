@@ -23,50 +23,107 @@ function saveState(key, value) {
 }
 
 export function DashboardProvider({ children }) {
-  const [analysis, setAnalysis] = useState(() => loadState("analysis", null));
-  const [challenge, setChallenge] = useState(() =>
-    loadState("challenge", null),
-  );
-  const [activeChallenges, setActiveChallenges] = useState(() =>
-    loadState("activeChallenges", []),
-  );
+  // const [analysis, setAnalysis] = useState(() => loadState("analysis", null));
 
-  const [currentMenu, setCurrentMenu] = useState(() =>
-    loadState("analysis", null) ? "dashboard" : "analisis",
-  );
-  const [devicesData, setDevicesData] = useState(() =>
-    loadState("devicesData", []),
-  );
+  const [analysis, setAnalysis] = useState(null);
+
+  useEffect(() => {
+    setAnalysis(loadState("analysis", null));
+  }, []);
+
+  // const [challenge, setChallenge] = useState(() =>
+  //   loadState("challenge", null),
+  // );
+
+  const [challenge, setChallenge] = useState(null);
+
+  useEffect(() => {
+    setChallenge(loadState("challenge", null));
+  }, []);
+
+  // const [activeChallenges, setActiveChallenges] = useState(() =>
+  //   loadState("activeChallenges", []),
+  // );
+
+  const [activeChallenges, setActiveChallenges] = useState([]);
+
+  useEffect(() => {
+    setActiveChallenges(loadState("activeChallenges", []));
+  }, []);
+
+  // const [currentMenu, setCurrentMenu] = useState(() =>
+  //   loadState("analysis", null) ? "dashboard" : "analisis",
+  // );
+
+  const [currentMenu, setCurrentMenu] = useState("analisis");
+
+  useEffect(() => {
+    const savedAnalysis = loadState("analysis", null);
+
+    if (savedAnalysis) {
+      setCurrentMenu("dashboard");
+    }
+  }, []);
+
+  // const [devicesData, setDevicesData] = useState(() =>
+  //   loadState("devicesData", []),
+  // );
+
+  const [devicesData, setDevicesData] = useState([]);
+
+  useEffect(() => {
+    setDevicesData(loadState("devicesData", []));
+  }, []);
+
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [analysisError, setAnalysisError] = useState("");
-  const [profilInfo, setProfilInfo] = useState(() =>
-    loadState("profilInfo", {
-      penghuni: 1,
-      dayaListrikRumah: "",
-      biayaListikBulanan: "",
-    }),
-  );
 
-  const [dashboardStats, setDashboardStats] = useState(() =>
-    loadState("dashboardStats", null),
-  );
-  const [analysisHistory, setAnalysisHistory] = useState(() =>
-    loadState("analysisHistory", []),
-  );
+  // const [profilInfo, setProfilInfo] = useState(() =>
+  //   loadState("profilInfo", {
+  //     penghuni: 1,
+  //     dayaListrikRumah: "",
+  //     biayaListikBulanan: "",
+  //   }),
+  // );
+
+  const [profilInfo, setProfilInfo] = useState({
+    penghuni: 1,
+    dayaListrikRumah: "",
+    biayaListikBulanan: "",
+  });
+
+  useEffect(() => {
+    const savedProfilInfo = loadState("profilInfo", null);
+
+    if (savedProfilInfo) {
+      setProfilInfo(savedProfilInfo);
+    }
+  }, []);
+
+  // const [dashboardStats, setDashboardStats] = useState(() =>
+  //   loadState("dashboardStats", null),
+  // );
+
+  const [dashboardStats, setDashboardStats] = useState(null);
+
+  useEffect(() => {
+    setDashboardStats(loadState("dashboardStats", null));
+  }, []);
+
+  // const [analysisHistory, setAnalysisHistory] = useState(() =>
+  //   loadState("analysisHistory", []),
+  // );
+
+  const [analysisHistory, setAnalysisHistory] = useState([]);
+
+  useEffect(() => {
+    setAnalysisHistory(loadState("analysisHistory", []));
+  }, []);
 
   useEffect(() => saveState("devicesData", devicesData), [devicesData]);
   useEffect(() => saveState("profilInfo", profilInfo), [profilInfo]);
   useEffect(() => saveState("analysis", analysis), [analysis]);
   useEffect(() => saveState("challenge", challenge), [challenge]);
-
-  useEffect(
-    () => saveState("analysisLoading", analysisLoading),
-    [analysisLoading],
-  );
-  useEffect(
-    () => saveState("activeChallenges", activeChallenges),
-    [activeChallenges],
-  );
 
   useEffect(
     () => saveState("analysisLoading", analysisLoading),

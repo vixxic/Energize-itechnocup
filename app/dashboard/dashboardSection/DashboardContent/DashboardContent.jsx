@@ -77,35 +77,32 @@ function DashboardContent() {
               <p>{data.title}</p>
               <p>
                 {index === 0 && dashboardStats?.penghuni}
-                {index === 1 &&
-                  (dashboardStats?.totalKwhPerDay ?? "-") + " kWh"}
+                {index === 1 && (dashboardStats?.totalKwhPerDay ?? "") + " kWh"}
                 {index === 2 && dashboardStats?.estimasiBiaya != null
                   ? "Rp" + dashboardStats.estimasiBiaya.toLocaleString("id-ID")
-                  : "-"}
+                  : ""}
                 {index === 3 &&
-                  (dashboardStats?.rataPerPenghuni ?? "-") + " kWh"}
+                  (dashboardStats?.rataPerPenghuni ?? "") + " kWh"}
                 {index === 4 &&
                   (dashboardStats?.dibandingSebelumnya != null
                     ? `${dashboardStats.dibandingSebelumnya}%`
-                    : "-")}
+                    : "")}
               </p>
             </div>
           </div>
         ))}
       </div>
-      <div className="div-2-con">
-        <PresentaseBoros analysis={analysis} devicesData={devicesData} />
-        <FollowUpAi />
-      </div>
 
       {challenge && (
-        <>
+        <div className="challenge-div">
           <hr />
 
-          <h4>
-            Tiga langkah sederhana menuju penggunaan energi yang lebih efisien
-          </h4>
-          <p>Pilih tantangan pertama anda</p>
+          <div className="text-container-challenge">
+            <h3>
+              Tiga langkah sederhana menuju penggunaan energi yang lebih efisien
+            </h3>
+            <p>Pilih tantangan pertama anda</p>
+          </div>
 
           <div className="div-3-con pilihan-tantangan">
             {tantanganAi.map((tantangan) => {
@@ -119,14 +116,19 @@ function DashboardContent() {
                   className="tantangan-box"
                   key={tantangan.urutan ?? tantangan.id}
                 >
-                  <p className="title">
-                    {tantangan.tantangan || tantangan.title}
-                  </p>
-                  <p>{tantangan.des || tantangan.description}</p>
+                  <div>
+                    <p className="title">
+                      {tantangan.tantangan || tantangan.title}
+                    </p>
+                    <p>{tantangan.des || tantangan.description}</p>
+                  </div>
 
                   <button
                     disabled={diterima}
                     onClick={() => acceptChallenge(tantangan)}
+                    style={{
+                      backgroundColor: diterima ? "#756CE1" : "",
+                    }}
                   >
                     {diterima ? "Sudah diterima ✓" : "Terima tantangan"}
                   </button>
@@ -134,8 +136,15 @@ function DashboardContent() {
               );
             })}
           </div>
-        </>
+        </div>
       )}
+
+      <hr />
+
+      <div className="div-2-con">
+        <PresentaseBoros analysis={analysis} devicesData={devicesData} />
+        <FollowUpAi />
+      </div>
     </div>
   );
 }
