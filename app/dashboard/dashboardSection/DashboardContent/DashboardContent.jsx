@@ -9,7 +9,7 @@ import { TbPercentage25 } from "react-icons/tb";
 import { IoMdPeople } from "react-icons/io";
 
 // components
-import { Skeleton } from "antd";
+import { App, Skeleton } from "antd";
 
 // context
 import { useContext } from "react";
@@ -56,9 +56,25 @@ function DashboardContent() {
     acceptChallenge,
   } = useContext(DashboardContext);
 
+  const { message } = App.useApp();
+
   if (analysisLoading) return <Skeleton active paragraph={{ rows: 4 }} />;
 
   const tantanganAi = challenge?.challenges || challengeData;
+
+  const handleAccept = (tantangan) => {
+    const nama = tantangan.tantangan || tantangan.title;
+
+    const sudahada = activeChallenges.some(
+      (c) => (c.tantangan || c.title) === nama,
+    );
+    if (sudahada) return;
+
+    const sukses = acceptChallenge(tantangan);
+    if (!sukses) {
+      message.warning("Kamu hanya bisa pilih 1 sampai tantangan itu selesai");
+    }
+  };
 
   return (
     <div>

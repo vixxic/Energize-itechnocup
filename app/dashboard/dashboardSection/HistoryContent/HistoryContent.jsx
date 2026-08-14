@@ -44,7 +44,7 @@ function HistoryContent() {
 
       <div className="history-list">
         {data.map((data, index) => (
-          <div className="history-card">
+          <div className="history-card" key={data.date}>
             <div className="history-card-header">
               <div>
                 <span className="history-date">{data.date}</span>
