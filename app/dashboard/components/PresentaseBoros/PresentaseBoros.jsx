@@ -1,6 +1,7 @@
 import React from "react";
 import "./PresentaseBoros.css";
 import { Progress } from "antd";
+import { LuCable } from "react-icons/lu";
 
 const colors = ["#6A3EF5", "#FF9F1C", "#4CAF50"];
 
@@ -56,7 +57,7 @@ function PresentaseBoros({ analysis, devicesData }) {
         kwh,
         persen: grandTotal > 0 ? Math.round((kwh / grandTotal) * 100) : 0,
         color: colors[i] || "#6A3EF5",
-        icon: "🔌",
+        icon: <LuCable color="#2F2074" />,
       };
     });
   }

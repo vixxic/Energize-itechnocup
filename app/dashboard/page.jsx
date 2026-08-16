@@ -3,6 +3,9 @@
 import "./dashboard.css";
 import { useContext } from "react";
 import { DashboardContext } from "./context/DashboardContext";
+import Link from "next/link";
+
+import { IoChevronBackOutline } from "react-icons/io5";
 
 // components
 import BottomNav from "./components/BottomNav/BottomNav";
@@ -20,15 +23,20 @@ const { Sider, Content, Footer } = Layout;
 function BlokirAnalisis({ setCurrentMenu }) {
   return (
     <div className="blokir-analisis">
-      <h3>Anda belum melakukan analisis</h3>
-      <button type="button" onClick={() => setCurrentMenu("analisis")}>Lakukan Analisis</button>
+      <img src="/lock-img.svg" />
+      <h3>Fitur Belum Tersedia</h3>
+      <p>Lakukan analisis energi untuk membuka fitur ini.</p>
+      <button type="button" onClick={() => setCurrentMenu("analisis")}>
+        Lakukan Analisis
+      </button>
     </div>
   );
 }
 
 function Dashboard() {
-  const { currentMenu, setCurrentMenu, analysis } = useContext(DashboardContext);
-  const terkunci = !analysis && currentMenu !== "analisis" && currentMenu !== "dashboard";
+  const { currentMenu, setCurrentMenu, analysis } =
+    useContext(DashboardContext);
+  const terkunci = !analysis && currentMenu !== "analisis";
 
   return (
     <Layout>
@@ -37,18 +45,25 @@ function Dashboard() {
       </Sider>
 
       <Content className="content-dashboard">
+        <Link href="/">
+          <button className="back-to-landing-btn">
+            <span>
+              <IoChevronBackOutline />
+            </span>
+            Back To Home
+          </button>
+        </Link>
+
         {currentMenu === "analisis" ? (
           <FormContent />
-        ) : currentMenu === "dashboard" ? (
-          <DashboardContent />
         ) : terkunci ? (
           <BlokirAnalisis setCurrentMenu={setCurrentMenu} />
+        ) : currentMenu === "dashboard" ? (
+          <DashboardContent />
         ) : currentMenu === "tantangan" ? (
           <ChallengeContent />
         ) : currentMenu === "riwayat" ? (
-          <div>
-            <HistoryContent />
-          </div>
+          <HistoryContent />
         ) : currentMenu === "profil" ? (
           <ProfileContent />
         ) : (

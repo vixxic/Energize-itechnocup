@@ -23,17 +23,11 @@ function saveState(key, value) {
 }
 
 export function DashboardProvider({ children }) {
-  // const [analysis, setAnalysis] = useState(() => loadState("analysis", null));
-
   const [analysis, setAnalysis] = useState(null);
 
   useEffect(() => {
     setAnalysis(loadState("analysis", null));
   }, []);
-
-  // const [challenge, setChallenge] = useState(() =>
-  //   loadState("challenge", null),
-  // );
 
   const [challenge, setChallenge] = useState(null);
 
@@ -41,19 +35,11 @@ export function DashboardProvider({ children }) {
     setChallenge(loadState("challenge", null));
   }, []);
 
-  // const [activeChallenges, setActiveChallenges] = useState(() =>
-  //   loadState("activeChallenges", []),
-  // );
-
   const [activeChallenges, setActiveChallenges] = useState([]);
 
   useEffect(() => {
     setActiveChallenges(loadState("activeChallenges", []));
   }, []);
-
-  // const [currentMenu, setCurrentMenu] = useState(() =>
-  //   loadState("analysis", null) ? "dashboard" : "analisis",
-  // );
 
   const [currentMenu, setCurrentMenu] = useState("analisis");
 
@@ -65,10 +51,6 @@ export function DashboardProvider({ children }) {
     }
   }, []);
 
-  // const [devicesData, setDevicesData] = useState(() =>
-  //   loadState("devicesData", []),
-  // );
-
   const [devicesData, setDevicesData] = useState([]);
 
   useEffect(() => {
@@ -77,14 +59,6 @@ export function DashboardProvider({ children }) {
 
   const [analysisLoading, setAnalysisLoading] = useState(false);
   const [analysisError, setAnalysisError] = useState("");
-
-  // const [profilInfo, setProfilInfo] = useState(() =>
-  //   loadState("profilInfo", {
-  //     penghuni: 1,
-  //     dayaListrikRumah: "",
-  //     biayaListikBulanan: "",
-  //   }),
-  // );
 
   const [profilInfo, setProfilInfo] = useState({
     penghuni: 1,
@@ -100,19 +74,11 @@ export function DashboardProvider({ children }) {
     }
   }, []);
 
-  // const [dashboardStats, setDashboardStats] = useState(() =>
-  //   loadState("dashboardStats", null),
-  // );
-
   const [dashboardStats, setDashboardStats] = useState(null);
 
   useEffect(() => {
     setDashboardStats(loadState("dashboardStats", null));
   }, []);
-
-  // const [analysisHistory, setAnalysisHistory] = useState(() =>
-  //   loadState("analysisHistory", []),
-  // );
 
   const [analysisHistory, setAnalysisHistory] = useState([]);
 
@@ -150,9 +116,7 @@ export function DashboardProvider({ children }) {
     );
     if (sudahada) return true;
 
-    const adajalan = activeChallenges.some(
-      (c) => c.status === "berlangsung",
-    );
+    const adajalan = activeChallenges.some((c) => c.status === "berlangsung");
     if (adajalan) return false;
 
     setActiveChallenges((prev) => [

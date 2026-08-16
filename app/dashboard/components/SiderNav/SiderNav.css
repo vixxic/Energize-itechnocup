@@ -1,6 +1,6 @@
 .sider-link-dashboard {
   padding: 2vw;
-  width: 20%;
+  width: 15%;
 
   display: flex;
   flex-direction: column;
@@ -14,7 +14,7 @@
   align-items: center;
   gap: 12px;
   padding: 20px 24px;
-  margin-left: -12px; 
+  margin-left: -12px;
 }
 
 .logo-sider-dashboard img {
@@ -45,10 +45,17 @@
   gap: 1vw;
 }
 
-.sider-link-dashboard .ant-menu-item:hover,
-.sider-link-dashboard .ant-menu-item-active,
+.sider-link-dashboard .ant-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
 .sider-link-dashboard .ant-menu-item-selected {
   background-color: var(--pallet-ungu) !important;
+  font-weight: 600;
+}
+
+.sider-link-dashboard .ant-menu-item-selected .ant-menu-title-content div {
+  color: #8075e9 !important;
 }
 
 /* ======================= BOTTOM NAV ======================= */
@@ -123,11 +130,16 @@
     font-size: 22px;
   }
 
-  .bottom-nav-dashboard .ant-menu-item-selected .bottom-menu-item {
-    color: var(--pallet-ungu) !important;
+  .bottom-nav-dashboard .ant-menu-item-selected {
+    background-color: var(--pallet-ungu) !important;
+    font-weight: 600;
   }
 
-  .bottom-nav-dashboard .ant-menu-item::after {
-    display: none !important;
+  .bottom-nav-dashboard .ant-menu-item-selected .bottom-menu-item {
+    color: #8075e9 !important;
+  }
+
+  .bottom-nav-dashboard .ant-menu-item-selected .bottom-menu-item svg {
+    color: var(--pallet-ungu) !important;
   }
 }

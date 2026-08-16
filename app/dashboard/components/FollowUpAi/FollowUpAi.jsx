@@ -20,7 +20,8 @@ export default function FollowUpAi() {
   ];
 
   const topDevices = analysis?.wastefulDevices?.[0];
-  const question = analysis?.followUpQuestion || `Mengapa ${topDevices} dipakai setiap hari?`;
+  const question =
+    analysis?.followUpQuestion || `Mengapa ${topDevices} dipakai setiap hari?`;
   const summary = analysis?.summary;
 
   async function HandleSubmit() {
@@ -31,12 +32,14 @@ export default function FollowUpAi() {
     }
     setError("");
     setLoading(true);
-    message.warning("Jangan tutup halaman atau refresh halaman selama proses berlangsung!");
+    message.warning(
+      "Jangan tutup halaman atau refresh halaman selama proses berlangsung!",
+    );
     try {
       const response = await fetch("/api/challenge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({analysis, answer: jawaban}),
+        body: JSON.stringify({ analysis, answer: jawaban }),
       });
       const data = await response.json();
       if (!response.ok) {
@@ -55,14 +58,10 @@ export default function FollowUpAi() {
   return (
     <div className="followUpCard">
       <div className="followHeader">
-        <div className="followIcon">
-          ❄️
-        </div>
+        <div className="followIcon">❄️</div>
         <div>
           <h2>Perangkat Paling Boros: {topDevices}</h2>
-          <p>
-            {summary}
-          </p>
+          <p>{summary}</p>
         </div>
       </div>
       <div className="followBody">
@@ -87,9 +86,7 @@ export default function FollowUpAi() {
             value={other}
             onChange={(e) => setOther(e.target.value)}
           />
-
         )}
-
       </div>
 
       <button className="submitBtn" onClick={HandleSubmit} disabled={loading}>

@@ -31,6 +31,10 @@
   margin: 0 auto;
 }
 
+.sub-title .card {
+  border-radius: 0%;
+}
+
 .fitur-card {
   display: flex;
   flex-direction: row;
