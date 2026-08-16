@@ -105,7 +105,32 @@ function Info() {
 
       {/* GRID */}
       <div className="challengeGrid">
-        <div className="activeCard"></div>
+        <div className="activeCard">
+          <h3>Tantangan Aktif</h3>
+
+          {activeChallenges.length > 0 ? (
+            activeChallenges.map((item, index) => (
+              <div className="acBox" key={`${item.acceptedAt}-${index}`}>
+                <div className="acContent">
+                  <div className="titleRow">
+                    <h1>{item.tantangan || item.title}</h1>
+                  </div>
+
+                  <p>{item.des || item.description || "—"}</p>
+
+                  <p>
+                    Diterima:{" "}
+                    {new Date(item.acceptedAt).toLocaleDateString("id-ID")}
+                  </p>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p>Belum ada tantangan yang diterima.</p>
+          )}
+
+          <button>Selesaikan</button>
+        </div>
 
         <div className="aiCard"></div>
 

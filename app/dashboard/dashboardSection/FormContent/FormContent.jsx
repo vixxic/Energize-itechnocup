@@ -219,6 +219,7 @@ export default function FormContent() {
             <div className="inputIcon">
               <div className="quantityInput">
                 <input
+                  placeholder="300.000"
                   name="biayaListrikBulanan"
                   value={profilInfo.biayaListrikBulanan}
                   onChange={handleProfileChange}

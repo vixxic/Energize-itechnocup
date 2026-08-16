@@ -1,40 +1,30 @@
 import "./HistoryContent.css";
+import { useContext } from "react";
 
 import { BsFillLightningChargeFill } from "react-icons/bs";
 import { IoWallet } from "react-icons/io5";
 import { TbDeviceDesktopFilled } from "react-icons/tb";
 
-const data = [
-  {
-    date: "7 Agustus 2026",
-    time: "16:20",
-    energyConsumePerDay: "17.3",
-    dayaListrik: "2.200",
-    BiayaBulanan: "510.000",
-    Perangkat: 12,
-    wastePart: ["Water Heater", "AC", "Mesin Cuci"],
-  },
-  {
-    date: "4 Agustus 2026",
-    time: "19:05",
-    energyConsumePerDay: "11.2",
-    dayaListrik: "900",
-    BiayaBulanan: "315.000",
-    Perangkat: 7,
-    wastePart: ["AC", "Setrika", "TV"],
-  },
-  {
-    date: "1 Agustus 2026",
-    time: "14:37",
-    energyConsumePerDay: "8.4",
-    dayaListrik: "900",
-    BiayaBulanan: "245.000",
-    Perangkat: 5,
-    wastePart: ["Laptop", "TV", "Kipas"],
-  },
-];
+import { DashboardContext } from "../../context/DashboardContext";
+
+const formatTanggal = (tanggal) =>
+  new Date(tanggal).toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
+const formatWaktu = (tanggal) =>
+  new Date(tanggal).toLocaleTimeString("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 
 function HistoryContent() {
+  const { analysisHistory } = useContext(DashboardContext);
+
+  const data = [...analysisHistory].reverse();
+
   return (
     <div className="history-section">
       <div className="header-text-con-history">
@@ -42,70 +32,75 @@ function HistoryContent() {
         <p>Lihat hasil analisis konsumsi energi yang pernah kamu lakukan</p>
       </div>
 
-      <div className="history-list">
-        {data.map((data, index) => (
-          <div className="history-card" key={data.date}>
-            <div className="history-card-header">
-              <div>
-                <span className="history-date">{data.date}</span>
-              </div>
-              <span className="history-badge">Analisis Selesai</span>
-            </div>
-
-            <div className="history-main">
-              <div className="history-energy">
-                <span className="history-value">
-                  {data.energyConsumePerDay}
-                </span>
-                <span className="history-unit">kWh/hari</span>
-                <p>Total konsumsi energi</p>
-              </div>
-
-              <div className="history-info">
-                <div className="history-info-item">
-                  <span>
-                    <BsFillLightningChargeFill />
+      {data.length > 0 ? (
+        <div className="history-list">
+          {data.map((item, index) => (
+            <div className="history-card" key={item.tanggal || index}>
+              <div className="history-card-header">
+                <div>
+                  <span className="history-date">
+                    {formatTanggal(item.tanggal)} - {formatWaktu(item.tanggal)}
                   </span>
-                  <div>
-                    <p>Daya Listrik</p>
-                    <strong>{data.dayaListrik}</strong>
-                  </div>
-                </div>
-
-                <div className="history-info-item">
-                  <span>
-                    <IoWallet />
-                  </span>
-                  <div>
-                    <p>Biaya Bulanan</p>
-                    <strong>Rp {data.BiayaBulanan}</strong>
-                  </div>
-                </div>
-
-                <div className="history-info-item">
-                  <span>
-                    <TbDeviceDesktopFilled />
-                  </span>
-                  <div>
-                    <p>Perangkat</p>
-                    <strong>{data.Perangkat} perangkat</strong>
-                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="history-waste">
-              <p>Perangkat paling boros</p>
+              <div className="history-main">
+                <div className="history-energy">
+                  <span className="history-value">{item.totalKwhPerDay}</span>
+                  <span className="history-unit">kWh/hari</span>
+                </div>
 
-              <div className="waste-list">
-                <span>1. AC</span>
-                <span>2. Water Heater</span>
-                <span>3. TV</span>
+                <div className="history-info">
+                  <div className="history-info-item">
+                    <div>
+                      <p>Daya Listrik</p>
+                      <strong>{item.dayaListrik || "-"}</strong>
+                    </div>
+                  </div>
+
+                  <div className="history-info-item">
+                    <div>
+                      <p>Biaya Bulanan</p>
+                      <strong>
+                        {item.biayaBulanan != null
+                          ? `Rp ${item.biayaBulanan.toLocaleString("id-ID")}`
+                          : "-"}
+                      </strong>
+                    </div>
+                  </div>
+
+                  <div className="history-info-item">
+                    <div>
+                      <p>Perangkat</p>
+                      <strong>
+                        {item.perangkat != null
+                          ? `${item.perangkat} perangkat`
+                          : "-"}
+                      </strong>
+                    </div>
+                  </div>
+                </div>
               </div>
+
+              {item.wastePart?.length > 0 && (
+                <div className="history-waste">
+                  <p>Perangkat paling boros</p>
+
+                  <div className="waste-list">
+                    {item.wastePart.map((nama, i) => (
+                      <span key={i}>
+                        {i + 1}. {nama}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      ) : (
+        <p className="history-empty">Belum ada riwayat analisis.</p>
+      )}
     </div>
   );
 }

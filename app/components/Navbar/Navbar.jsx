@@ -1,15 +1,24 @@
 "use client";
 
 import "./Navbar.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 
 import Link from "next/link";
 
 // icons
 import { GiHamburgerMenu } from "react-icons/gi";
 
+const subscribe = (callback) => {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+};
+
+const getSnapshot = () => Boolean(window.localStorage.getItem("analysis"));
+const getServerSnapshot = () => false;
+
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const sudahAnalisis = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot,);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,7 +62,7 @@ function Navbar() {
           <div className={`analyze-btn ${scrolled ? "scrolled" : ""}`}>
             <Link href="/dashboard">
               <button className={`${scrolled ? "scrolled" : ""}`}>
-                Analisis
+                {sudahAnalisis ? "Dashboard" : "Analisis"}
               </button>
             </Link>
           </div>
