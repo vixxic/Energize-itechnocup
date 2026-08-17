@@ -50,7 +50,7 @@ function Dashboard() {
             <span>
               <IoChevronBackOutline />
             </span>
-            Back To Home
+            Kembali ke beranda
           </button>
         </Link>
 

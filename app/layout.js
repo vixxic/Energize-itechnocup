@@ -4,6 +4,8 @@ import "./globals.css";
 import SmoothScroll from "./components/SmoothScroll";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 
+import { UserAnalysisProvider } from "./context/UserAnalysisContext";
+
 const mitr = Mitr({
   variable: "--font-mitr",
   subsets: ["latin"],
@@ -23,7 +25,9 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${mitr.variable}`}>
       <body>
         <SmoothScroll />
-        <AntdRegistry>{children}</AntdRegistry>
+        <AntdRegistry>
+          <UserAnalysisProvider>{children}</UserAnalysisProvider>
+        </AntdRegistry>
       </body>
     </html>
   );

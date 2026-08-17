@@ -118,6 +118,14 @@
   }
 
   .blokir-analisis img {
+    margin-bottom: 3vw;
+  }
+
+  .blokir-analisis button {
+    margin-top: 3vw;
+  }
+
+  .blokir-analisis img {
     width: 10%;
   }
 }
