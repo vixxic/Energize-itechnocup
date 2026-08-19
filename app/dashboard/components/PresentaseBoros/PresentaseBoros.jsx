@@ -62,6 +62,8 @@ function PresentaseBoros({ devicesData }) {
         watt: `${device.devicePower ?? "?"} W`,
         kwh,
         persen: grandTotal > 0 ? Math.round((kwh / grandTotal) * 100) : 0,
+
+        color: "#6A3EF5",
         icon: <LuCable color="#2F2074" />,
       };
     })
