@@ -34,7 +34,7 @@ function PresentaseBoros({ devicesData }) {
         kwh,
 
         persen: grandTotal > 0 ? Math.round((kwh / grandTotal) * 100) : 0,
-        color: colors[i] || "#6A3EF5",
+        color: "#6A3EF5",
         icon: <LuCable color="#2F2074" />,
       };
     })
