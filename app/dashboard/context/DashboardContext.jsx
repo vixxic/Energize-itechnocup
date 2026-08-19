@@ -6,10 +6,13 @@ import { UserAnalysisContext } from "@/app/context/UserAnalysisContext";
 export const DashboardContext = createContext();
 
 function loadState(key, fallback) {
-  if (typeof window === "undefined") return fallback;
+  if (typeof window === "undefined") {
+    return fallback;
+  }
 
   try {
     const raw = window.localStorage.getItem(key);
+
     return raw ? JSON.parse(raw) : fallback;
   } catch {
     return fallback;
@@ -17,88 +20,125 @@ function loadState(key, fallback) {
 }
 
 function saveState(key, value) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
   try {
     window.localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    // biarin
+    // Abaikan error localStorage
   }
 }
 
 export function DashboardProvider({ children }) {
   const { analysis, setAnalysis } = useContext(UserAnalysisContext);
 
-  const [challenge, setChallenge] = useState(() =>
-    loadState("challenge", null),
-  );
+  const [isInitialized, setIsInitialized] = useState(false);
 
-  const [activeChallenges, setActiveChallenges] = useState(() =>
-    loadState("activeChallenges", []),
-  );
+  const [challenge, setChallenge] = useState(null);
 
-  const [currentMenu, setCurrentMenu] = useState(() =>
-    loadState("analysis", null) ? "dashboard" : "analisis",
-  );
+  const [activeChallenges, setActiveChallenges] = useState([]);
 
-  const [devicesData, setDevicesData] = useState(() =>
-    loadState("devicesData", []),
-  );
+  const [currentMenu, setCurrentMenu] = useState("analisis");
 
-  const [analysisLoading, setAnalysisLoading] = useState(false);
-  const [analysisError, setAnalysisError] = useState("");
+  const [devicesData, setDevicesData] = useState([]);
 
-  const [profilInfo, setProfilInfo] = useState(() =>
-    loadState("profilInfo", {
-      penghuni: 1,
-      dayaListrikRumah: "",
-      biayaListikBulanan: "",
-    }),
-  );
-
-  const [dashboardStats, setDashboardStats] = useState(() => {
-    const saved = loadState("dashboardStats", null);
-
-    if (!saved) return null;
-
-    const totalKwh = parseFloat(saved.totalKwhPerDay) || 0;
-
-    return {
-      ...saved,
-      estimasiBiaya:
-        totalKwh > 0 ? Math.round(totalKwh * 30 * 1444.7) : saved.estimasiBiaya,
-    };
+  const [profilInfo, setProfilInfo] = useState({
+    penghuni: 1,
+    dayaListrikRumah: "",
+    biayaListrikBulanan: "",
   });
 
-  const [analysisHistory, setAnalysisHistory] = useState(() =>
-    loadState("analysisHistory", []),
-  );
+  const [dashboardStats, setDashboardStats] = useState(null);
+
+  const [analysisHistory, setAnalysisHistory] = useState([]);
+
+  const [analysisLoading, setAnalysisLoading] = useState(false);
+
+  const [analysisError, setAnalysisError] = useState("");
 
   useEffect(() => {
+    const savedChallenge = loadState("challenge", null);
+
+    const savedActiveChallenges = loadState("activeChallenges", []);
+
+    const savedDevices = loadState("devicesData", []);
+
+    const savedProfile = loadState("profilInfo", {
+      penghuni: 1,
+      dayaListrikRumah: "",
+      biayaListrikBulanan: "",
+    });
+
+    const savedDashboardStats = loadState("dashboardStats", null);
+
+    const savedAnalysisHistory = loadState("analysisHistory", []);
+
+    const savedAnalysis = loadState("analysis", null);
+
+    setChallenge(savedChallenge);
+
+    setActiveChallenges(savedActiveChallenges);
+
+    setDevicesData(savedDevices);
+
+    setProfilInfo(savedProfile);
+
+    setDashboardStats(savedDashboardStats);
+
+    setAnalysisHistory(savedAnalysisHistory);
+
+    if (savedAnalysis) {
+      setCurrentMenu("dashboard");
+    } else {
+      setCurrentMenu("analisis");
+    }
+
+    setIsInitialized(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isInitialized) return;
+
     saveState("devicesData", devicesData);
-  }, [devicesData]);
+  }, [devicesData, isInitialized]);
 
   useEffect(() => {
+    if (!isInitialized) return;
+
     saveState("profilInfo", profilInfo);
-  }, [profilInfo]);
+  }, [profilInfo, isInitialized]);
 
   useEffect(() => {
+    if (!isInitialized) return;
+
     saveState("analysis", analysis);
-  }, [analysis]);
+  }, [analysis, isInitialized]);
 
   useEffect(() => {
+    if (!isInitialized) return;
+
     saveState("challenge", challenge);
-  }, [challenge]);
+  }, [challenge, isInitialized]);
 
   useEffect(() => {
+    if (!isInitialized) return;
+
     saveState("activeChallenges", activeChallenges);
-  }, [activeChallenges]);
+  }, [activeChallenges, isInitialized]);
 
   useEffect(() => {
+    if (!isInitialized) return;
+
     saveState("dashboardStats", dashboardStats);
-  }, [dashboardStats]);
+  }, [dashboardStats, isInitialized]);
 
   useEffect(() => {
+    if (!isInitialized) return;
+
     saveState("analysisHistory", analysisHistory);
-  }, [analysisHistory]);
+  }, [analysisHistory, isInitialized]);
 
   const acceptChallenge = (tantangan) => {
     const nama = tantangan.tantangan || tantangan.title;
@@ -107,13 +147,17 @@ export function DashboardProvider({ children }) {
       (c) => (c.tantangan || c.title) === nama,
     );
 
-    if (sudahAda) return true;
+    if (sudahAda) {
+      return true;
+    }
 
     const adaYangBerjalan = activeChallenges.some(
       (c) => c.status === "berlangsung",
     );
 
-    if (adaYangBerjalan) return false;
+    if (adaYangBerjalan) {
+      return false;
+    }
 
     setActiveChallenges((prev) => [
       ...prev,
@@ -134,15 +178,19 @@ export function DashboardProvider({ children }) {
     }
 
     setCurrentMenu("dashboard");
+
     setAnalysisLoading(true);
+
     setAnalysisError("");
 
     try {
       const response = await fetch("/api/analyze", {
         method: "POST",
+
         headers: {
           "Content-Type": "application/json",
         },
+
         body: JSON.stringify({
           profilInfo,
           devicesData,
@@ -174,20 +222,30 @@ export function DashboardProvider({ children }) {
 
       setDashboardStats({
         penghuni: profilInfo.penghuni,
+
         totalKwhPerDay: Math.round(totalKwh * 100) / 100,
+
         estimasiBiaya: biaya,
+
         rataPerPenghuni: Math.round(rataKwh * 100) / 100,
+
         dibandingSebelumnya: dibanding,
       });
 
       setAnalysisHistory((prev) => [
         ...prev,
+
         {
           totalKwhPerDay: Math.round(totalKwh * 100) / 100,
+
           tanggal: new Date().toISOString(),
+
           dayaListrik: profilInfo.dayaListrikRumah || "",
+
           biayaBulanan: biaya,
+
           perangkat: devicesData.length,
+
           wastePart: data.wastefulDevices || [],
         },
       ]);
@@ -219,7 +277,6 @@ export function DashboardProvider({ children }) {
         setAnalysisError,
 
         runAnalysis,
-
         challenge,
         setChallenge,
 
@@ -227,14 +284,12 @@ export function DashboardProvider({ children }) {
         setActiveChallenges,
 
         acceptChallenge,
-
         profilInfo,
         setProfilInfo,
-
         dashboardStats,
         setDashboardStats,
-
         analysisHistory,
+        isInitialized,
       }}
     >
       {children}

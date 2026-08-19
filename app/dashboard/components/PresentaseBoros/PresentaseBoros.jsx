@@ -19,6 +19,35 @@ function PresentaseBoros({ devicesData }) {
     0,
   );
 
+  // const ranked = (devicesData || [])
+  //   .map((device) => {
+  //     const kwh =
+  //       ((Number(device.devicePower) || 0) *
+  //         (Number(device.quantity) || 1) *
+  //         (Number(device.usageDuration) || 0)) /
+  //       1000;
+
+  //     return {
+  //       nama: device.deviceName,
+  //       waktu: `${device.usageDuration} jam/hari`,
+  //       watt: `${device.devicePower || "?"} W`,
+  //       kwh,
+
+  //       persen: grandTotal > 0 ? Math.round((kwh / grandTotal) * 100) : 0,
+  //       color: colors[i] || "#6A3EF5",
+  //       icon: <LuCable color="#2F2074" />,
+  //     };
+  //   })
+  //   .sort((a, b) => b.kwh - a.kwh)
+  //   .map((item, index) => ({
+  //     ...item,
+  //     no: index + 1,
+  //     konsumsi: `${item.kwh.toFixed(2)} kWh/hari`,
+  //     persen: grandTotal > 0 ? Math.round((item.kwh / grandTotal) * 100) : 0,
+  //     color: colors[index] || "#6A3EF5",
+  //     icon: <ApiFilled />,
+  //   }));
+
   const ranked = (devicesData || [])
     .map((device) => {
       const kwh =
@@ -28,13 +57,11 @@ function PresentaseBoros({ devicesData }) {
         1000;
 
       return {
-        nama: device.deviceName,
-        waktu: `${device.usageDuration} jam/hari`,
-        watt: `${device.devicePower || "?"} W`,
+        nama: device.deviceName ?? "Perangkat tidak diketahui",
+        waktu: `${device.usageDuration ?? 0} jam/hari`,
+        watt: `${device.devicePower ?? "?"} W`,
         kwh,
-
         persen: grandTotal > 0 ? Math.round((kwh / grandTotal) * 100) : 0,
-        color: colors[i] || "#6A3EF5",
         icon: <LuCable color="#2F2074" />,
       };
     })

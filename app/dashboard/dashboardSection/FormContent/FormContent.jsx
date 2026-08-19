@@ -61,7 +61,13 @@ export default function FormContent() {
     setDeviceData((prev) => ({
       ...prev,
       [name]:
-        type === "checkbox" ? checked : type === "number" ? value === "" ? "" : Number(value) : value,
+        type === "checkbox"
+          ? checked
+          : type === "number"
+            ? value === ""
+              ? ""
+              : Number(value)
+            : value,
     }));
   };
 
@@ -156,12 +162,10 @@ export default function FormContent() {
   const handleStartAnalysis = () => {
     if (profilInfo.penghuni <= 0 || !profilInfo.dayaListrikRumah) {
       setErrorProfil("Harap lengkapi data profil rumah.");
-      message.warning(
-        "Harap lengkapi data profil rumah.",
-      );
+      message.warning("Harap lengkapi data profil rumah.");
       return;
     }
-    setErrorProfil("")
+    setErrorProfil("");
     message.warning(
       "Jangan tutup halaman atau refresh halaman selama analisis berlangsung!",
     );
@@ -270,7 +274,7 @@ export default function FormContent() {
             </p>
 
             <div className="formGroup">
-              <label>Device Name</label>
+              <label>Nama perangkat</label>
 
               <div className="inputIcon">
                 <input
@@ -287,7 +291,7 @@ export default function FormContent() {
             </div>
 
             <div className="formGroup">
-              <label>Quantity</label>
+              <label>Kuantitas</label>
 
               <div className="quantityInput">
                 <input
@@ -303,7 +307,7 @@ export default function FormContent() {
             </div>
 
             <div className="formGroup">
-              <label>Power (Watt/perangkat)</label>
+              <label>Daya (Watt/perangkat)</label>
 
               <div className="inputIcon">
                 <input
@@ -320,7 +324,7 @@ export default function FormContent() {
             </div>
 
             <div className="formGroup">
-              <label>Usage Duration (hours/day)</label>
+              <label>Waktu penggunaan (jam/hari)</label>
 
               <div className="inputIcon">
                 <input
