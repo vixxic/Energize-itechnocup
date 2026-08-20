@@ -62,92 +62,86 @@ const hitungFallback = (devicesData) => {
       "Lainnya",
     ],
     summary: `Total konsumsi ${String(Math.round(total * 100) / 100)} kWh/hari. Mulai hemat dari ${top[0].nama}.`,
+    earnedBadges: [],
   };
 };
 
-// const buildPrompt = (profilInfo, devicesText, retry) => `Kamu analis energi listrik rumah tangga Indonesia.
+const buildPrompt = (
+  profilInfo,
+  devicesText,
+  statistikBadge,
+  retry,
+) => `Kamu analis energi listrik rumah tangga Indonesia.
 
-// PROFIL:
-// - Penghuni: ${profilInfo.penghuni} orang
-// - Daya pln: ${profilInfo.dayaListrikRumah} VA
-// - Biaya bulanan: ${profilInfo.biayaListrikBulanan || "tidak tahu"}
+PROFIL:
+- Penghuni: ${profilInfo.penghuni} orang
+- Daya pln: ${profilInfo.dayaListrikRumah} VA
+- Biaya bulanan: ${profilInfo.biayaListrikBulanan || "tidak tahu"}
 
-// DAFTAR PERANGKAT:
-// ${devicesText}
+DAFTAR PERANGKAT:
+${devicesText}
 
-// TUGAS:
-// 1. Hitung konsumsi tiap perangkat: (watt × jumlah × jam/hari) / 1000 = kWh/hari.
-//    Untuk device bertanda "estimasi", perkirakan daya wajar perangkat tsb.
-// 2. Pilih 3 perangkat PALING BOROS yang BISA DIIKURANGI pemakaiannya.
-//    JANGAN pilih kulkas/lemari es, lampu, atau benda yang wajib nyala 24 jam.
-// 3. Buat 1 pertanyaan untuk menggali PENYEBAB pemborosan device paling boros,
-//    lengkap dengan pilihan jawaban.
+STATISTIK BADGE USER:
+- Tantangan selesai: ${statistikBadge.tantanganSelesai}
+- Streak hari berturut-turut: ${statistikBadge.streakHari}
 
-// ATURAN: Jangan pernah menolak atau minta maaf walaupun datanya aneh. Balas hanya satu objek JSON valid, tanpa teks lain
-// Contoh:
-// {
-//   "totalKwhPerDay": "12.5",
-//   "wastefulDevices": ["AC", "Mesin Cuci", "TV"],
-//   "followUpQuestion": "Mengapa AC dipakai 8 jam sehari?",
-//   "followUpChoices": ["Untuk tidur", "Untuk bekerja/belajar", "Karena suhu panas", "Lainnya"]
-// }${retry ? "\n\nTUGAS ULANG: Jawabanmu bukan JSON valid. Balas sekarang hanya dengan satu objek JSON, tanpa teks lain." : ""}`;
+TUGAS:
+1. Hitung konsumsi tiap perangkat: (watt × jumlah × jam/hari) / 1000 = kWh/hari.
+   Jika device bertanda "estimasi", WAJIB perkirakan daya listrik yang wajar
+   berdasarkan jenis perangkat tersebut dalam satuan Watt.
+   Masukkan hasil perkiraan daya tersebut ke dalam field "power" pada "deviceAnalysis".
+   Jika daya perangkat diberikan oleh user, gunakan daya tersebut dan jangan mengubahnya.
 
-// const buildPrompt = (profilInfo, devicesText, retry) => `Kamu analis energi listrik rumah tangga Indonesia.
+2. Pilih 3 perangkat PALING BOROS yang BISA DIIKURANGI pemakaiannya.
+   JANGAN pilih kulkas/lemari es, lampu, atau benda yang wajib nyala 24 jam.
 
-// PROFIL:
-// - Penghuni: ${profilInfo.penghuni} orang
-// - Daya PLN: ${profilInfo.dayaListrikRumah} VA
-// - Biaya bulanan: ${profilInfo.biayaListrikBulanan || "tidak tahu"}
+3. Buat 1 pertanyaan untuk menggali PENYEBAB pemborosan device paling boros,
+   lengkap dengan pilihan jawaban.
 
-// DAFTAR PERANGKAT:
-// ${devicesText}
+4. Evaluasi badge dari statistik BADGE user di atas:
+   - "Hemat Pemula" jika tantangan selesai >= 1
+   - "Konsisten" jika streak hari berturut-turut >= 7
+   - "Ahli Hemat" jika tantangan selesai >= 20
+   Sertakan field "earnedBadges": array berisi nama badge yang memenuhi syarat.
+   Boleh kosong ([]) jika tidak ada yang memenuhi. Bersikaplah jujur sesuai statistik.
 
-// TUGAS:
-// 1. Hitung konsumsi tiap perangkat:
-//    (watt × jumlah × jam/hari) / 1000 = kWh/hari.
+ATURAN:
+- Jangan pernah menolak atau minta maaf walaupun datanya aneh.
+- Balas hanya satu objek JSON valid, tanpa teks lain.
+- "deviceAnalysis" WAJIB berisi semua perangkat.
+- "power" harus berupa angka dalam Watt.
+- "kwhPerDay" harus berupa angka.
+- Jangan menggunakan satuan atau teks di dalam nilai "power" dan "kwhPerDay".
 
-// 2. Jika perangkat bertanda "(estimasi perangkat)",
-//    tentukan perkiraan daya listrik yang wajar dalam Watt untuk perangkat tersebut.
-
-// 3. Masukkan hasil estimasi daya tersebut ke dalam "deviceAnalysis".
-
-// 4. Pilih maksimal 3 perangkat PALING BOROS yang BISA DIKURANGI pemakaiannya.
-//    JANGAN pilih kulkas/lemari es, lampu, atau benda yang wajib menyala 24 jam.
-
-// 5. Buat 1 pertanyaan untuk menggali PENYEBAB pemborosan perangkat paling boros,
-//    lengkap dengan pilihan jawaban.
-
-// Balas HANYA satu objek JSON valid tanpa markdown atau teks tambahan.
-
-// FORMAT WAJIB:
-// {
-//   "totalKwhPerDay": "12.5",
-//   "deviceAnalysis": [
-//     {
-//       "name": "AC",
-//       "estimatedPower": 500,
-//       "kwhPerDay": 4
-//     },
-//     {
-//       "name": "TV",
-//       "estimatedPower": 80,
-//       "kwhPerDay": 0.4
-//     }
-//   ],
-//   "wastefulDevices": ["AC", "TV", "Mesin Cuci"],
-//   "followUpQuestion": "Mengapa AC dipakai 8 jam sehari?",
-//   "followUpChoices": [
-//     "Untuk tidur",
-//     "Untuk bekerja/belajar",
-//     "Karena suhu panas",
-//     "Lainnya"
-//   ]
-// }
-// ${retry ? "\nTUGAS ULANG: Balas hanya JSON valid sesuai format di atas." : ""}`;
+Contoh:
+{
+  "totalKwhPerDay": "12.5",
+  "deviceAnalysis": [
+    {
+      "name": "AC",
+      "power": 500,
+      "kwhPerDay": 4
+    },
+    {
+      "name": "TV",
+      "power": 80,
+      "kwhPerDay": 0.4
+    }
+  ],
+  "wastefulDevices": ["AC", "Mesin Cuci", "TV"],
+  "followUpQuestion": "Mengapa AC dipakai 8 jam sehari?",
+  "followUpChoices": [
+    "Untuk tidur",
+    "Untuk bekerja/belajar",
+    "Karena suhu panas",
+    "Lainnya"
+  ],
+  "earnedBadges": []
+}${retry ? "\n\nTUGAS ULANG: Jawabanmu bukan JSON valid. Balas sekarang hanya dengan satu objek JSON, tanpa teks lain." : ""}`;
 
 export const POST = async (request) => {
   try {
-    const { profilInfo, devicesData } = await request.json();
+    const { profilInfo, devicesData, statistikBadge } = await request.json();
     if (!Array.isArray(devicesData) || devicesData.length === 0) {
       return NextResponse.json({ error: "tidak ada data" }, { status: 400 });
     }
@@ -156,6 +150,12 @@ export const POST = async (request) => {
     if (!apiKey) {
       return NextResponse.json({ error: "no api key" }, { status: 500 });
     }
+
+    const sb = statistikBadge || {};
+    const stats = {
+      tantanganSelesai: Number(sb.tantanganSelesai) || 0,
+      streakHari: Number(sb.streakHari) || 0,
+    };
 
     const devicesText = devicesData
       .map(
@@ -167,7 +167,7 @@ export const POST = async (request) => {
     let result = null;
     for (let retry = 0; retry < 2 && !result; retry++) {
       const text = await jawabGemini(
-        buildPrompt(profilInfo, devicesText, retry > 0),
+        buildPrompt(profilInfo, devicesText, stats, retry > 0),
         apiKey,
       );
       const parsed = ambilJson(text);
@@ -185,6 +185,9 @@ export const POST = async (request) => {
           "Lainnya",
         ],
         summary: `Total konsumsi ${parsed.totalKwhPerDay ?? "?"} kWh/hari. Mulai hemat dari ${parsed.wastefulDevices[0]}.`,
+        earnedBadges: Array.isArray(parsed.earnedBadges)
+          ? parsed.earnedBadges.filter((b) => typeof b === "string")
+          : [],
       };
     }
 

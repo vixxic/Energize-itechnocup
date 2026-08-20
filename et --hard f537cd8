@@ -1,0 +1,30 @@
+[33meca728b[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m fix promt
+[33m0a60fa1[m update promt
+[33mf537cd8[m tambahin loading setelah analyze, tambahin selesai tantangan, tambahin badgedata;prompt badge ke analyze prompt
+[33m88e3842[m fix hydration
+[33mf902af1[m fix merge
+[33ma6c808f[m update code
+[33m5a018b0[m bug fix
+[33m4fe4fe3[m pindahin context analisis ke global
+[33m0508046[m fix merge conflict, add block deisgn, and back to home btn
+[33m14ebcdc[m page block and back to home btn
+[33md1a0863[m day 3
+[33m02e0fc7[m hydration error
+[33mcdc2c8d[m fix hydration error
+[33m1d64f5e[m maybe fixed the ai
+[33m3579284[m merge: resolve conflict DashboardContext, keep 1-tantangan rule
+[33mdf2d6b6[m fixed number inputs, fixed cuman 1 tantangan allowed
+[33mee109a6[m add css untuk tantangan
+[33m2d37d6a[m fix merge conflict
+[33m8f1f417[m resolve merge conflict
+[33m3cce637[m update api
+[33md6c64a9[m day 2
+[33md35572f[m update
+[33mc3d0a8f[m add sdg page
+[33m59462a1[m add link
+[33mf677d10[m update
+[33m6616818[m update
+[33m7509555[m update besar
+[33m030946a[m added .env /api /route.js
+[33m9ab56e9[m navbar and hero
+[33m846ce3c[m Initial commit from Create Next App
