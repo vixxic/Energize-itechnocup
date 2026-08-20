@@ -35,6 +35,7 @@ const hitungFallback = (devicesData) => {
   const rows = (devicesData || [])
     .map((device) => ({
       nama: device.deviceName,
+      power: Number(device.devicePower) || 0,
       kWh:
         (Number(device.devicePower) *
           (Number(device.quantity) || 1) *
@@ -53,6 +54,11 @@ const hitungFallback = (devicesData) => {
 
   return {
     totalKwhPerDay: String(Math.round(total * 100) / 100),
+    deviceAnalysis: rows.map((row) => ({
+      name: row.nama,
+      power: row.power,
+      kwhPerDay: Math.round(row.kWh * 100) / 100,
+    })),
     wastefulDevices: top.map((row) => row.nama),
     followUpQuestion,
     followUpChoices: [
@@ -165,6 +171,7 @@ export const POST = async (request) => {
       .join("\n");
 
     let result = null;
+
     for (let retry = 0; retry < 2 && !result; retry++) {
       const text = await jawabGemini(
         buildPrompt(profilInfo, devicesText, stats, retry > 0),
@@ -175,6 +182,9 @@ export const POST = async (request) => {
 
       result = {
         totalKwhPerDay: parsed.totalKwhPerDay ?? "",
+        deviceAnalysis: Array.isArray(parsed.deviceAnalysis)
+          ? parsed.deviceAnalysis
+          : [],
         wastefulDevices: parsed.wastefulDevices,
         followUpQuestion:
           parsed.followUpQuestion ||
@@ -192,6 +202,7 @@ export const POST = async (request) => {
     }
 
     result = result || hitungFallback(devicesData);
+
     if (!result) {
       return NextResponse.json(
         { error: "AI gagal dan data kurang untuk dihitung ulang." },

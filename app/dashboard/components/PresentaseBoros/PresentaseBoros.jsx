@@ -6,38 +6,37 @@ import { ApiFilled } from "@ant-design/icons";
 
 const colors = ["#6A3EF5", "#FF9F1C", "#4CAF50"];
 
-function PresentaseBoros({ devicesData }) {
+function PresentaseBoros({ analysis, devicesData }) {
   const [lihatSemua, setLihatSemua] = useState(false);
 
-  const grandTotal = (devicesData || []).reduce(
-    (sum, d) =>
-      sum +
-      ((Number(d.devicePower) || 0) *
-        (Number(d.quantity) || 1) *
-        (Number(d.usageDuration) || 0)) /
-        1000,
-    0,
+  const deviceAnalysisMap = new Map(
+    (analysis?.deviceAnalysis || []).map((d) => [d.name, d]),
   );
 
-  const ranked = (devicesData || [])
-    .map((device) => {
-      const kwh =
-        ((Number(device.devicePower) || 0) *
-          (Number(device.quantity) || 1) *
-          (Number(device.usageDuration) || 0)) /
-        1000;
+  const computed = (devicesData || []).map((device) => {
+    const aiData = deviceAnalysisMap.get(device.deviceName);
 
-      return {
-        nama: device.deviceName ?? "Perangkat tidak diketahui",
-        waktu: `${device.usageDuration ?? 0} jam/hari`,
-        watt: `${device.devicePower ?? "?"} W`,
-        kwh,
-        persen: grandTotal > 0 ? Math.round((kwh / grandTotal) * 100) : 0,
+    const power = aiData?.power ?? (Number(device.devicePower) || 0);
 
-        color: "#6A3EF5",
-        icon: <LuCable color="#2F2074" />,
-      };
-    })
+    const kwh =
+      aiData?.kwhPerDay != null
+        ? Number(aiData.kwhPerDay)
+        : (power *
+            (Number(device.quantity) || 1) *
+            (Number(device.usageDuration) || 0)) /
+          1000;
+
+    return {
+      nama: device.deviceName ?? "Perangkat tidak diketahui",
+      waktu: `${device.usageDuration ?? 0} jam/hari`,
+      watt: `${power || "?"} W${device.estimatedPower ? " (estimasi AI)" : ""}`,
+      kwh: Number.isFinite(kwh) ? kwh : 0,
+    };
+  });
+
+  const grandTotal = computed.reduce((sum, d) => sum + d.kwh, 0);
+
+  const ranked = computed
     .sort((a, b) => b.kwh - a.kwh)
     .map((item, index) => ({
       ...item,
@@ -66,11 +65,12 @@ function PresentaseBoros({ devicesData }) {
                   {item.no}
                 </div>
 
-                <div className="deviceIcon">{item.icon}</div>
+                <div className="deviceIcon">
+                  <LuCable color="#2F2074" />
+                </div>
 
                 <div>
                   <h3>{item.nama}</h3>
-
                   <span>
                     {item.waktu} • {item.watt}
                   </span>
@@ -79,9 +79,7 @@ function PresentaseBoros({ devicesData }) {
 
               <div className="right">
                 <strong>{item.konsumsi}</strong>
-
                 <Progress percent={item.persen} strokeColor={item.color} />
-
                 <span>{item.persen}%</span>
               </div>
             </div>
