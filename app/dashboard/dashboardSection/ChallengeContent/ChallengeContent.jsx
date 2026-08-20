@@ -19,7 +19,8 @@ import { BsBullseye } from "react-icons/bs";
 import { IoCheckmarkCircleOutline } from "react-icons/io5";
 
 function Info() {
-  const { activeChallenges, challenge } = useContext(DashboardContext);
+  const { activeChallenges, challenge, completeChallenge } =
+    useContext(DashboardContext);
 
   const aiRecommendations = challenge?.recommendations || [
     "Atur suhu AC di 24°C",
@@ -123,13 +124,21 @@ function Info() {
                     {new Date(item.acceptedAt).toLocaleDateString("id-ID")}
                   </p>
                 </div>
+
+                {item.status === "selesai" ? (
+                  <span className="completedLabel">
+                    Selesai
+                  </span>
+                ) : (
+                  <button type="button" className="completeBtn" onClick={() => completeChallenge(item)} >
+                    Selesaikan
+                  </button>
+                )}
               </div>
             ))
           ) : (
             <p>Belum ada tantangan yang diterima.</p>
           )}
-
-          <button>Selesaikan</button>
         </div>
 
         <div className="aiCard"></div>

@@ -40,6 +40,8 @@ export function DashboardProvider({ children }) {
 
   const [activeChallenges, setActiveChallenges] = useState([]);
 
+  const [completedChallenges, setCompletedChallenges] = useState([]);
+
   const [currentMenu, setCurrentMenu] = useState("analisis");
 
   const [devicesData, setDevicesData] = useState([]);
@@ -75,6 +77,8 @@ export function DashboardProvider({ children }) {
 
     const savedAnalysisHistory = loadState("analysisHistory", []);
 
+    const savedCompletedChallenges = loadState("completedChallenges", []);
+
     const savedAnalysis = loadState("analysis", null);
 
     setChallenge(savedChallenge);
@@ -88,6 +92,8 @@ export function DashboardProvider({ children }) {
     setDashboardStats(savedDashboardStats);
 
     setAnalysisHistory(savedAnalysisHistory);
+
+    setCompletedChallenges(savedCompletedChallenges);
 
     if (savedAnalysis) {
       setCurrentMenu("dashboard");
@@ -140,6 +146,12 @@ export function DashboardProvider({ children }) {
     saveState("analysisHistory", analysisHistory);
   }, [analysisHistory, isInitialized]);
 
+  useEffect(() => {
+    if (!isInitialized) return;
+
+    saveState("completedChallenges", completedChallenges);
+  }, [completedChallenges, isInitialized]);
+
   const acceptChallenge = (tantangan) => {
     const nama = tantangan.tantangan || tantangan.title;
 
@@ -171,6 +183,32 @@ export function DashboardProvider({ children }) {
     return true;
   };
 
+  const completeChallenge = (tantangan) => {
+    const nama = tantangan.tantangan || tantangan.title;
+
+    setActiveChallenges((prev) =>
+      prev.map((c) =>
+        (c.tantangan || c.title) === nama
+          ? { ...c, status: "selesai", completedAt: new Date().toISOString() }
+          : c,
+      ),
+    );
+
+    setCompletedChallenges((prev) => {
+      const sudahAda = prev.some((c) => (c.tantangan || c.title) === nama);
+      if (sudahAda) return prev;
+
+      return [
+        ...prev,
+        {
+          ...tantangan,
+          status: "selesai",
+          completedAt: new Date().toISOString(),
+        },
+      ];
+    });
+  };
+
   const runAnalysis = async () => {
     if (devicesData.length === 0) {
       setAnalysisError("Tambahkan minimal satu perangkat dahulu.");
@@ -183,6 +221,51 @@ export function DashboardProvider({ children }) {
 
     setAnalysisError("");
 
+    const hitungStreak = () => {
+      const unik = [
+        ...new Set(
+          analysisHistory
+            .map((h) => {
+              const d = new Date(h.tanggal);
+              d.setHours(0, 0, 0, 0);
+              return d.getTime();
+            })
+            .filter((t) => !Number.isNaN(t)),
+        ),
+      ].sort((a, b) => b - a);
+
+      if (!unik.length) return 0;
+
+      let streak = 1;
+      const sehari = 24 * 60 * 60 * 1000;
+      for (let i = 1; i < unik.length; i++) {
+        if (unik[i - 1] - unik[i] === sehari) {
+          streak++;
+        } else {
+          break;
+        }
+      }
+      return streak;
+    };
+
+    const hitungCo2 = () => {
+      const totals = analysisHistory.map(
+        (h) => parseFloat(h.totalKwhPerDay) || 0,
+      );
+      let simpan = 0;
+      for (let i = 1; i < totals.length; i++) {
+        const selisih = totals[i - 1] - totals[i];
+        if (selisih > 0) simpan += selisih;
+      }
+      return Math.round(simpan * 0.85 * 10) / 10;
+    };
+
+    const statistikBadge = {
+      tantanganSelesai: completedChallenges.length,
+      streakHari: hitungStreak(),
+      co2HematKg: hitungCo2(),
+    };
+
     try {
       const response = await fetch("/api/analyze", {
         method: "POST",
@@ -194,6 +277,7 @@ export function DashboardProvider({ children }) {
         body: JSON.stringify({
           profilInfo,
           devicesData,
+          statistikBadge,
         }),
       });
 
@@ -284,6 +368,11 @@ export function DashboardProvider({ children }) {
         setActiveChallenges,
 
         acceptChallenge,
+
+        completedChallenges,
+        setCompletedChallenges,
+
+        completeChallenge,
         profilInfo,
         setProfilInfo,
         dashboardStats,

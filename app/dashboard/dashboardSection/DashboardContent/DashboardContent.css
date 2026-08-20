@@ -44,6 +44,30 @@
   gap: 2vw;
 }
 
+.loading-analisis {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6vw 0;
+  gap: 16px;
+  text-align: center;
+}
+
+.loading-analisis p {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2f2074;
+}
+
+.loading-analisis 
+.loading-analisis-hint {
+  font-size: 14px;
+  font-weight: 400;
+  color: #777777;
+}
+
 hr {
   margin: 2vw 0;
 }

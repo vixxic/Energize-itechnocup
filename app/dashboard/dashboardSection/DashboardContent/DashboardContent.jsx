@@ -9,7 +9,7 @@ import { TbPercentage25 } from "react-icons/tb";
 import { IoMdPeople } from "react-icons/io";
 
 // components
-import { App, Skeleton } from "antd";
+import { App, Spin } from "antd";
 
 // context
 import { useContext } from "react";
@@ -58,7 +58,17 @@ function DashboardContent() {
 
   const { message } = App.useApp();
 
-  if (analysisLoading) return <Skeleton active paragraph={{ rows: 4 }} />;
+  if (analysisLoading) {
+    return (
+      <div className="loading-analisis">
+        <Spin size="large" />
+        <p>Sedang menganalisis data</p>
+        <p className="loading-analisis-hint">
+          Jangan tutup halaman ini selama analisis berlangsung
+        </p>
+      </div>
+    );
+  }
 
   const tantanganAi = challenge?.challenges || challengeData;
 

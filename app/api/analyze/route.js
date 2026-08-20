@@ -92,62 +92,58 @@ const hitungFallback = (devicesData) => {
 //   "followUpChoices": ["Untuk tidur", "Untuk bekerja/belajar", "Karena suhu panas", "Lainnya"]
 // }${retry ? "\n\nTUGAS ULANG: Jawabanmu bukan JSON valid. Balas sekarang hanya dengan satu objek JSON, tanpa teks lain." : ""}`;
 
-const buildPrompt = (
-  profilInfo,
-  devicesText,
-  retry,
-) => `Kamu analis energi listrik rumah tangga Indonesia.
+// const buildPrompt = (profilInfo, devicesText, retry) => `Kamu analis energi listrik rumah tangga Indonesia.
 
-PROFIL:
-- Penghuni: ${profilInfo.penghuni} orang
-- Daya PLN: ${profilInfo.dayaListrikRumah} VA
-- Biaya bulanan: ${profilInfo.biayaListrikBulanan || "tidak tahu"}
+// PROFIL:
+// - Penghuni: ${profilInfo.penghuni} orang
+// - Daya PLN: ${profilInfo.dayaListrikRumah} VA
+// - Biaya bulanan: ${profilInfo.biayaListrikBulanan || "tidak tahu"}
 
-DAFTAR PERANGKAT:
-${devicesText}
+// DAFTAR PERANGKAT:
+// ${devicesText}
 
-TUGAS:
-1. Hitung konsumsi tiap perangkat:
-   (watt × jumlah × jam/hari) / 1000 = kWh/hari.
+// TUGAS:
+// 1. Hitung konsumsi tiap perangkat:
+//    (watt × jumlah × jam/hari) / 1000 = kWh/hari.
 
-2. Jika perangkat bertanda "(estimasi perangkat)",
-   tentukan perkiraan daya listrik yang wajar dalam Watt untuk perangkat tersebut.
+// 2. Jika perangkat bertanda "(estimasi perangkat)",
+//    tentukan perkiraan daya listrik yang wajar dalam Watt untuk perangkat tersebut.
 
-3. Masukkan hasil estimasi daya tersebut ke dalam "deviceAnalysis".
+// 3. Masukkan hasil estimasi daya tersebut ke dalam "deviceAnalysis".
 
-4. Pilih maksimal 3 perangkat PALING BOROS yang BISA DIKURANGI pemakaiannya.
-   JANGAN pilih kulkas/lemari es, lampu, atau benda yang wajib menyala 24 jam.
+// 4. Pilih maksimal 3 perangkat PALING BOROS yang BISA DIKURANGI pemakaiannya.
+//    JANGAN pilih kulkas/lemari es, lampu, atau benda yang wajib menyala 24 jam.
 
-5. Buat 1 pertanyaan untuk menggali PENYEBAB pemborosan perangkat paling boros,
-   lengkap dengan pilihan jawaban.
+// 5. Buat 1 pertanyaan untuk menggali PENYEBAB pemborosan perangkat paling boros,
+//    lengkap dengan pilihan jawaban.
 
-Balas HANYA satu objek JSON valid tanpa markdown atau teks tambahan.
+// Balas HANYA satu objek JSON valid tanpa markdown atau teks tambahan.
 
-FORMAT WAJIB:
-{
-  "totalKwhPerDay": "12.5",
-  "deviceAnalysis": [
-    {
-      "name": "AC",
-      "estimatedPower": 500,
-      "kwhPerDay": 4
-    },
-    {
-      "name": "TV",
-      "estimatedPower": 80,
-      "kwhPerDay": 0.4
-    }
-  ],
-  "wastefulDevices": ["AC", "TV", "Mesin Cuci"],
-  "followUpQuestion": "Mengapa AC dipakai 8 jam sehari?",
-  "followUpChoices": [
-    "Untuk tidur",
-    "Untuk bekerja/belajar",
-    "Karena suhu panas",
-    "Lainnya"
-  ]
-}
-${retry ? "\nTUGAS ULANG: Balas hanya JSON valid sesuai format di atas." : ""}`;
+// FORMAT WAJIB:
+// {
+//   "totalKwhPerDay": "12.5",
+//   "deviceAnalysis": [
+//     {
+//       "name": "AC",
+//       "estimatedPower": 500,
+//       "kwhPerDay": 4
+//     },
+//     {
+//       "name": "TV",
+//       "estimatedPower": 80,
+//       "kwhPerDay": 0.4
+//     }
+//   ],
+//   "wastefulDevices": ["AC", "TV", "Mesin Cuci"],
+//   "followUpQuestion": "Mengapa AC dipakai 8 jam sehari?",
+//   "followUpChoices": [
+//     "Untuk tidur",
+//     "Untuk bekerja/belajar",
+//     "Karena suhu panas",
+//     "Lainnya"
+//   ]
+// }
+// ${retry ? "\nTUGAS ULANG: Balas hanya JSON valid sesuai format di atas." : ""}`;
 
 export const POST = async (request) => {
   try {
