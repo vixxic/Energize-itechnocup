@@ -10,7 +10,7 @@ import { LuClock3 } from "react-icons/lu";
 import { FiChevronDown, FiMinus, FiPlus } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 
-import { Select, App } from "antd";
+import { Select, App, message } from "antd";
 
 export default function FormContent() {
   const {
@@ -88,6 +88,7 @@ export default function FormContent() {
       return;
     }
 
+    message.success("Data berhasil di simpan");
     setErrorProfil("");
   };
 
@@ -165,6 +166,11 @@ export default function FormContent() {
       message.warning("Harap lengkapi data profil rumah.");
       return;
     }
+    if (devicesData.length === 0) {
+      message.error("Tambahkan minimal satu perangkat dahulu.");
+      return;
+    }
+
     setErrorProfil("");
     message.warning(
       "Jangan tutup halaman atau refresh halaman selama analisis berlangsung!",

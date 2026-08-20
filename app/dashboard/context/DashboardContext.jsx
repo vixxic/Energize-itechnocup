@@ -3,6 +3,8 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { UserAnalysisContext } from "@/app/context/UserAnalysisContext";
 
+import { message } from "antd";
+
 export const DashboardContext = createContext();
 
 function loadState(key, fallback) {
@@ -210,16 +212,9 @@ export function DashboardProvider({ children }) {
   };
 
   const runAnalysis = async () => {
-    if (devicesData.length === 0) {
-      setAnalysisError("Tambahkan minimal satu perangkat dahulu.");
-      return;
-    }
-
     setCurrentMenu("dashboard");
 
     setAnalysisLoading(true);
-
-    setAnalysisError("");
 
     const hitungStreak = () => {
       const unik = [
