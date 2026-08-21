@@ -119,10 +119,13 @@ function DashboardContent() {
         ))}
       </div>
 
+      <div className="div-2-con">
+        <PresentaseBoros analysis={analysis} devicesData={devicesData} />
+        <FollowUpAi />
+      </div>
+
       {challenge && (
         <div className="challenge-div">
-          <hr />
-
           <div className="text-container-challenge">
             <h3>
               Tiga langkah sederhana menuju penggunaan energi yang lebih efisien
@@ -164,13 +167,6 @@ function DashboardContent() {
           </div>
         </div>
       )}
-
-      <hr />
-
-      <div className="div-2-con">
-        <PresentaseBoros analysis={analysis} devicesData={devicesData} />
-        <FollowUpAi />
-      </div>
     </div>
   );
 }

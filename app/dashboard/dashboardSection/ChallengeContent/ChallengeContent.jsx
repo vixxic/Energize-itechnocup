@@ -1,22 +1,9 @@
 import "./ChallengeContent.css";
 import { useContext } from "react";
 import { DashboardContext } from "../../context/DashboardContext";
-import {
-  FaTrophy,
-  FaStar,
-  FaFire,
-  FaSnowflake,
-  FaGift,
-  FaClock,
-  FaLeaf,
-  FaWallet,
-  FaBolt,
-  FaMedal,
-  FaRobot,
-  FaChevronRight,
-} from "react-icons/fa";
-import { BsBullseye } from "react-icons/bs";
-import { IoCheckmarkCircleOutline } from "react-icons/io5";
+import { FaTrophy, FaStar, FaFire } from "react-icons/fa";
+
+import { Progress } from "antd";
 
 function Info() {
   const { activeChallenges, challenge, completeChallenge } =
@@ -32,17 +19,16 @@ function Info() {
   const impactPrediction = challenge?.impactPrediction;
 
   return (
-    <div className="challengePage">
-      <div className="challengeHeader">
-        <h1>Tantangan</h1>
+    <div>
+      <div className="challenge-text-con-dashboard">
+        <p>Tantangan</p>
 
         <p>
-          Selesaikan tantangan hemat energi dan dapatkan poin untuk membentuk
-          kebiasaan hemat listrik setiap hari.
+          Selesaikan tantangan hemat energi dan bangun kebiasaan hemat listrik
+          setiap hari.
         </p>
       </div>
 
-      {/* TOP CARD */}
       <div className="topCard">
         <div className="topItem">
           <div className="topIcon trophy">
@@ -65,12 +51,10 @@ function Info() {
         <div className="progressSection">
           <p className="topLabel">Progress Minggu Ini</p>
 
-          <div className="progressBar">
-            <div className="progressFill"></div>
-          </div>
+          <Progress></Progress>
 
           <div className="progressBottom">
-            <small>3 dari 5 tantangan selesai</small>
+            <small>0 dari 3 tantangan selesai</small>
             <span>60%</span>
           </div>
         </div>
@@ -104,7 +88,6 @@ function Info() {
         </div>
       </div>
 
-      {/* GRID */}
       <div className="challengeGrid">
         <div className="activeCard">
           <h3>Tantangan Aktif</h3>
@@ -126,11 +109,13 @@ function Info() {
                 </div>
 
                 {item.status === "selesai" ? (
-                  <span className="completedLabel">
-                    Selesai
-                  </span>
+                  <span className="completedLabel">Selesai</span>
                 ) : (
-                  <button type="button" className="completeBtn" onClick={() => completeChallenge(item)} >
+                  <button
+                    type="button"
+                    className="completeBtn"
+                    onClick={() => completeChallenge(item)}
+                  >
                     Selesaikan
                   </button>
                 )}

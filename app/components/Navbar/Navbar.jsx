@@ -1,9 +1,9 @@
 "use client";
 
 import "./Navbar.css";
+
 import { useEffect, useState, useContext } from "react";
 import { UserAnalysisContext } from "@/app/context/UserAnalysisContext";
-
 import Link from "next/link";
 
 // icons
@@ -11,9 +11,13 @@ import { GiHamburgerMenu } from "react-icons/gi";
 
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
   const { analysis } = useContext(UserAnalysisContext);
 
   useEffect(() => {
+    setMounted(true);
+
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
@@ -26,7 +30,7 @@ function Navbar() {
   }, []);
 
   return (
-    <div className={`navbar-outer  ${scrolled ? "scrolled" : ""}`}>
+    <div className={`navbar-outer ${scrolled ? "scrolled" : ""}`}>
       <div className="navbar-inner">
         <div className="logo-container">
           <img src="/logo.png" alt="Logo" className="nav-logo" />
@@ -35,27 +39,31 @@ function Navbar() {
 
         <ul className="nav-links">
           <a href="#home-section">
-            <li className={`${scrolled ? "scrolled" : ""}`}>Beranda</li>
+            <li className={scrolled ? "scrolled" : ""}>Beranda</li>
           </a>
+
           <a href="#problem-section">
-            <li className={`${scrolled ? "scrolled" : ""}`}>Tantangan</li>
+            <li className={scrolled ? "scrolled" : ""}>Tantangan</li>
           </a>
+
           <a href="#fitur-section">
-            <li className={`${scrolled ? "scrolled" : ""}`}>Fitur</li>
+            <li className={scrolled ? "scrolled" : ""}>Fitur</li>
           </a>
+
           <a href="#how-it-works-section">
-            <li className={`${scrolled ? "scrolled" : ""}`}>Cara Kerja</li>
+            <li className={scrolled ? "scrolled" : ""}>Cara Kerja</li>
           </a>
+
           <a href="#impact-section">
-            <li className={`${scrolled ? "scrolled" : ""}`}>Dampak</li>
+            <li className={scrolled ? "scrolled" : ""}>Dampak</li>
           </a>
         </ul>
 
         <div className="nav-hp">
           <div className={`analyze-btn ${scrolled ? "scrolled" : ""}`}>
             <Link href="/dashboard">
-              <button className={`${scrolled ? "scrolled" : ""}`}>
-                {analysis ? "Dashboard" : "Analisis"}
+              <button className={scrolled ? "scrolled" : ""}>
+                {mounted && analysis ? "Dashboard" : "Analisis"}
               </button>
             </Link>
           </div>

@@ -4,8 +4,6 @@ import { Progress } from "antd";
 import { LuCable } from "react-icons/lu";
 import { ApiFilled } from "@ant-design/icons";
 
-const colors = ["#6A3EF5", "#FF9F1C", "#4CAF50"];
-
 function PresentaseBoros({ analysis, devicesData }) {
   const [lihatSemua, setLihatSemua] = useState(false);
 
@@ -43,7 +41,7 @@ function PresentaseBoros({ analysis, devicesData }) {
       no: index + 1,
       konsumsi: `${item.kwh.toFixed(2)} kWh/hari`,
       persen: grandTotal > 0 ? Math.round((item.kwh / grandTotal) * 100) : 0,
-      color: colors[index] || "#6A3EF5",
+      color: "#33187E",
       icon: <ApiFilled />,
     }));
 
