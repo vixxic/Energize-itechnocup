@@ -7,8 +7,13 @@ import { ApiFilled } from "@ant-design/icons";
 function PresentaseBoros({ analysis, devicesData }) {
   const [lihatSemua, setLihatSemua] = useState(false);
 
+  const normalizeName = (name) =>
+    String(name || "")
+      .trim()
+      .toLowerCase();
+
   const deviceAnalysisMap = new Map(
-    (analysis?.deviceAnalysis || []).map((d) => [d.name, d]),
+    (analysis?.deviceAnalysis || []).map((d) => [normalizeName(d.name), d]),
   );
 
   const computed = (devicesData || []).map((device) => {

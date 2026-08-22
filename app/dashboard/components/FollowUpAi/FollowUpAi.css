@@ -10,23 +10,16 @@
 
 .followUpCompleted {
   height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .followHeader {
   display: flex;
+  text-align: center;
   gap: 18px;
-  align-items: flex-start;
-}
-
-.followIcon {
-  width: 64px;
-  height: 64px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.18);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 34px;
 }
 
 .followHeader h2 {
@@ -40,6 +33,19 @@
   color: rgba(255, 255, 255, 0.9);
   line-height: 1.5;
   font-size: 14px;
+}
+
+.challenge-icon {
+  opacity: 0.5;
+  width: 50%;
+}
+
+.challenge-icon img {
+  width: 100%;
+}
+
+.challengeReminder {
+  text-align: center;
 }
 
 .followBody {

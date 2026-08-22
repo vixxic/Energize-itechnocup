@@ -75,14 +75,23 @@ function DashboardContent() {
   const handleAccept = (tantangan) => {
     const nama = tantangan.tantangan || tantangan.title;
 
-    const sudahada = activeChallenges.some(
+    const sudahAda = activeChallenges.some(
       (c) => (c.tantangan || c.title) === nama,
     );
-    if (sudahada) return;
+
+    if (sudahAda) {
+      message.info("Tantangan ini sudah diterima");
+      return;
+    }
 
     const sukses = acceptChallenge(tantangan);
-    if (!sukses) {
-      message.warning("Kamu hanya bisa pilih 1 sampai tantangan itu selesai");
+
+    if (sukses) {
+      message.success("Tantangan berhasil diterima!");
+    } else {
+      message.warning(
+        "Kamu hanya bisa memilih 1 tantangan sampai tantangan itu selesai",
+      );
     }
   };
 
@@ -90,7 +99,7 @@ function DashboardContent() {
     <div>
       <div className="header-text-con-dashboard">
         <p>
-          Halo, Orang! <MdWavingHand color="#F6BB3C" />
+          Halo! <MdWavingHand color="#F6BB3C" />
         </p>
         <p>Berikut adalah hasil analisis penggunaan energi rumah anda</p>
       </div>
@@ -104,9 +113,10 @@ function DashboardContent() {
               <p>
                 {index === 0 && dashboardStats?.penghuni}
                 {index === 1 && (dashboardStats?.totalKwhPerDay ?? "") + " kWh"}
-                {index === 2 && dashboardStats?.estimasiBiaya != null
-                  ? "Rp" + dashboardStats.estimasiBiaya.toLocaleString("id-ID")
-                  : ""}
+                {index === 2 &&
+                  (dashboardStats?.estimasiBiaya != null
+                    ? `Rp${Number(dashboardStats.estimasiBiaya).toLocaleString("id-ID")}`
+                    : "-")}
                 {index === 3 &&
                   (dashboardStats?.rataPerPenghuni ?? "") + " kWh"}
                 {index === 4 &&
@@ -143,7 +153,12 @@ function DashboardContent() {
               return (
                 <div
                   className="tantangan-box"
-                  key={tantangan.urutan ?? tantangan.id}
+                  key={
+                    tantangan.id ??
+                    tantangan.urutan ??
+                    tantangan.tantangan ??
+                    tantangan.title
+                  }
                 >
                   <div>
                     <p className="title">
@@ -154,7 +169,7 @@ function DashboardContent() {
 
                   <button
                     disabled={diterima}
-                    onClick={() => acceptChallenge(tantangan)}
+                    onClick={() => handleAccept(tantangan)}
                     style={{
                       backgroundColor: diterima ? "#756CE1" : "",
                     }}
