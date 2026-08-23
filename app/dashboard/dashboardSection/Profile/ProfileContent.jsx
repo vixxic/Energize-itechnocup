@@ -1,5 +1,9 @@
 import "./ProfileContent.css";
 
+import { useContext } from "react";
+import { DashboardContext } from "../../context/DashboardContext";
+import badgeData from "../../data/badgeData";
+
 import {
   FaUserCircle,
   FaEnvelope,
@@ -15,7 +19,44 @@ import {
   FaChartBar,
 } from "react-icons/fa";
 
+const iconMap = {
+  FaTrophy: <FaTrophy />,
+  FaStar: <FaStar />,
+  FaLeaf: <FaLeaf />,
+  FaLock: <FaLock />,
+};
+
 function ProfileContent() {
+  const { badges, analysisHistory, completedChallenges, dashboardStats } =
+    useContext(DashboardContext);
+
+  const totalAnalisis = analysisHistory.length;
+  const tantanganSelesai = completedChallenges.length;
+
+  const energiHemat = (() => {
+    const totals = analysisHistory.map(
+      (h) => parseFloat(h.totalKwhPerDay) || 0,
+    );
+    let simpan = 0;
+    for (let i = 1; i < totals.length; i++) {
+      const selisih = totals[i - 1] - totals[i];
+      if (selisih > 0) simpan += selisih;
+    }
+    return Math.round(simpan * 10) / 10;
+  })();
+
+  const penghematanBiaya = (() => {
+    const totals = analysisHistory.map(
+      (h) => parseFloat(h.totalKwhPerDay) || 0,
+    );
+    let simpan = 0;
+    for (let i = 1; i < totals.length; i++) {
+      const selisih = totals[i - 1] - totals[i];
+      if (selisih > 0) simpan += selisih;
+    }
+    return Math.round(simpan * 30 * 1444.7);
+  })();
+
   return (
     <div className="profilePage">
       {/* ================= HEADER ================= */}
@@ -72,65 +113,27 @@ function ProfileContent() {
             <h3>Pencapaian (Badge)</h3>
           </div>
 
-          <div className="badgeItem">
-            <div className="badgeLeft">
-              <div className="badgeIcon gold">
-                <FaTrophy />
+          {badgeData.map((item) => {
+            const terkunci = !badges.includes(item.nama);
+            return (
+              <div className="badgeItem" key={item.id}>
+                <div className="badgeLeft">
+                  <div className={`badgeIcon ${item.color}`}>
+                    {iconMap[item.icon]}
+                  </div>
+
+                  <div>
+                    <h4>{item.nama}</h4>
+                    <p>{item.syarat}</p>
+                  </div>
+                </div>
+
+                <span className={terkunci ? "locked" : "success"}>
+                  {terkunci ? "Terkunci" : "Diperoleh"}
+                </span>
               </div>
-
-              <div>
-                <h4>Hemat Pemula</h4>
-                <p>Selesaikan 1 tantangan</p>
-              </div>
-            </div>
-
-            <span className="success">Diperoleh</span>
-          </div>
-
-          <div className="badgeItem">
-            <div className="badgeLeft">
-              <div className="badgeIcon purple">
-                <FaStar />
-              </div>
-
-              <div>
-                <h4>Konsisten</h4>
-                <p>7 hari berturut-turut</p>
-              </div>
-            </div>
-
-            <span className="success">Diperoleh</span>
-          </div>
-
-          <div className="badgeItem">
-            <div className="badgeLeft">
-              <div className="badgeIcon green">
-                <FaLeaf />
-              </div>
-
-              <div>
-                <h4>Peduli Lingkungan</h4>
-                <p>Hemat 10 kg CO₂</p>
-              </div>
-            </div>
-
-            <span className="success">Diperoleh</span>
-          </div>
-
-          <div className="badgeItem">
-            <div className="badgeLeft">
-              <div className="badgeIcon gray">
-                <FaLock />
-              </div>
-
-              <div>
-                <h4>Ahli Hemat</h4>
-                <p>Selesaikan 20 tantangan</p>
-              </div>
-            </div>
-
-            <span className="locked">Terkunci</span>
-          </div>
+            );
+          })}
 
           <button className="outlineBtn">Lihat Semua Badge</button>
         </div>
@@ -152,7 +155,7 @@ function ProfileContent() {
               </div>
             </div>
 
-            <span>25</span>
+            <span>{totalAnalisis}</span>
           </div>
 
           <div className="statBox">
@@ -164,7 +167,7 @@ function ProfileContent() {
               </div>
             </div>
 
-            <span>18</span>
+            <span>{tantanganSelesai}</span>
           </div>
 
           <div className="statBox greenBg">
@@ -176,7 +179,7 @@ function ProfileContent() {
               </div>
             </div>
 
-            <span>124 kWh</span>
+            <span>{energiHemat} kWh</span>
           </div>
 
           <div className="statBox purpleBg">
@@ -188,7 +191,10 @@ function ProfileContent() {
               </div>
             </div>
 
-            <span>Rp235.000</span>
+            <span>
+              Rp
+              {penghematanBiaya.toLocaleString("id-ID")}
+            </span>
           </div>
         </div>
 
@@ -200,39 +206,34 @@ function ProfileContent() {
             <h3>Riwayat Aktivitas Terakhir</h3>
           </div>
 
-          <div className="activityItem">
-            <div>
-              <h4>Menyelesaikan tantangan harian</h4>
+          {analysisHistory.length > 0 ? (
+            [...analysisHistory]
+              .reverse()
+              .slice(0, 4)
+              .map((h, i) => (
+                <div className="activityItem" key={i}>
+                  <div>
+                    <h4>
+                      Analisis: {h.totalKwhPerDay} kWh/hari
+                      {h.perangkat ? ` (${h.perangkat} perangkat)` : ""}
+                    </h4>
+                  </div>
 
-              <small>+100 poin</small>
+                  <span>
+                    {new Date(h.tanggal).toLocaleDateString("id-ID", {
+                      day: "numeric",
+                      month: "short",
+                    })}
+                  </span>
+                </div>
+              ))
+          ) : (
+            <div className="activityItem">
+              <div>
+                <h4>Belum ada aktivitas</h4>
+              </div>
             </div>
-
-            <span>2 jam lalu</span>
-          </div>
-
-          <div className="activityItem">
-            <div>
-              <h4>Melakukan analisis konsumsi AC</h4>
-            </div>
-
-            <span>5 jam lalu</span>
-          </div>
-
-          <div className="activityItem">
-            <div>
-              <h4>Menghemat 2.4 kWh energi</h4>
-            </div>
-
-            <span>Kemarin</span>
-          </div>
-
-          <div className="activityItem">
-            <div>
-              <h4>Login ke akun</h4>
-            </div>
-
-            <span>Kemarin</span>
-          </div>
+          )}
 
           <button className="outlineBtn">Lihat Semua Aktivitas</button>
         </div>
