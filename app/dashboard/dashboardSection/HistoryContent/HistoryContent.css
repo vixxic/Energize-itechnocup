@@ -1,6 +1,6 @@
 .history-section {
   width: 100%;
-  color: #1f2937 !important;
+  color: #33187e !important;
 }
 
 .header-text-con-history p:first-child {
@@ -44,7 +44,7 @@
 .history-date {
   font-size: 15px;
   font-weight: 700;
-  color: #1f2937;
+  color: #1d1352;
 }
 
 .history-time {
@@ -79,7 +79,7 @@
   font-size: 36px;
   font-weight: 800;
   line-height: 1;
-  color: #1f2937;
+  color: #1d1352;
 }
 
 .history-unit {
@@ -147,7 +147,7 @@
   margin: 0 0 12px;
   font-size: 13px;
   font-weight: 700;
-  color: #374151;
+  color: #1d1352;
 }
 
 .waste-list {

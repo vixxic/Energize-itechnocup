@@ -383,6 +383,85 @@ export default function FormContent() {
           <div className="device-list-header">
             <h2>Daftar Perangkat</h2>
             <p>Perangkat yang telah Anda tambahkan</p>
+
+            <button
+              onClick={() =>
+                setDevicesData([
+                  {
+                    deviceName: "AC",
+                    quantity: 1,
+                    devicePower: 0,
+                    estimatedPower: true,
+                    usageDuration: 8,
+                  },
+                  {
+                    deviceName: "Kulkas",
+                    quantity: 1,
+                    devicePower: 150,
+                    estimatedPower: false,
+                    usageDuration: 24,
+                  },
+                  {
+                    deviceName: "TV",
+                    quantity: 1,
+                    devicePower: 100,
+                    estimatedPower: false,
+                    usageDuration: 5,
+                  },
+                  {
+                    deviceName: "Rice Cooker",
+                    quantity: 1,
+                    devicePower: 0,
+                    estimatedPower: true,
+                    usageDuration: 6,
+                  },
+                  {
+                    deviceName: "Kipas Angin",
+                    quantity: 2,
+                    devicePower: 45,
+                    estimatedPower: false,
+                    usageDuration: 8,
+                  },
+                  {
+                    deviceName: "Lampu LED",
+                    quantity: 6,
+                    devicePower: 12,
+                    estimatedPower: false,
+                    usageDuration: 7,
+                  },
+                  {
+                    deviceName: "Mesin Cuci",
+                    quantity: 1,
+                    devicePower: 400,
+                    estimatedPower: false,
+                    usageDuration: 1,
+                  },
+                  {
+                    deviceName: "Laptop",
+                    quantity: 2,
+                    devicePower: 0,
+                    estimatedPower: true,
+                    usageDuration: 6,
+                  },
+                  {
+                    deviceName: "Setrika",
+                    quantity: 1,
+                    devicePower: 350,
+                    estimatedPower: false,
+                    usageDuration: 0.5,
+                  },
+                  {
+                    deviceName: "Pompa Air",
+                    quantity: 1,
+                    devicePower: 0,
+                    estimatedPower: true,
+                    usageDuration: 1,
+                  },
+                ])
+              }
+            >
+              Isi
+            </button>
           </div>
 
           <div className="device-list">

@@ -14,15 +14,17 @@ function Info() {
   } = useContext(DashboardContext);
 
   // data ai
+  const acceptedChallenge = activeChallenges?.find(
+    (item) => item.status !== "selesai",
+  );
 
-  const aiRecommendations = challenge?.recommendations || [
-    "Atur suhu AC di 24°C",
-    "Gunakan kipas angin untuk mengurangi penggunaan AC",
-    "Tutup pintu dan jendela saat AC dinyalakan",
-    "Gunakan mode hemat energi",
-  ];
+  const currentChallenge = challenge?.challenges?.find(
+    (item) =>
+      (item.tantangan || item.title) ===
+      (acceptedChallenge?.tantangan || acceptedChallenge?.title),
+  );
 
-  const impactPrediction = challenge?.impactPrediction;
+  const aiRecommendations = currentChallenge?.recommendations || [];
 
   // skor efisien
 
@@ -141,28 +143,22 @@ function Info() {
           <p>Berdasarkan pola penggunaan energi Anda:</p>
 
           <div className="recommendationList">
-            {aiRecommendations.map((recommendation, index) => (
-              <div className="recommendationItem" key={index}>
-                <span>{index + 1}</span>
-
-                <p>{recommendation}</p>
-              </div>
-            ))}
+            {aiRecommendations.length > 0 ? (
+              aiRecommendations.map((recommendation, index) => (
+                <div className="recommendationItem" key={index}>
+                  <span>{index + 1}</span>
+                  <p>{recommendation}</p>
+                </div>
+              ))
+            ) : (
+              <p>Belum ada rekomendasi AI.</p>
+            )}
           </div>
         </div>
 
         <div className="rightColumn">
           <div className="impactCard">
             <h3>Dampak Penghematan</h3>
-
-            {impactPrediction ? (
-              <p>{impactPrediction}</p>
-            ) : (
-              <p>
-                Selesaikan tantangan untuk melihat perkiraan dampak penghematan
-                energi.
-              </p>
-            )}
           </div>
         </div>
       </div>

@@ -2,9 +2,6 @@
 
 import { createContext, useState, useEffect, useContext } from "react";
 import { UserAnalysisContext } from "@/app/context/UserAnalysisContext";
-
-import { message } from "antd";
-
 export const DashboardContext = createContext();
 
 function loadState(key, fallback) {
