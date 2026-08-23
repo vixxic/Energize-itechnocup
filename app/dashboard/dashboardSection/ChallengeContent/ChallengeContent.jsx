@@ -97,34 +97,30 @@ function Info() {
       {/* bagian bawah */}
 
       <div className="challengeGrid">
-        {/* =========================
-            TANTANGAN AKTIF
-        ========================= */}
-
         <div className="activeCard">
           <h3>Tantangan Aktif</h3>
 
-          {activeChallenges.length > 0 ? (
-            activeChallenges.map((item, index) => (
-              <div className="acBox" key={`${item.acceptedAt}-${index}`}>
-                <div className="acContent">
-                  <div className="titleRow">
-                    <h1>{item.tantangan || item.title}</h1>
+          {activeChallenges.filter((item) => item.status !== "selesai").length >
+          0 ? (
+            activeChallenges
+              .filter((item) => item.status !== "selesai")
+              .map((item, index) => (
+                <div className="acBox" key={`${item.acceptedAt}-${index}`}>
+                  <div className="acContent">
+                    <div className="titleRow">
+                      <h1>{item.tantangan || item.title}</h1>
+                    </div>
+
+                    <p>{item.des || item.description || "—"}</p>
+
+                    <p>
+                      Diterima:{" "}
+                      {item.acceptedAt
+                        ? new Date(item.acceptedAt).toLocaleDateString("id-ID")
+                        : "—"}
+                    </p>
                   </div>
 
-                  <p>{item.des || item.description || "—"}</p>
-
-                  <p>
-                    Diterima:{" "}
-                    {item.acceptedAt
-                      ? new Date(item.acceptedAt).toLocaleDateString("id-ID")
-                      : "—"}
-                  </p>
-                </div>
-
-                {item.status === "selesai" ? (
-                  <span className="completedLabel">Selesai ✓</span>
-                ) : (
                   <button
                     type="button"
                     className="completeBtn"
@@ -132,11 +128,10 @@ function Info() {
                   >
                     Selesaikan
                   </button>
-                )}
-              </div>
-            ))
+                </div>
+              ))
           ) : (
-            <p>Belum ada tantangan yang diterima.</p>
+            <p>Belum ada tantangan aktif.</p>
           )}
         </div>
 
@@ -156,13 +151,7 @@ function Info() {
           </div>
         </div>
 
-        {/* =========================
-            KOLOM KANAN
-        ========================= */}
-
         <div className="rightColumn">
-          {/* IMPACT */}
-
           <div className="impactCard">
             <h3>Dampak Penghematan</h3>
 

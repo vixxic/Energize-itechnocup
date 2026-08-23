@@ -112,8 +112,6 @@ export default function FollowUpAi() {
   return (
     <div className="followUpCard">
       <div className="followHeader">
-        <div className="followIcon">❄️</div>
-
         <div>
           <h2>Perangkat Paling Boros: {topDevices}</h2>
           <p>{summary}</p>
