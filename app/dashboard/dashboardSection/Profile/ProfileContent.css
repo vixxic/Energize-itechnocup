@@ -1,3 +1,7 @@
+/* =====================================================
+   PROFILE PAGE
+===================================================== */
+
 .profile-page {
   width: 100%;
   max-width: 1100px;
@@ -6,9 +10,9 @@
   box-sizing: border-box;
 }
 
-/* =========================
+/* =====================================================
    HEADER
-========================= */
+===================================================== */
 
 .profile-header {
   display: flex;
@@ -28,26 +32,29 @@
 
   background: #756ce1;
   color: white;
-  font-size: 25px;
 
+  font-size: 25px;
   flex-shrink: 0;
 }
 
 .profile-header h1 {
   margin: 0 0 5px;
+
   font-size: 28px;
   font-weight: 700;
+  color: #24196d;
 }
 
 .profile-header p {
   margin: 0;
+
   color: #777;
   font-size: 14px;
 }
 
-/* =========================
+/* =====================================================
    PROFILE CARD
-========================= */
+===================================================== */
 
 .profile-card {
   width: 100%;
@@ -55,9 +62,10 @@
 
   display: flex;
   align-items: center;
-  gap: 20px;
 
+  gap: 20px;
   padding: 25px;
+
   box-sizing: border-box;
 
   background: white;
@@ -88,16 +96,21 @@
 
 .profile-info {
   flex: 1;
+  min-width: 0;
 }
 
 .profile-info h2 {
   margin: 0 0 5px;
+
   font-size: 21px;
+  color: #24196d;
 }
 
 .profile-info p {
   margin: 0 0 7px;
+
   color: #756ce1;
+
   font-weight: 600;
 }
 
@@ -137,9 +150,9 @@
   text-align: center;
 }
 
-/* =========================
+/* =====================================================
    SECTION
-========================= */
+===================================================== */
 
 .profile-section {
   margin-bottom: 32px;
@@ -155,18 +168,21 @@
 
 .section-heading h2 {
   margin: 0 0 4px;
+
   font-size: 20px;
+  color: #24196d;
 }
 
 .section-heading p {
   margin: 0;
+
   color: #888;
   font-size: 13px;
 }
 
-/* =========================
+/* =====================================================
    STATISTICS
-========================= */
+===================================================== */
 
 .stats-grid {
   display: grid;
@@ -181,8 +197,8 @@
 
   display: flex;
   align-items: center;
-  gap: 13px;
 
+  gap: 13px;
   padding: 18px;
 
   box-sizing: border-box;
@@ -191,6 +207,16 @@
   border-radius: 17px;
 
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 7px 25px rgba(0, 0, 0, 0.08);
 }
 
 .stat-icon {
@@ -211,34 +237,45 @@
   flex-shrink: 0;
 }
 
-.stat-card div:last-child {
+.stat-card > div:last-child {
   display: flex;
   flex-direction: column;
+
+  min-width: 0;
 }
 
 .stat-card span {
   color: #888;
+
   font-size: 11px;
+
   margin-bottom: 3px;
 }
 
 .stat-card strong {
   font-size: 24px;
+
   color: #333;
+
+  line-height: 1.2;
 }
 
 .stat-card small {
   color: #aaa;
+
   font-size: 10px;
+
+  margin-top: 3px;
 }
 
-/* =========================
-   EFFICIENCY
-========================= */
+/* =====================================================
+   SAVING / EFFICIENCY CARD
+===================================================== */
 
 .efficiency-card {
   display: flex;
   align-items: center;
+
   gap: 18px;
 
   padding: 24px;
@@ -248,7 +285,9 @@
 
   border-radius: 20px;
 
-  margin-bottom: 35px;
+  margin-bottom: 25px;
+
+  box-sizing: border-box;
 }
 
 .efficiency-icon {
@@ -270,41 +309,148 @@
 
 .efficiency-content {
   flex: 1;
+  min-width: 0;
 }
 
 .efficiency-content > span {
+  display: block;
+
   font-size: 13px;
+
   opacity: 0.85;
+
+  margin-bottom: 14px;
+}
+
+/* =====================================================
+   SAVING ROW
+===================================================== */
+
+.saving-row {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 20px;
+}
+
+.saving-row > div {
+  display: flex;
+  flex-direction: column;
+
+  min-width: 0;
+}
+
+.saving-row strong {
+  font-size: 25px;
+
+  line-height: 1.2;
+
+  word-break: break-word;
+}
+
+.saving-row span {
+  font-size: 13px;
+
+  opacity: 0.8;
+
+  margin-top: 2px;
+}
+
+.saving-row small {
+  font-size: 11px;
+
+  opacity: 0.7;
+
+  margin-top: 4px;
+}
+
+/* =====================================================
+   SCORE CARD
+===================================================== */
+
+.score-card {
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+
+  padding: 24px;
+
+  background: white;
+
+  border-radius: 20px;
+
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.06);
+
+  margin-bottom: 35px;
+
+  box-sizing: border-box;
+}
+
+.score-icon {
+  width: 55px;
+  height: 55px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 15px;
+
+  background: #fff3d0;
+
+  color: #f5a623;
+
+  font-size: 24px;
+
+  flex-shrink: 0;
+}
+
+.score-content {
+  flex: 1;
+}
+
+.score-content > span {
+  display: block;
+
+  color: #888;
+
+  font-size: 13px;
+
+  margin-bottom: 2px;
 }
 
 .score-row {
   display: flex;
   align-items: baseline;
-  gap: 5px;
 
-  margin: 2px 0;
+  gap: 5px;
 }
 
 .score-row strong {
   font-size: 35px;
+
+  color: #24196d;
 }
 
 .score-row span {
   font-size: 14px;
-  opacity: 0.8;
+
+  color: #aaa;
 }
 
-.efficiency-content p {
-  margin: 0;
+.score-content p {
+  margin: 2px 0 0;
+
+  color: #888;
 
   font-size: 12px;
-
-  opacity: 0.85;
 }
 
-/* =========================
+/* =====================================================
    BADGE
-========================= */
+===================================================== */
 
 .badge-progress {
   padding: 6px 12px;
@@ -312,25 +458,30 @@
   border-radius: 20px;
 
   background: #f0efff;
+
   color: #756ce1;
 
   font-size: 12px;
+
   font-weight: 600;
+
+  white-space: nowrap;
 }
 
-.badge-grid {
+.badge-list {
   display: grid;
 
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
 
   gap: 15px;
 }
 
-.badge-card {
+.badge-item {
   min-height: 125px;
 
   display: flex;
   align-items: center;
+
   gap: 15px;
 
   padding: 18px;
@@ -348,11 +499,13 @@
     box-shadow 0.2s ease;
 }
 
-.badge-card.unlocked:hover {
+.badge-item.badge-unlocked:hover {
   transform: translateY(-3px);
 
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
 }
+
+/* BADGE ICON */
 
 .badge-icon {
   width: 52px;
@@ -367,48 +520,76 @@
   flex-shrink: 0;
 
   background: #f0efff;
+
   color: #756ce1;
 
   font-size: 22px;
 }
 
-.badge-content {
+/* warna badge */
+
+.badge-icon.gold {
+  background: #fff3d0;
+  color: #f5a623;
+}
+
+.badge-icon.purple {
+  background: #f0ecff;
+  color: #7444ff;
+}
+
+.badge-icon.green {
+  background: #e8f9ee;
+  color: #2da348;
+}
+
+.badge-info {
   min-width: 0;
 }
 
-.badge-content h3 {
+.badge-info h3 {
   margin: 0 0 4px;
 
   font-size: 15px;
+
+  color: #24196d;
 }
 
-.badge-content p {
+.badge-info p {
   margin: 0 0 8px;
 
   color: #888;
 
   font-size: 11px;
+
   line-height: 1.4;
 }
 
-.badge-content span {
+.badge-info span {
   font-size: 10px;
+
   font-weight: 600;
+
   color: #756ce1;
 }
 
-.badge-card.locked {
+.badge-locked {
   opacity: 0.48;
 }
 
-.badge-card.locked .badge-icon {
+.badge-locked .badge-icon {
   background: #f2f2f2;
+
   color: #999;
 }
 
-/* =========================
+.badge-locked .badge-info span {
+  color: #999;
+}
+
+/* =====================================================
    TABLET
-========================= */
+===================================================== */
 
 @media (max-width: 900px) {
   .profile-page {
@@ -419,27 +600,39 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .badge-grid {
+  .badge-list {
     grid-template-columns: repeat(2, 1fr);
   }
 
   .profile-card {
     padding: 22px;
   }
+
+  .saving-row {
+    gap: 15px;
+  }
+
+  .saving-row strong {
+    font-size: 22px;
+  }
 }
 
-/* =========================
+/* =====================================================
    HP
-========================= */
+===================================================== */
 
 @media (max-width: 600px) {
   .profile-page {
     padding: 22px 15px 40px;
   }
 
+  /* HEADER */
+
   .profile-header {
     align-items: flex-start;
+
     gap: 12px;
+
     margin-bottom: 22px;
   }
 
@@ -458,8 +651,11 @@
 
   .profile-header p {
     font-size: 12px;
+
     line-height: 1.5;
   }
+
+  /* PROFILE */
 
   .profile-card {
     flex-direction: column;
@@ -482,6 +678,10 @@
     font-size: 18px;
   }
 
+  .profile-info p {
+    font-size: 13px;
+  }
+
   .profile-info span {
     font-size: 11px;
   }
@@ -494,11 +694,15 @@
     padding: 15px 0 0;
 
     border-left: none;
+
     border-top: 1px solid #eee;
   }
 
+  /* SECTION */
+
   .section-heading {
     align-items: flex-start;
+
     gap: 10px;
   }
 
@@ -508,8 +712,11 @@
 
   .section-heading p {
     font-size: 11px;
+
     line-height: 1.5;
   }
+
+  /* STATISTICS */
 
   .stats-grid {
     grid-template-columns: 1fr 1fr;
@@ -544,7 +751,11 @@
     font-size: 9px;
   }
 
+  /* SAVING */
+
   .efficiency-card {
+    align-items: flex-start;
+
     padding: 20px;
 
     gap: 13px;
@@ -559,22 +770,74 @@
     font-size: 19px;
   }
 
+  .efficiency-content > span {
+    font-size: 11px;
+
+    margin-bottom: 12px;
+  }
+
+  .saving-row {
+    grid-template-columns: 1fr;
+
+    gap: 12px;
+  }
+
+  .saving-row strong {
+    font-size: 20px;
+  }
+
+  .saving-row span {
+    font-size: 11px;
+  }
+
+  .saving-row small {
+    font-size: 9px;
+  }
+
+  /* SCORE */
+
+  .score-card {
+    padding: 20px;
+
+    gap: 13px;
+
+    border-radius: 17px;
+  }
+
+  .score-icon {
+    width: 45px;
+    height: 45px;
+
+    font-size: 19px;
+  }
+
+  .score-content > span {
+    font-size: 11px;
+  }
+
   .score-row strong {
     font-size: 30px;
   }
 
-  .efficiency-content p {
+  .score-row span {
+    font-size: 12px;
+  }
+
+  .score-content p {
     font-size: 10px;
+
     line-height: 1.5;
   }
 
-  .badge-grid {
+  /* BADGE */
+
+  .badge-list {
     grid-template-columns: 1fr;
 
     gap: 10px;
   }
 
-  .badge-card {
+  .badge-item {
     min-height: 105px;
 
     padding: 15px;
@@ -587,30 +850,49 @@
     font-size: 19px;
   }
 
-  .badge-content h3 {
+  .badge-info h3 {
     font-size: 14px;
   }
 
-  .badge-content p {
+  .badge-info p {
     font-size: 10px;
   }
 }
 
-/* =========================
+/* =====================================================
    HP KECIL
-========================= */
+===================================================== */
 
 @media (max-width: 380px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-
   .profile-page {
     padding-left: 12px;
     padding-right: 12px;
   }
 
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
   .stat-card {
     min-height: 90px;
+  }
+
+  .profile-header h1 {
+    font-size: 20px;
+  }
+
+  .profile-header p {
+    font-size: 11px;
+  }
+
+  .badge-item {
+    gap: 10px;
+  }
+
+  .badge-icon {
+    width: 42px;
+    height: 42px;
+
+    font-size: 17px;
   }
 }
