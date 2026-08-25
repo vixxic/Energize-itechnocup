@@ -223,6 +223,57 @@ STATISTIK USER
 TUGAS 1 — HITUNG KONSUMSI
 =========================
 
+Nama perangkat pada output "deviceAnalysis" HARUS SAMA PERSIS dengan nama perangkat yang diberikan user.
+
+JANGAN:
+- mengubah nama perangkat
+- menerjemahkan nama perangkat
+- menyingkat nama perangkat
+- menghapus kata tambahan
+- mengganti dengan sinonim
+- menambahkan kata baru
+
+Contoh:
+
+Jika user menulis:
+"AC Kamar Tidur"
+
+Maka output WAJIB:
+"name": "AC Kamar Tidur"
+
+JANGAN mengubahnya menjadi:
+"AC"
+"Air Conditioner"
+"AC kamar"
+
+Contoh lain:
+
+User:
+"TV Ruang Tamu"
+
+Output WAJIB:
+"name": "TV Ruang Tamu"
+
+User:
+"Kipas Angin Miyako"
+
+Output WAJIB:
+"name": "Kipas Angin Miyako"
+
+User:
+"Lampu Kamar 1"
+
+Output WAJIB:
+"name": "Lampu Kamar 1"
+
+Salin nama perangkat dari daftar user secara persis, karakter demi karakter.
+
+Urutan "deviceAnalysis" juga HARUS mengikuti urutan perangkat yang diberikan user.
+
+Setiap perangkat dari user HARUS muncul tepat satu kali dalam "deviceAnalysis".
+
+
+
 Hitung konsumsi setiap perangkat menggunakan rumus:
 
 (watt × jumlah × jam/hari) / 1000 = kWh/hari

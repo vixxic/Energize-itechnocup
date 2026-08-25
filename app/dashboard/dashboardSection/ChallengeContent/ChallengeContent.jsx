@@ -122,19 +122,23 @@ function Info() {
                         : "—"}
                     </p>
                   </div>
-
-                  <button
-                    type="button"
-                    className="completeBtn"
-                    onClick={() => completeChallenge(item)}
-                  >
-                    Selesaikan
-                  </button>
                 </div>
               ))
           ) : (
             <p>Belum ada tantangan aktif.</p>
           )}
+        </div>
+
+        <div className="CompletedCard">
+          <h3>Selesaikan tantangan ini</h3>
+          <button
+            type="button"
+            className="completeBtn"
+            onClick={() => completeChallenge(acceptedChallenge)}
+            disabled={!acceptedChallenge}
+          >
+            Selesaikan
+          </button>
         </div>
 
         <div className="aiCard">
@@ -146,19 +150,12 @@ function Info() {
             {aiRecommendations.length > 0 ? (
               aiRecommendations.map((recommendation, index) => (
                 <div className="recommendationItem" key={index}>
-                  <span>{index + 1}</span>
                   <p>{recommendation}</p>
                 </div>
               ))
             ) : (
               <p>Belum ada rekomendasi AI.</p>
             )}
-          </div>
-        </div>
-
-        <div className="rightColumn">
-          <div className="impactCard">
-            <h3>Dampak Penghematan</h3>
           </div>
         </div>
       </div>

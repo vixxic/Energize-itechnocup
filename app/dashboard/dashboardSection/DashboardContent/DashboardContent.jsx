@@ -108,7 +108,7 @@ function DashboardContent() {
         {userDataListrik.map((data, index) => (
           <div key={index} className="data-con">
             <div>{data.icon}</div>
-            <div>
+            <div className="data-con-info">
               <p>{data.title}</p>
               <p>
                 {index === 0 && dashboardStats?.penghuni}
@@ -121,7 +121,9 @@ function DashboardContent() {
                   (dashboardStats?.rataPerPenghuni ?? "") + " kWh"}
                 {index === 4 &&
                   (dashboardStats?.dibandingSebelumnya != null
-                    ? `${dashboardStats.dibandingSebelumnya}%`
+                    ? dashboardStats.dibandingSebelumnya > 0
+                      ? `+${dashboardStats.dibandingSebelumnya} %`
+                      : `${dashboardStats.dibandingSebelumnya}%`
                     : "")}
               </p>
             </div>

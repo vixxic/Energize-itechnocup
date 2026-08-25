@@ -17,7 +17,7 @@ function PresentaseBoros({ analysis, devicesData }) {
   );
 
   const computed = (devicesData || []).map((device) => {
-    const aiData = deviceAnalysisMap.get(device.deviceName);
+    const aiData = deviceAnalysisMap.get(normalizeName(device.deviceName));
 
     const power = aiData?.power ?? (Number(device.devicePower) || 0);
 

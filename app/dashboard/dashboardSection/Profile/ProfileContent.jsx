@@ -1,243 +1,261 @@
+"use client";
+
 import "./ProfileContent.css";
 
 import {
-  FaUserCircle,
-  FaEnvelope,
-  FaMapMarkerAlt,
-  FaCalendarAlt,
-  FaEdit,
   FaTrophy,
-  FaStar,
-  FaLeaf,
-  FaLock,
   FaBolt,
-  FaHistory,
-  FaChartBar,
+  FaFire,
+  FaLeaf,
+  FaChartLine,
+  FaMedal,
+  FaStar,
+  FaLock,
 } from "react-icons/fa";
 
+import { useContext } from "react";
+import { DashboardContext } from "../../context/DashboardContext";
+
 function ProfileContent() {
+  const {
+    analysisHistory = [],
+    completedChallenges = [],
+    analysis,
+  } = useContext(DashboardContext);
+
+  // =========================
+  // STATISTIK
+  // =========================
+
+  const totalAnalisis = analysisHistory.length;
+
+  const totalTantangan = completedChallenges.length;
+
+  // Hitung CO2 berdasarkan riwayat analisis
+  const totalCO2 = (() => {
+    if (analysisHistory.length < 2) return 0;
+
+    let hemat = 0;
+
+    for (let i = 1; i < analysisHistory.length; i++) {
+      const sebelumnya = Number(analysisHistory[i - 1]?.totalKwhPerDay) || 0;
+
+      const sekarang = Number(analysisHistory[i]?.totalKwhPerDay) || 0;
+
+      const selisih = sebelumnya - sekarang;
+
+      if (selisih > 0) {
+        hemat += selisih;
+      }
+    }
+
+    return Math.round(hemat * 0.85 * 10) / 10;
+  })();
+
+  const energyScore = Number(analysis?.energyScore) || 0;
+
+  // =========================
+  // BADGE
+  // =========================
+
+  const badges = [
+    {
+      id: 1,
+      title: "First Analysis",
+      description: "Melakukan analisis energi pertama.",
+      icon: <FaBolt />,
+      unlocked: totalAnalisis >= 1,
+    },
+    {
+      id: 2,
+      title: "Energy Saver",
+      description: "Menyelesaikan 3 tantangan hemat energi.",
+      icon: <FaTrophy />,
+      unlocked: totalTantangan >= 3,
+    },
+    {
+      id: 3,
+      title: "Eco Hero",
+      description: "Berhasil menghemat energi dari hasil analisis.",
+      icon: <FaLeaf />,
+      unlocked: totalCO2 > 0,
+    },
+    {
+      id: 5,
+      title: "Energy Explorer",
+      description: "Melakukan 5 kali analisis energi.",
+      icon: <FaChartLine />,
+      unlocked: totalAnalisis >= 5,
+    },
+    {
+      id: 6,
+      title: "Efficiency Master",
+      description: "Mencapai skor efisiensi minimal 80.",
+      icon: <FaStar />,
+      unlocked: energyScore >= 80,
+    },
+  ];
+
+  const jumlahBadge = badges.filter((badge) => badge.unlocked).length;
+
   return (
-    <div className="profilePage">
+    <main className="profile-page">
       {/* ================= HEADER ================= */}
 
-      <div className="profileHeader">
-        <p>Profil Saya</p>
-        <p>Kelola informasi akun dan preferensi Anda</p>
-      </div>
+      <section className="profile-header">
+        <div className="profile-header-icon">
+          <FaLeaf />
+        </div>
+
+        <div>
+          <h1>Profil Energi</h1>
+          <p>Lihat perjalanan dan pencapaianmu dalam menghemat energi.</p>
+        </div>
+      </section>
 
       {/* ================= PROFILE CARD ================= */}
 
-      <div className="profileCard">
-        <div className="profileLeft">
-          <div className="profileAvatar">
-            <FaUserCircle />
-          </div>
+      <section className="profile-card">
+        <div className="profile-avatar">
+          <FaBolt />
+        </div>
 
-          <div className="profileInfo">
-            <h2>Sherin Ven Florennita</h2>
+        <div className="profile-info">
+          <h2>Pengguna Energize</h2>
+          <p>Eco Energy Saver</p>
+          <span>Terus jaga kebiasaan hemat energimu!</span>
+        </div>
 
-            <span>@sherven</span>
+        <div className="profile-badge-count">
+          <FaMedal />
+          <strong>{jumlahBadge}</strong>
+          <span>Badge diperoleh</span>
+        </div>
+      </section>
 
-            <p>
-              <FaEnvelope />
-              sherin@email.com
-            </p>
+      {/* ================= STATISTIK ================= */}
 
-            <p>
-              <FaMapMarkerAlt />
-              Jakarta, Indonesia
-            </p>
-
-            <p>
-              <FaCalendarAlt />
-              Bergabung sejak Januari 2024
-            </p>
+      <section className="profile-section">
+        <div className="section-heading">
+          <div>
+            <h2>Statistik Akun</h2>
+            <p>Perkembangan aktivitasmu di Energize.</p>
           </div>
         </div>
 
-        <button className="editBtn">
-          <FaEdit />
-          Edit Profil
-        </button>
-      </div>
-
-      {/* ================= 3 CARD ================= */}
-
-      <div className="profileGrid">
-        {/* BADGE */}
-
-        <div className="card">
-          <div className="cardTitle">
-            <FaTrophy />
-            <h3>Pencapaian (Badge)</h3>
-          </div>
-
-          <div className="badgeItem">
-            <div className="badgeLeft">
-              <div className="badgeIcon gold">
-                <FaTrophy />
-              </div>
-
-              <div>
-                <h4>Hemat Pemula</h4>
-                <p>Selesaikan 1 tantangan</p>
-              </div>
-            </div>
-
-            <span className="success">Diperoleh</span>
-          </div>
-
-          <div className="badgeItem">
-            <div className="badgeLeft">
-              <div className="badgeIcon purple">
-                <FaStar />
-              </div>
-
-              <div>
-                <h4>Konsisten</h4>
-                <p>7 hari berturut-turut</p>
-              </div>
-            </div>
-
-            <span className="success">Diperoleh</span>
-          </div>
-
-          <div className="badgeItem">
-            <div className="badgeLeft">
-              <div className="badgeIcon green">
-                <FaLeaf />
-              </div>
-
-              <div>
-                <h4>Peduli Lingkungan</h4>
-                <p>Hemat 10 kg CO₂</p>
-              </div>
-            </div>
-
-            <span className="success">Diperoleh</span>
-          </div>
-
-          <div className="badgeItem">
-            <div className="badgeLeft">
-              <div className="badgeIcon gray">
-                <FaLock />
-              </div>
-
-              <div>
-                <h4>Ahli Hemat</h4>
-                <p>Selesaikan 20 tantangan</p>
-              </div>
-            </div>
-
-            <span className="locked">Terkunci</span>
-          </div>
-
-          <button className="outlineBtn">Lihat Semua Badge</button>
-        </div>
-
-        {/* STATISTIK */}
-
-        <div className="card">
-          <div className="cardTitle">
-            <FaChartBar />
-            <h3>Statistik Akun</h3>
-          </div>
-
-          <div className="statBox">
-            <div>
+        <div className="stats-grid">
+          <div className="stat-card">
+            <div className="stat-icon">
               <FaBolt />
-              <div>
-                <h4>Total Analisis</h4>
-                <p>Analisis energi dilakukan</p>
-              </div>
             </div>
 
-            <span>25</span>
+            <div>
+              <span>Analisis Dilakukan</span>
+              <strong>{totalAnalisis}</strong>
+              <small>kali analisis</small>
+            </div>
           </div>
 
-          <div className="statBox">
-            <div>
+          <div className="stat-card">
+            <div className="stat-icon">
               <FaTrophy />
-              <div>
-                <h4>Tantangan Selesai</h4>
-                <p>Challenge selesai</p>
-              </div>
             </div>
 
-            <span>18</span>
+            <div>
+              <span>Tantangan Selesai</span>
+              <strong>{totalTantangan}</strong>
+              <small>tantangan</small>
+            </div>
           </div>
 
-          <div className="statBox greenBg">
+          <div className="stat-card">
+            <div className="stat-icon">
+              <FaFire />
+            </div>
+
             <div>
+              <span>Listrik Terhemat</span>
+              <strong></strong>
+              <small>kwh</small>
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-icon">
               <FaLeaf />
-              <div>
-                <h4>Energi Dihemat</h4>
-                <p>Total energi hemat</p>
-              </div>
             </div>
 
-            <span>124 kWh</span>
-          </div>
-
-          <div className="statBox purpleBg">
             <div>
-              <FaBolt />
-              <div>
-                <h4>Estimasi Penghematan</h4>
-                <p>Total biaya hemat</p>
-              </div>
+              <span>CO₂ Terhemat</span>
+              <strong>{totalCO2}</strong>
+              <small>kg CO₂</small>
             </div>
-
-            <span>Rp235.000</span>
           </div>
         </div>
+      </section>
 
-        {/* AKTIVITAS */}
+      {/* ================= SCORE ================= */}
 
-        <div className="card">
-          <div className="cardTitle">
-            <FaHistory />
-            <h3>Riwayat Aktivitas Terakhir</h3>
-          </div>
-
-          <div className="activityItem">
-            <div>
-              <h4>Menyelesaikan tantangan harian</h4>
-
-              <small>+100 poin</small>
-            </div>
-
-            <span>2 jam lalu</span>
-          </div>
-
-          <div className="activityItem">
-            <div>
-              <h4>Melakukan analisis konsumsi AC</h4>
-            </div>
-
-            <span>5 jam lalu</span>
-          </div>
-
-          <div className="activityItem">
-            <div>
-              <h4>Menghemat 2.4 kWh energi</h4>
-            </div>
-
-            <span>Kemarin</span>
-          </div>
-
-          <div className="activityItem">
-            <div>
-              <h4>Login ke akun</h4>
-            </div>
-
-            <span>Kemarin</span>
-          </div>
-
-          <button className="outlineBtn">Lihat Semua Aktivitas</button>
+      <section className="efficiency-card">
+        <div className="efficiency-icon">
+          <FaStar />
         </div>
-      </div>
-    </div>
+
+        <div className="efficiency-content">
+          <span>Skor Efisiensi Terakhir</span>
+
+          <div className="score-row">
+            <strong>{energyScore}</strong>
+            <span>/100</span>
+          </div>
+
+          <p>
+            {energyScore >= 80
+              ? "Performa energimu sangat baik!"
+              : energyScore >= 60
+                ? "Kamu sudah berada di jalur yang baik."
+                : energyScore > 0
+                  ? "Masih ada peluang untuk meningkatkan efisiensi."
+                  : "Lakukan analisis untuk mendapatkan skor efisiensi."}
+          </p>
+        </div>
+      </section>
+
+      {/* ================= BADGE ================= */}
+
+      <section className="profile-section badge-section">
+        <div className="section-heading">
+          <div>
+            <h2>Pencapaian</h2>
+            <p>Kumpulkan badge dengan membangun kebiasaan hemat energi.</p>
+          </div>
+
+          <span className="badge-progress">
+            {jumlahBadge}/{badges.length}
+          </span>
+        </div>
+
+        <div className="badge-grid">
+          {badges.map((badge) => (
+            <div
+              key={badge.id}
+              className={`badge-card ${badge.unlocked ? "unlocked" : "locked"}`}
+            >
+              <div className="badge-icon">
+                {badge.unlocked ? badge.icon : <FaLock />}
+              </div>
+
+              <div className="badge-content">
+                <h3>{badge.title}</h3>
+                <p>{badge.description}</p>
+
+                <span>{badge.unlocked ? "✓ Terbuka" : "🔒 Belum terbuka"}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }
 

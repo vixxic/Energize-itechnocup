@@ -39,6 +39,21 @@
   color: #2f2074;
 }
 
+.data-con-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.data-con-info p:first-child {
+  font-weight: 500;
+  color: #2f2074;
+}
+
+.data-con-info p {
+  margin: 0;
+}
+
 .div-2-con {
   display: flex;
   gap: 2vw;
