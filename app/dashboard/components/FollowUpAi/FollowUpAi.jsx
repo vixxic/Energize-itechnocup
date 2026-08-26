@@ -29,7 +29,8 @@ export default function FollowUpAi() {
   const topDevices = analysis?.wastefulDevices?.[0];
 
   const question =
-    analysis?.followUpQuestion || `Mengapa ${topDevices} dipakai setiap hari?`;
+    analysis?.followUpQuestion ||
+    `Mengapa ${topDevices || "perangkat tersebut"} dipakai setiap hari?`;
 
   const summary = analysis?.summary;
 
@@ -111,12 +112,12 @@ export default function FollowUpAi() {
 
   return (
     <div className="followUpCard">
-      <div className="followHeader">
+      {/* <div className="followHeader">
         <div>
-          <h2>Perangkat Paling Boros: {topDevices}</h2>
+          <h2>Pertanyaan dari AI</h2>
           <p>{summary}</p>
         </div>
-      </div>
+      </div> */}
 
       <div className="followBody">
         <h3>{question}</h3>

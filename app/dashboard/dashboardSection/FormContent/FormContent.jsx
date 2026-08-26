@@ -7,10 +7,10 @@ import { DashboardContext } from "../../context/DashboardContext";
 import { FaDesktop } from "react-icons/fa";
 import { HiOutlineLightBulb } from "react-icons/hi";
 import { LuClock3 } from "react-icons/lu";
-import { FiChevronDown, FiMinus, FiPlus } from "react-icons/fi";
+import { FiPlus } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
 
-import { Select, App, message } from "antd";
+import { Select, App } from "antd";
 
 export default function FormContent() {
   const {
@@ -18,13 +18,9 @@ export default function FormContent() {
     setDevicesData,
     profilInfo,
     setProfilInfo,
-    setAnalysis,
     analysisLoading,
-    setAnalysisLoading,
     analysisError,
-    setAnalysisError,
     runAnalysis,
-    setCurrentMenu,
   } = useContext(DashboardContext);
 
   const { message } = App.useApp();
@@ -229,12 +225,12 @@ export default function FormContent() {
             <div className="inputIcon">
               <div className="quantityInput">
                 <input
-                  placeholder="300.000"
+                  placeholder="300000"
                   name="biayaListrikBulanan"
                   value={profilInfo.biayaListrikBulanan}
                   onChange={handleProfileChange}
                   min={1}
-                  type="number"
+                  type="numeric"
                 />
               </div>
             </div>

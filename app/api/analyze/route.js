@@ -29,8 +29,6 @@ const jawabGemini = async (prompt, apiKey) => {
   return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
 };
 
-// ambil json dari ai nya
-
 const ambilJson = (text) => {
   if (!text) return null;
 
@@ -45,12 +43,8 @@ const ambilJson = (text) => {
 
     if (
       !Array.isArray(parsed?.wastefulDevices) ||
-      parsed.wastefulDevices.length === 0
+      !Array.isArray(parsed?.deviceAnalysis)
     ) {
-      return null;
-    }
-
-    if (!Array.isArray(parsed?.deviceAnalysis)) {
       return null;
     }
 
@@ -60,8 +54,6 @@ const ambilJson = (text) => {
   }
 };
 
-// hitung skor efisiensi user
-
 const getEnergyCategory = (score) => {
   if (score >= 90) return "Sangat Efisien";
   if (score >= 75) return "Efisien";
@@ -70,40 +62,122 @@ const getEnergyCategory = (score) => {
   return "Sangat Boros";
 };
 
-// function fall back (kalo ai gagal)
+const estimasiDaya = (nama) => {
+  const name = String(nama || "").toLowerCase();
+
+  if (/ac|air conditioner/.test(name)) {
+    return 500;
+  }
+
+  if (/kulkas|lemari es|refrigerator/.test(name)) {
+    return 150;
+  }
+
+  if (/tv|televisi/.test(name)) {
+    return 80;
+  }
+
+  if (/rice cooker|magic com|penanak nasi/.test(name)) {
+    return 300;
+  }
+
+  if (/kipas|fan/.test(name)) {
+    return 45;
+  }
+
+  if (/lampu|led/.test(name)) {
+    return 12;
+  }
+
+  if (/mesin cuci|washing machine/.test(name)) {
+    return 400;
+  }
+
+  if (/laptop|notebook/.test(name)) {
+    return 65;
+  }
+
+  if (/komputer|pc|desktop/.test(name)) {
+    return 250;
+  }
+
+  if (/setrika|iron/.test(name)) {
+    return 350;
+  }
+
+  if (/pompa air|water pump/.test(name)) {
+    return 250;
+  }
+
+  if (/dispenser/.test(name)) {
+    return 300;
+  }
+
+  if (/microwave/.test(name)) {
+    return 1000;
+  }
+
+  if (/oven/.test(name)) {
+    return 1200;
+  }
+
+  if (/blender/.test(name)) {
+    return 300;
+  }
+
+  if (/vacuum/.test(name)) {
+    return 700;
+  }
+
+  if (/hair dryer/.test(name)) {
+    return 800;
+  }
+
+  return 100;
+};
 
 const hitungFallback = (devicesData) => {
-  const rows = (devicesData || [])
-    .map((device) => {
-      const power = Number(device.devicePower) || 0;
-      const quantity = Number(device.quantity) || 1;
-      const usageDuration = Number(device.usageDuration) || 0;
+  const rows = (devicesData || []).map((device) => {
+    const nama = device.deviceName || "Perangkat tidak diketahui";
 
-      const kWh = (power * quantity * usageDuration) / 1000;
+    const quantity = Number(device.quantity) || 1;
+    const usageDuration = Number(device.usageDuration) || 0;
 
-      return {
-        nama: device.deviceName || "Perangkat tidak diketahui",
-        power,
-        kWh,
-      };
-    })
-    .filter((row) => row.kWh > 0);
+    const power = device.estimatedPower
+      ? estimasiDaya(nama)
+      : Number(device.devicePower) || 0;
 
-  if (!rows.length) return null;
+    const kWh = (power * quantity * usageDuration) / 1000;
 
-  const total = rows.reduce((sum, row) => sum + row.kWh, 0);
+    return {
+      nama,
+      power,
+      kWh,
+      usageDuration,
+    };
+  });
 
-  /* =========================
-     CARI PERANGKAT YANG BISA DIKURANGI
-  ========================= */
+  const validRows = rows.filter((row) => row.kWh > 0);
 
-  const candidates = rows
+  if (!validRows.length) return null;
+
+  const total = validRows.reduce((sum, row) => sum + row.kWh, 0);
+
+  const candidates = validRows
     .filter((row) => !/kulkas|lemari es|lemari pendingin|lampu/i.test(row.nama))
     .sort((a, b) => b.kWh - a.kWh);
 
-  const top = (candidates.length >= 3 ? candidates : rows).slice(0, 3);
+  const top = (candidates.length >= 3 ? candidates : validRows).slice(0, 3);
 
-  // hitung skor fallback
+  const followUpCandidate = validRows
+    .filter((row) => !/kulkas|lemari es|lemari pendingin|lampu/i.test(row.nama))
+    .sort((a, b) => {
+      const scoreA = a.kWh * 0.6 + Math.min(a.usageDuration, 24) * 0.4;
+
+      const scoreB = b.kWh * 0.6 + Math.min(b.usageDuration, 24) * 0.4;
+
+      return scoreB - scoreA;
+    })[0];
 
   const totalKwhPerDay = Math.round(total * 100) / 100;
 
@@ -139,11 +213,8 @@ const hitungFallback = (devicesData) => {
 
   const energyCategory = getEnergyCategory(energyScore);
 
-  const followUpQuestion = top[0]
-    ? `Mengapa ${top[0].nama} dipakai ${
-        devicesData.find((d) => d.deviceName === top[0].nama)?.usageDuration ??
-        "?"
-      } jam sehari?`
+  const followUpQuestion = followUpCandidate
+    ? `${followUpCandidate.nama} digunakan selama ${followUpCandidate.usageDuration} jam sehari. Apa alasan utama penggunaan selama itu?`
     : "Mengapa perangkat tersebut digunakan dalam durasi yang lama?";
 
   const scoreReason = top[0]
@@ -172,21 +243,17 @@ const hitungFallback = (devicesData) => {
     followUpChoices: [
       "Untuk tidur",
       "Untuk bekerja/belajar",
-      "Karena suhu panas",
+      "Karena kebutuhan tertentu",
       "Lainnya",
     ],
 
-    summary: `Total konsumsi ${String(
-      totalKwhPerDay,
-    )} kWh/hari. Mulai hemat dari ${
+    summary: `Total konsumsi ${totalKwhPerDay} kWh/hari. Mulai hemat dari ${
       top[0]?.nama || "perangkat dengan konsumsi tertinggi"
     }.`,
 
     earnedBadges: [],
   };
 };
-
-// promt ke gemini
 
 const buildPrompt = (profilInfo, devicesText, statistikBadge, retry) => {
   const profil = profilInfo || {};
@@ -196,6 +263,7 @@ const buildPrompt = (profilInfo, devicesText, statistikBadge, retry) => {
 Tugasmu bukan untuk menyenangkan user.
 
 Jika penggunaan energi user boros, katakan bahwa penggunaan tersebut boros.
+
 Jangan memberikan nilai tinggi hanya agar user merasa baik.
 
 =========================
@@ -220,7 +288,7 @@ STATISTIK USER
 - Streak hari berturut-turut: ${statistikBadge.streakHari}
 
 =========================
-TUGAS 1 — HITUNG KONSUMSI
+TUGAS 1 — ANALISIS PERANGKAT
 =========================
 
 Nama perangkat pada output "deviceAnalysis" HARUS SAMA PERSIS dengan nama perangkat yang diberikan user.
@@ -233,69 +301,31 @@ JANGAN:
 - mengganti dengan sinonim
 - menambahkan kata baru
 
-Contoh:
+Salin nama perangkat dari daftar user secara persis.
 
-Jika user menulis:
-"AC Kamar Tidur"
+Urutan "deviceAnalysis" HARUS mengikuti urutan perangkat user.
 
-Maka output WAJIB:
-"name": "AC Kamar Tidur"
+Setiap perangkat user HARUS muncul tepat satu kali.
 
-JANGAN mengubahnya menjadi:
-"AC"
-"Air Conditioner"
-"AC kamar"
-
-Contoh lain:
-
-User:
-"TV Ruang Tamu"
-
-Output WAJIB:
-"name": "TV Ruang Tamu"
-
-User:
-"Kipas Angin Miyako"
-
-Output WAJIB:
-"name": "Kipas Angin Miyako"
-
-User:
-"Lampu Kamar 1"
-
-Output WAJIB:
-"name": "Lampu Kamar 1"
-
-Salin nama perangkat dari daftar user secara persis, karakter demi karakter.
-
-Urutan "deviceAnalysis" juga HARUS mengikuti urutan perangkat yang diberikan user.
-
-Setiap perangkat dari user HARUS muncul tepat satu kali dalam "deviceAnalysis".
-
-
-
-Hitung konsumsi setiap perangkat menggunakan rumus:
+Rumus konsumsi:
 
 (watt × jumlah × jam/hari) / 1000 = kWh/hari
 
-Jika perangkat bertanda "(estimasi perangkat)", kamu WAJIB memperkirakan daya listrik yang wajar berdasarkan jenis perangkat tersebut.
+Jika perangkat bertanda "(estimasi perangkat)", WAJIB memperkirakan daya listrik yang wajar berdasarkan jenis perangkat.
 
-Contoh:
-- Kipas angin dapat diperkirakan menggunakan daya puluhan Watt.
-- TV dapat diperkirakan menggunakan daya puluhan sampai ratusan Watt.
-- AC dapat menggunakan ratusan hingga lebih dari seribu Watt tergantung jenisnya.
+Jika user memberikan daya secara langsung, gunakan angka tersebut dan JANGAN mengubahnya.
 
-Jangan asal memberikan angka.
+Nilai "power" HARUS berupa angka.
 
-Jika user memberikan daya perangkat secara langsung, gunakan angka tersebut dan JANGAN mengubahnya.
+Nilai "kwhPerDay" HARUS berupa angka.
 
-Masukkan hasil daya ke:
+PENTING:
 
-"power"
+Jangan menentukan total konsumsi secara asal.
 
-dan hasil konsumsi ke:
+"totalKwhPerDay" akan dihitung oleh sistem berdasarkan deviceAnalysis.
 
-"kwhPerDay"
+Fokus kamu adalah memberikan daya yang masuk akal untuk perangkat yang membutuhkan estimasi dan melakukan analisis penggunaan.
 
 =========================
 TUGAS 2 — PERANGKAT PALING BOROS
@@ -308,29 +338,37 @@ Jangan otomatis memilih perangkat hanya karena menyala lama.
 JANGAN memilih:
 - Kulkas
 - Lemari es
+- Lemari pendingin
 - Lampu
 - Perangkat yang memang secara normal harus menyala terus
 
 Fokus pada perangkat yang:
 - konsumsi energinya tinggi
 - durasi penggunaannya tinggi
-- atau penggunaannya sebenarnya dapat dikurangi
+- penggunaannya sebenarnya dapat dikurangi
 
 =========================
 TUGAS 3 — PERTANYAAN PENYEBAB
 =========================
 
-Buat satu pertanyaan untuk menggali penyebab perangkat PALING BOROS digunakan dalam durasi tersebut.
+Buat SATU pertanyaan tindak lanjut yang berguna untuk menemukan kebiasaan pengguna yang menyebabkan pemborosan energi.
 
-Buat 4 pilihan jawaban yang masuk akal.
+Perangkat dengan kWh terbesar TIDAK otomatis menjadi perangkat yang harus ditanyakan.
+
+Prioritaskan perangkat yang memiliki kombinasi:
+- konsumsi energi cukup besar
+- durasi penggunaan tinggi
+- penggunaan terlihat tidak wajar
+- kemungkinan standby atau warm
+- kebiasaan penggunaan yang dapat dikurangi
+
+Buat 4 pilihan jawaban yang masuk akal dan berhubungan langsung dengan pertanyaan.
 
 =========================
 TUGAS 4 — BADGE
 =========================
 
 Evaluasi badge berdasarkan statistik user.
-
-Aturan:
 
 "Hemat Pemula"
 Jika tantangan selesai >= 1
@@ -341,113 +379,43 @@ Jika streak hari berturut-turut >= 7
 "Ahli Hemat"
 Jika tantangan selesai >= 20
 
-Masukkan badge yang memenuhi syarat ke:
+Masukkan badge yang memenuhi syarat ke "earnedBadges".
 
-"earnedBadges"
-
-Jika tidak ada, gunakan:
-
-[]
-
-Jangan memberikan badge jika syaratnya belum terpenuhi.
+Jika tidak ada, gunakan [].
 
 =========================
-TUGAS 5 — SKOR EFISIENSI ENERGI
+TUGAS 5 — SKOR EFISIENSI
 =========================
 
-Berikan user SKOR EFISIENSI ENERGI dari 0 sampai 100.
+Berikan skor 0 sampai 100.
 
-Skor ini bukan skor berdasarkan jumlah perangkat.
+90-100 = Sangat Efisien
+75-89 = Efisien
+60-74 = Cukup Efisien
+40-59 = Boros
+0-39 = Sangat Boros
 
-Skor harus menggambarkan seberapa efisien pola penggunaan energi user.
-
-Gunakan data:
+Pertimbangkan:
 - jumlah penghuni
 - daya PLN
 - konsumsi perangkat
 - daya perangkat
 - jumlah perangkat
 - durasi penggunaan
-- perangkat yang paling banyak mengonsumsi energi
-- apakah penggunaan perangkat masih bisa dikurangi
+- perangkat yang banyak mengonsumsi energi
+- apakah penggunaan masih dapat dikurangi
 
-=========================
-ATURAN SKOR
-=========================
+Jangan memberikan skor tinggi hanya untuk menyenangkan user.
 
-90-100 = Sangat Efisien
-
-75-89 = Efisien
-
-60-74 = Cukup Efisien
-
-40-59 = Boros
-
-0-39 = Sangat Boros
-
-=========================
-PRINSIP PENILAIAN
-=========================
-
-1. JANGAN memberikan skor tinggi hanya untuk menyenangkan user.
-
-2. JANGAN memuji user jika data menunjukkan pemborosan.
-
-3. JANGAN menaikkan skor hanya karena jumlah perangkat sedikit.
-
-4. Perhatikan durasi penggunaan.
-
-5. Perangkat dengan konsumsi energi tinggi harus memberikan dampak negatif terhadap skor jika penggunaannya dapat dikurangi.
-
-6. Penggunaan perangkat secara berlebihan harus menurunkan skor.
-
-7. Perangkat yang digunakan secara wajar tidak perlu diberi penalti besar.
-
-8. Kulkas yang menyala 24 jam tidak boleh langsung dianggap boros karena memang normal untuk perangkat tersebut.
-
-9. Lampu tidak boleh dianggap sangat boros hanya karena jumlahnya banyak jika daya dan durasinya rendah.
-
-10. Jangan menilai hanya berdasarkan satu perangkat. Lihat keseluruhan pola penggunaan.
-
-11. Jika terdapat pemborosan besar, skor HARUS turun secara signifikan.
-
-12. Jika penggunaan energi memang sangat boros, jangan takut memberikan skor di bawah 50.
-
-13. Jika data menunjukkan penggunaan sangat efisien, skor boleh tinggi.
-
-14. Jangan memberikan skor 90+ tanpa alasan yang benar-benar kuat.
-
-15. Jangan menggunakan perasaan, simpati, atau asumsi untuk menentukan skor.
-
-=========================
-PENTING
-=========================
-
-Skor harus konsisten dengan data.
-
-Contoh:
-
-Jika user memiliki AC dengan daya besar dan menggunakannya 10 jam sehari, hal tersebut harus memberikan dampak negatif yang jelas terhadap skor.
-
-Jika user memiliki banyak perangkat tetapi semuanya digunakan dengan durasi rendah, jangan otomatis menganggap user boros.
-
-Jika user memiliki sedikit perangkat tetapi perangkat tersebut memiliki daya tinggi dan digunakan sangat lama, user tetap dapat memperoleh skor rendah.
+Jika terdapat pemborosan besar, skor HARUS turun secara signifikan.
 
 =========================
 ALASAN SKOR
 =========================
 
-Berikan alasan singkat dan KRITIS.
+Berikan alasan singkat dan kritis.
 
 Alasan harus menjelaskan faktor terbesar yang menyebabkan skor naik atau turun.
-
-Jangan menggunakan kalimat kosong seperti:
-"Penggunaan energi Anda cukup baik."
-
-Harus spesifik.
-
-Contoh:
-"Skor rendah karena AC digunakan 10 jam sehari dan menjadi penyumbang konsumsi energi terbesar."
 
 =========================
 FORMAT OUTPUT
@@ -469,15 +437,13 @@ Nilai "kwhPerDay" HARUS berupa angka.
 
 Nilai "energyScore" HARUS berupa angka 0-100.
 
-=========================
-FORMAT JSON
-=========================
+JANGAN mengarang field tambahan yang tidak diperlukan.
+
+Format:
 
 {
-  "totalKwhPerDay": "12.5",
   "energyScore": 52,
-  "energyCategory": "Boros",
-  "scoreReason": "Skor rendah karena AC digunakan dalam durasi panjang dan menjadi penyumbang konsumsi energi terbesar.",
+  "scoreReason": "Skor rendah karena penggunaan beberapa perangkat dengan konsumsi energi tinggi masih dapat dikurangi.",
   "deviceAnalysis": [
     {
       "name": "AC",
@@ -494,11 +460,11 @@ FORMAT JSON
     "AC",
     "TV"
   ],
-  "followUpQuestion": "Mengapa AC dipakai 8 jam sehari?",
+  "followUpQuestion": "Rice cooker digunakan selama 6 jam sehari. Apakah rice cooker biasanya tetap menyala dalam mode warm setelah nasi matang?",
   "followUpChoices": [
-    "Untuk tidur",
-    "Untuk bekerja/belajar",
-    "Karena suhu panas",
+    "Ya, tetap menyala sampai nasi habis",
+    "Tidak, langsung dimatikan setelah matang",
+    "Kadang-kadang tetap menyala",
     "Lainnya"
   ],
   "earnedBadges": []
@@ -507,7 +473,6 @@ FORMAT JSON
 ${
   retry
     ? `
-
 =========================
 TUGAS ULANG
 =========================
@@ -521,8 +486,6 @@ Jangan menambahkan teks apa pun.
     : ""
 }`;
 };
-
-// post api
 
 export const POST = async (request) => {
   try {
@@ -552,23 +515,18 @@ export const POST = async (request) => {
       );
     }
 
-    // supaya ai bisa tau riwayat
-
     const sb = statistikBadge || {};
 
     const stats = {
       tantanganSelesai: Number(sb.tantanganSelesai) || 0,
-
       streakHari: Number(sb.streakHari) || 0,
     };
 
-    // format perangkat
     const devicesText = devicesData
       .map((device, index) => {
         const nama = device.deviceName || "Perangkat tidak diketahui";
 
         const jumlah = Number(device.quantity) || 1;
-
         const durasi = Number(device.usageDuration) || 0;
 
         const daya = device.estimatedPower
@@ -578,8 +536,6 @@ export const POST = async (request) => {
         return `${index + 1}. ${nama} — jumlah: ${jumlah}, daya: ${daya}, durasi: ${durasi} jam/hari`;
       })
       .join("\n");
-
-    // panggil gemini
 
     let result = null;
 
@@ -606,58 +562,143 @@ export const POST = async (request) => {
 
         const energyCategory = getEnergyCategory(energyScore);
 
+        /*
+         * ============================================
+         * NORMALISASI DEVICE
+         * ============================================
+         *
+         * Data dari user menjadi sumber kebenaran.
+         *
+         * - Nama tetap dari devicesData
+         * - Quantity tetap dari devicesData
+         * - Durasi tetap dari devicesData
+         * - Daya manual tetap dari devicesData
+         * - Daya estimasi diambil dari hasil AI
+         */
+
+        const aiDevices = Array.isArray(parsed.deviceAnalysis)
+          ? parsed.deviceAnalysis
+          : [];
+
+        const normalizedDevices = devicesData.map((device, index) => {
+          const nama = device.deviceName || "Perangkat tidak diketahui";
+
+          const quantity = Number(device.quantity) || 1;
+
+          const usageDuration = Number(device.usageDuration) || 0;
+
+          const aiDevice =
+            aiDevices.find(
+              (item) => String(item?.name || "").trim() === String(nama).trim(),
+            ) || aiDevices[index];
+
+          let power;
+
+          if (device.estimatedPower) {
+            power = Number(aiDevice?.power);
+
+            if (!Number.isFinite(power) || power <= 0) {
+              power = estimasiDaya(nama);
+            }
+          } else {
+            power = Number(device.devicePower) || 0;
+          }
+
+          const kwh = (power * quantity * usageDuration) / 1000;
+
+          return {
+            name: nama,
+            power,
+            kwhPerDay: Math.round(kwh * 100) / 100,
+          };
+        });
+
+        /*
+         * ============================================
+         * TOTAL KWH DIHITUNG OLEH JAVASCRIPT
+         * ============================================
+         */
+
+        const totalKwh = normalizedDevices.reduce(
+          (total, device) => total + Number(device.kwhPerDay || 0),
+          0,
+        );
+
+        const totalKwhPerDay = Math.round(totalKwh * 100) / 100;
+
+        /*
+         * ============================================
+         * VALIDASI WASTEFUL DEVICES
+         * ============================================
+         */
+
+        const validNames = normalizedDevices.map((device) => device.name);
+
+        const wastefulDevices = Array.isArray(parsed.wastefulDevices)
+          ? parsed.wastefulDevices
+              .filter((name) => validNames.includes(name))
+              .slice(0, 3)
+          : [];
+
+        const finalWastefulDevices =
+          wastefulDevices.length > 0
+            ? wastefulDevices
+            : normalizedDevices
+                .slice()
+                .sort((a, b) => b.kwhPerDay - a.kwhPerDay)
+                .slice(0, 3)
+                .map((device) => device.name);
+
         result = {
-          totalKwhPerDay: parsed.totalKwhPerDay ?? "",
+          totalKwhPerDay: String(totalKwhPerDay),
 
           energyScore,
 
           energyCategory,
 
-          scoreReason: parsed.scoreReason || "Tidak ada alasan skor.",
+          scoreReason:
+            parsed.scoreReason ||
+            "Skor dihitung berdasarkan pola penggunaan energi.",
 
-          deviceAnalysis: Array.isArray(parsed.deviceAnalysis)
-            ? parsed.deviceAnalysis
-            : [],
+          deviceAnalysis: normalizedDevices,
 
-          wastefulDevices: parsed.wastefulDevices,
+          wastefulDevices: finalWastefulDevices,
 
           followUpQuestion:
             parsed.followUpQuestion ||
-            `Mengapa ${parsed.wastefulDevices?.[0] || "perangkat tersebut"} dipakai setiap hari?`,
+            `Mengapa ${
+              finalWastefulDevices[0] || "perangkat tersebut"
+            } dipakai setiap hari?`,
 
-          followUpChoices: Array.isArray(parsed.followUpChoices)
-            ? parsed.followUpChoices
-            : [
-                "Untuk tidur",
-                "Untuk bekerja/belajar",
-                "Karena suhu panas",
-                "Lainnya",
-              ],
+          followUpChoices:
+            Array.isArray(parsed.followUpChoices) &&
+            parsed.followUpChoices.length > 0
+              ? parsed.followUpChoices
+              : [
+                  "Untuk tidur",
+                  "Untuk bekerja/belajar",
+                  "Karena kebutuhan tertentu",
+                  "Lainnya",
+                ],
 
-          summary: `Total konsumsi ${
-            parsed.totalKwhPerDay ?? "?"
-          } kWh/hari. Mulai hemat dari ${
-            parsed.wastefulDevices?.[0] || "perangkat dengan konsumsi tertinggi"
+          summary: `Total konsumsi ${totalKwhPerDay} kWh/hari. Mulai hemat dari ${
+            finalWastefulDevices[0] || "perangkat dengan konsumsi tertinggi"
           }.`,
 
           earnedBadges: Array.isArray(parsed.earnedBadges)
             ? parsed.earnedBadges.filter((badge) => typeof badge === "string")
             : [],
         };
+
+        console.log("DEVICE ANALYSIS:", normalizedDevices);
+
+        console.log("TOTAL KWH HASIL PERHITUNGAN:", totalKwhPerDay);
       } catch (error) {
         console.error(`Percobaan Gemini ${retry + 1} gagal:`, error);
       }
     }
 
-    /* =========================
-       FALLBACK
-    ========================= */
-
     result = result || hitungFallback(devicesData);
-
-    /* =========================
-       JIKA SEMUA GAGAL
-    ========================= */
 
     if (!result) {
       return NextResponse.json(

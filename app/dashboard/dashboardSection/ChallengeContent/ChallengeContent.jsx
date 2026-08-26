@@ -1,8 +1,9 @@
 import "./ChallengeContent.css";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { DashboardContext } from "../../context/DashboardContext";
-import { FaTrophy, FaStar, FaFire } from "react-icons/fa";
-import { Progress } from "antd";
+import { FaTrophy } from "react-icons/fa";
+import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
+import { Progress, Modal, Form, Input } from "antd";
 
 function Info() {
   const {
@@ -11,6 +12,8 @@ function Info() {
     challenge,
     completeChallenge,
     analysis,
+    dashboardStats,
+    setCurrentMenu,
   } = useContext(DashboardContext);
 
   // data ai
@@ -42,6 +45,30 @@ function Info() {
     Math.round((jumlahSelesai / totalTantanganMingguIni) * 100),
     100,
   );
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { form } = Form.useForm();
+  const [energyResult, setEnergyResult] = useState(null);
+
+  const completingChallenge = (acceptedChallenge, values) => {
+    const electricBefore = Number(values.electricBefore);
+    const electricAfter = Number(values.electricAfter);
+
+    setEnergyResult(electricAfter < electricBefore);
+
+    completeChallenge({
+      ...acceptedChallenge,
+      electricBefore,
+      electricAfter,
+    });
+
+    if (progressTantangan === 100) {
+      return;
+    }
+
+    setIsModalOpen(true);
+  };
 
   return (
     <div>
@@ -90,8 +117,6 @@ function Info() {
             <small>
               {jumlahSelesai} dari {totalTantanganMingguIni} tantangan selesai
             </small>
-
-            <span>{progressTantangan}%</span>
           </div>
         </div>
       </div>
@@ -131,15 +156,99 @@ function Info() {
 
         <div className="CompletedCard">
           <h3>Selesaikan tantangan ini</h3>
-          <button
-            type="button"
-            className="completeBtn"
-            onClick={() => completeChallenge(acceptedChallenge)}
-            disabled={!acceptedChallenge}
+
+          <Form
+            form={form}
+            className="completeForm"
+            layout="vertical"
+            initialValues={{ electricBefore: dashboardStats.totalKwhPerDay }}
+            onFinish={(values) =>
+              completingChallenge(acceptedChallenge, values)
+            }
           >
-            Selesaikan
-          </button>
+            <Form.Item
+              label=" Penggunaan Listrik Sebelum Tantangan"
+              name="electricBefore"
+            >
+              <Input readOnly suffix="kWh" />
+            </Form.Item>
+            <Form.Item
+              label="Penggunaan Listrik Setelah Tantangan"
+              name="electricAfter"
+              rules={[
+                {
+                  required: true,
+                  message: "Data belum lengkap",
+                },
+                {
+                  validator: (_, value) => {
+                    if (value === undefined || value === "") {
+                      return Promise.resolve();
+                    }
+
+                    if (isNaN(Number(value)) || Number(value) <= 0) {
+                      return Promise.reject(
+                        new Error("Masukkan penggunaan listrik yang valid"),
+                      );
+                    }
+
+                    return Promise.resolve();
+                  },
+                },
+              ]}
+            >
+              <Input type="number" min={0} step="0.01" suffix="kWh" />
+            </Form.Item>
+
+            <div>
+              <button type="submit" className="completeBtn ">
+                Selesaikan
+              </button>
+            </div>
+          </Form>
         </div>
+
+        {/* modal notif tantangan selesai */}
+
+        <Modal type="success" open={isModalOpen} footer={null} closable={false}>
+          {energyResult ? (
+            <>
+              <h3>🎉 Berhasil Menghemat Energi!</h3>
+
+              <div>
+                <FaArrowTrendDown />
+              </div>
+
+              <p>
+                Penggunaan listrik kamu berhasil diturunkan. Pertahankan
+                kebiasaan hemat energi ini!
+              </p>
+            </>
+          ) : (
+            <>
+              <h3>💪 Tetap Semangat!</h3>
+
+              <div>
+                <FaArrowTrendUp />
+              </div>
+
+              <p>
+                Penggunaan listrik kamu belum mengalami penurunan. Coba terapkan
+                kembali rekomendasi hemat energi untuk hasil yang lebih baik.
+              </p>
+            </>
+          )}
+
+          <button
+            className="completeBtn"
+            onClick={() => {
+              setIsModalOpen(false);
+              setCurrentMenu("dashboard");
+            }}
+          >
+            Lanjut Ke tantangan berikutnya
+          </button>
+        </Modal>
 
         <div className="aiCard">
           <h3>Rekomendasi AI</h3>

@@ -33,7 +33,7 @@ const userDataListrik = [
   },
   {
     icon: <IoWallet size={30} />,
-    title: "Estimasi Biaya Listrik",
+    title: "Biaya Listrik Bulanan",
   },
   {
     icon: <HiOutlineChartBar size={30} />,
@@ -54,6 +54,7 @@ function DashboardContent() {
     devicesData,
     activeChallenges,
     acceptChallenge,
+    profilInfo,
   } = useContext(DashboardContext);
 
   const { message } = App.useApp();
@@ -61,7 +62,7 @@ function DashboardContent() {
   if (analysisLoading) {
     return (
       <div className="loading-analisis">
-        <Spin size="large" />
+        <Spin size="large" style={{ margin: "auto 0" }} />
         <p>Sedang menganalisis data</p>
         <p className="loading-analisis-hint">
           Jangan tutup halaman ini selama analisis berlangsung
@@ -114,9 +115,9 @@ function DashboardContent() {
                 {index === 0 && dashboardStats?.penghuni}
                 {index === 1 && (dashboardStats?.totalKwhPerDay ?? "") + " kWh"}
                 {index === 2 &&
-                  (dashboardStats?.estimasiBiaya != null
-                    ? `Rp${Number(dashboardStats.estimasiBiaya).toLocaleString("id-ID")}`
-                    : "-")}
+                  (profilInfo?.biayaListrikBulanan
+                    ? `Rp${Number(profilInfo.biayaListrikBulanan).toLocaleString("id-ID")}`
+                    : `Rp${Number(dashboardStats?.estimasiBiaya || 0).toLocaleString("id-ID")}`)}
                 {index === 3 &&
                   (dashboardStats?.rataPerPenghuni ?? "") + " kWh"}
                 {index === 4 &&

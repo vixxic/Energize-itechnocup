@@ -1,8 +1,12 @@
 "use client";
 
-import { createContext, useState, useEffect, useContext } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+
 import { UserAnalysisContext } from "@/app/context/UserAnalysisContext";
+
 export const DashboardContext = createContext();
+
+// LOCAL STORAGE
 
 function loadState(key, fallback) {
   if (typeof window === "undefined") {
@@ -11,7 +15,6 @@ function loadState(key, fallback) {
 
   try {
     const raw = window.localStorage.getItem(key);
-
     return raw ? JSON.parse(raw) : fallback;
   } catch {
     return fallback;
@@ -26,53 +29,92 @@ function saveState(key, value) {
   try {
     window.localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    // Abaikan error localStorage
+    // biarin error localStorage
   }
 }
 
 export function DashboardProvider({ children }) {
   const { analysis, setAnalysis } = useContext(UserAnalysisContext);
 
-  const initialSavedAnalysis = loadState("analysis", null);
+  //  DEFAULT STATE
 
-  const initialChallenge = loadState("challenge", null);
-  const initialActiveChallenges = loadState("activeChallenges", []);
-  const initialDevices = loadState("devicesData", []);
-  const initialProfile = loadState("profilInfo", {
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  const [challenge, setChallenge] = useState(null);
+
+  const [activeChallenges, setActiveChallenges] = useState([]);
+
+  const [completedChallenges, setCompletedChallenges] = useState([]);
+
+  const [badges, setBadges] = useState([]);
+
+  const [currentMenu, setCurrentMenu] = useState("analisis");
+
+  const [devicesData, setDevicesData] = useState([]);
+
+  const [profilInfo, setProfilInfo] = useState({
     penghuni: 1,
     dayaListrikRumah: "",
     biayaListrikBulanan: "",
   });
-  const initialDashboardStats = loadState("dashboardStats", null);
-  const initialAnalysisHistory = loadState("analysisHistory", []);
-  const initialCompletedChallenges = loadState("completedChallenges", []);
-  const initialBadges = initialSavedAnalysis?.earnedBadges?.length
-    ? initialSavedAnalysis.earnedBadges
-    : loadState("badges", []);
 
-  const [isInitialized, setIsInitialized] = useState(true);
+  const [dashboardStats, setDashboardStats] = useState(null);
 
-  const [challenge, setChallenge] = useState(initialChallenge);
-
-  const [activeChallenges, setActiveChallenges] = useState(initialActiveChallenges);
-
-  const [completedChallenges, setCompletedChallenges] = useState(initialCompletedChallenges);
-
-  const [badges, setBadges] = useState(initialBadges);
-
-  const [currentMenu, setCurrentMenu] = useState(initialSavedAnalysis ? "dashboard" : "analisis");
-
-  const [devicesData, setDevicesData] = useState(initialDevices);
-
-  const [profilInfo, setProfilInfo] = useState(initialProfile);
-
-  const [dashboardStats, setDashboardStats] = useState(initialDashboardStats);
-
-  const [analysisHistory, setAnalysisHistory] = useState(initialAnalysisHistory);
+  const [analysisHistory, setAnalysisHistory] = useState([]);
 
   const [analysisLoading, setAnalysisLoading] = useState(false);
 
   const [analysisError, setAnalysisError] = useState("");
+
+  //  LOAD DATA FROM LOCAL STORAGE
+
+  useEffect(() => {
+    const savedAnalysis = loadState("analysis", null);
+
+    const savedChallenge = loadState("challenge", null);
+
+    const savedActiveChallenges = loadState("activeChallenges", []);
+
+    const savedCompletedChallenges = loadState("completedChallenges", []);
+
+    const savedDevices = loadState("devicesData", []);
+
+    const savedProfile = loadState("profilInfo", {
+      penghuni: 1,
+      dayaListrikRumah: "",
+      biayaListrikBulanan: "",
+    });
+
+    const savedDashboardStats = loadState("dashboardStats", null);
+
+    const savedAnalysisHistory = loadState("analysisHistory", []);
+
+    const savedBadges = savedAnalysis?.earnedBadges?.length
+      ? savedAnalysis.earnedBadges
+      : loadState("badges", []);
+
+    setChallenge(savedChallenge);
+
+    setActiveChallenges(savedActiveChallenges);
+
+    setCompletedChallenges(savedCompletedChallenges);
+
+    setDevicesData(savedDevices);
+
+    setProfilInfo(savedProfile);
+
+    setDashboardStats(savedDashboardStats);
+
+    setAnalysisHistory(savedAnalysisHistory);
+
+    setBadges(savedBadges);
+
+    setCurrentMenu(savedAnalysis ? "dashboard" : "analisis");
+
+    setIsInitialized(true);
+  }, []);
+
+  //  SAVE DEVICES
 
   useEffect(() => {
     if (!isInitialized) return;
@@ -80,11 +122,15 @@ export function DashboardProvider({ children }) {
     saveState("devicesData", devicesData);
   }, [devicesData, isInitialized]);
 
+  //  SAVE PROFILE
+
   useEffect(() => {
     if (!isInitialized) return;
 
     saveState("profilInfo", profilInfo);
   }, [profilInfo, isInitialized]);
+
+  //  SAVE ANALYSIS
 
   useEffect(() => {
     if (!isInitialized) return;
@@ -92,11 +138,15 @@ export function DashboardProvider({ children }) {
     saveState("analysis", analysis);
   }, [analysis, isInitialized]);
 
+  // SAVE CHALLENGE
+
   useEffect(() => {
     if (!isInitialized) return;
 
     saveState("challenge", challenge);
   }, [challenge, isInitialized]);
+
+  //  SAVE ACTIVE CHALLENGES
 
   useEffect(() => {
     if (!isInitialized) return;
@@ -104,11 +154,15 @@ export function DashboardProvider({ children }) {
     saveState("activeChallenges", activeChallenges);
   }, [activeChallenges, isInitialized]);
 
+  //  SAVE DASHBOARD STATS
+
   useEffect(() => {
     if (!isInitialized) return;
 
     saveState("dashboardStats", dashboardStats);
   }, [dashboardStats, isInitialized]);
+
+  //  SAVE ANALYSIS HISTORY
 
   useEffect(() => {
     if (!isInitialized) return;
@@ -116,16 +170,23 @@ export function DashboardProvider({ children }) {
     saveState("analysisHistory", analysisHistory);
   }, [analysisHistory, isInitialized]);
 
+  //  SAVE COMPLETED CHALLENGES
+
   useEffect(() => {
     if (!isInitialized) return;
 
     saveState("completedChallenges", completedChallenges);
   }, [completedChallenges, isInitialized]);
 
+  //  SAVE BADGES
+
   useEffect(() => {
     if (!isInitialized) return;
+
     saveState("badges", badges);
   }, [badges, isInitialized]);
+
+  //  ACCEPT CHALLENGE
 
   const acceptChallenge = (tantangan) => {
     const nama = tantangan.tantangan || tantangan.title;
@@ -158,31 +219,49 @@ export function DashboardProvider({ children }) {
     return true;
   };
 
+  //  COMPLETE CHALLENGE
+
   const completeChallenge = (tantangan) => {
     const nama = tantangan.tantangan || tantangan.title;
+
+    const completedAt = new Date().toISOString();
+
+    /* Update active challenge */
 
     setActiveChallenges((prev) =>
       prev.map((c) =>
         (c.tantangan || c.title) === nama
-          ? { ...c, status: "selesai", completedAt: new Date().toISOString() }
+          ? {
+              ...c,
+              ...tantangan,
+              status: "selesai",
+              completedAt,
+            }
           : c,
       ),
     );
 
+    /* masukin ke completed challenges */
+
     setCompletedChallenges((prev) => {
       const sudahAda = prev.some((c) => (c.tantangan || c.title) === nama);
-      if (sudahAda) return prev;
+
+      if (sudahAda) {
+        return prev;
+      }
 
       return [
         ...prev,
         {
           ...tantangan,
           status: "selesai",
-          completedAt: new Date().toISOString(),
+          completedAt,
         },
       ];
     });
   };
+
+  //  RUN AI ANALYSIS
 
   const runAnalysis = async () => {
     if (devicesData.length === 0) {
@@ -193,54 +272,40 @@ export function DashboardProvider({ children }) {
     setCurrentMenu("dashboard");
 
     setAnalysisLoading(true);
+
     setAnalysisError("");
 
-    const hitungStreak = () => {
-      const unik = [
-        ...new Set(
-          analysisHistory
-            .map((h) => {
-              const d = new Date(h.tanggal);
-              d.setHours(0, 0, 0, 0);
-              return d.getTime();
-            })
-            .filter((t) => !Number.isNaN(t)),
-        ),
-      ].sort((a, b) => b - a);
-
-      if (!unik.length) return 0;
-
-      let streak = 1;
-      const sehari = 24 * 60 * 60 * 1000;
-      for (let i = 1; i < unik.length; i++) {
-        if (unik[i - 1] - unik[i] === sehari) {
-          streak++;
-        } else {
-          break;
-        }
-      }
-      return streak;
-    };
+    //  HITUNG CO2 - profile
 
     const hitungCo2 = () => {
       const totals = analysisHistory.map(
         (h) => parseFloat(h.totalKwhPerDay) || 0,
       );
+
       let simpan = 0;
+
       for (let i = 1; i < totals.length; i++) {
         const selisih = totals[i - 1] - totals[i];
-        if (selisih > 0) simpan += selisih;
+
+        if (selisih > 0) {
+          simpan += selisih;
+        }
       }
+
       return Math.round(simpan * 0.85 * 10) / 10;
     };
 
+    //  STATISTIK BADGE - profile
+
     const statistikBadge = {
       tantanganSelesai: completedChallenges.length,
-      streakHari: hitungStreak(),
+
       co2HematKg: hitungCo2(),
     };
 
     try {
+      //  REQUEST AI
+
       const response = await fetch("/api/analyze", {
         method: "POST",
 
@@ -261,9 +326,13 @@ export function DashboardProvider({ children }) {
         throw new Error(data.error || "Error menganalisis data.");
       }
 
+      //  SAVE AI ANALYSIS
+
       setAnalysis(data);
 
       setBadges(data.earnedBadges || []);
+
+      //  HITUNG DASHBOARD
 
       const totalKwh = parseFloat(data.totalKwhPerDay) || 0;
 
@@ -292,6 +361,8 @@ export function DashboardProvider({ children }) {
         dibandingSebelumnya: dibanding,
       });
 
+      //  SAVE HISTORY
+
       setAnalysisHistory((prev) => [
         ...prev,
 
@@ -318,6 +389,8 @@ export function DashboardProvider({ children }) {
     }
   };
 
+  //  CONTEXT VALUE
+
   return (
     <DashboardContext.Provider
       value={{
@@ -337,6 +410,7 @@ export function DashboardProvider({ children }) {
         setAnalysisError,
 
         runAnalysis,
+
         challenge,
         setChallenge,
 
@@ -349,13 +423,18 @@ export function DashboardProvider({ children }) {
         setCompletedChallenges,
 
         completeChallenge,
+
         badges,
         setBadges,
+
         profilInfo,
         setProfilInfo,
+
         dashboardStats,
         setDashboardStats,
+
         analysisHistory,
+
         isInitialized,
       }}
     >
