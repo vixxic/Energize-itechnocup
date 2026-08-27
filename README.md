@@ -25,4 +25,8 @@ Jadi untuk membantu pengguna, aplikasi ini
 
 **Cara instalasi**
 1. Clone repi
-   git clone
+   git clone https://github.com/vixxic/Energize-itechnocup.git
+   cd Energize-itechnocup
+
+2. Install dependency
+   npm install
