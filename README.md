@@ -5,15 +5,15 @@ Tahihan listrik menjadi beban pokok rumah tangga, tapi banyak pengguna yang tida
 Jadi untuk membantu pengguna, aplikasi ini
 - Menghitung estimasi konsumsi harian secara otomatis,
 - Mengidentifikasi 3 perangkat paling boros yang masih bisa dikurangi.
-- Memberikan tantangan agar
+- Memberikan challenge hemat energi agar sebagai langkah kecil untuk mengurangi beban tagihan listrik.
 
 **Fitur utama**
 - Analisis Perangkat, input daya/jumlah/durasi perangkat, hitung total kWh/hari dan estimasi biaya secara otomatis.
-- Mencari perangkat 3 paling boros yang masih bisa dikurangi
-- Pertanyaan AI untuk personalisasi tantangan
-- Tantangan,
-- Badge,
-- Riwayat,
+- Mencari perangkat 3 paling boros yang masih bisa dikurangi.
+- Pertanyaan AI untuk personalisasi challenge.
+- Challenge, sistem yang memberikan 3 tantangan untuk menghemat energi lalu pengguna menerima 1 dari 3 challenge yang diberikan.
+- Badge, pencapaian yang bisa didapat pengguna, dievaluasi otomatis dengan ai tiap analisis baru.
+- History, menyimpan setiap hasil analisis.
 
 **Teknologi yang digunakan**
 - Framework : Next.js 16.3.0 + React 19.2.8 / react-dom 19.2.8
@@ -24,9 +24,13 @@ Jadi untuk membantu pengguna, aplikasi ini
 - Tool : eslint 9
 
 **Cara instalasi**
-1. Clone repi
-git clone https://github.com/vixxic/Energize-itechnocup.git
-cd Energize-itechnocup
+1. git clone https://github.com/vixxic/Energize-itechnocup.git
+   cd Energize-itechnocup
+2. npm install
+3. Buat file .env.local
+4. Isi .env.local
+   GEMINI_API_KEY=isiapikeydariaistudio
 
-3. Install dependency
-npm install
+**Cara penggunaan**
+1. npm run dev
+2. Buka http://localhost:3000
