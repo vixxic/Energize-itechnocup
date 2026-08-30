@@ -1,9 +1,12 @@
 import "./ChallengeContent.css";
-import { useContext, useState } from "react";
+
+import { useContext, useEffect, useState } from "react";
 import { DashboardContext } from "../../context/DashboardContext";
+
 import { FaTrophy } from "react-icons/fa";
 import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
-import { Progress, Modal, Form, Input } from "antd";
+
+import { Progress, Modal, Form, Input, message } from "antd";
 
 function Info() {
   const {
@@ -13,12 +16,16 @@ function Info() {
     completeChallenge,
     analysis,
     dashboardStats,
+    currentElectric,
     setCurrentMenu,
   } = useContext(DashboardContext);
 
-  // data ai
+  // =========================
+  // DATA AI
+  // =========================
+
   const acceptedChallenge = activeChallenges?.find(
-    (item) => item.status !== "selesai",
+    (item) => item.status === "aktif" || item.status === "diterima",
   );
 
   const currentChallenge = challenge?.challenges?.find(
@@ -29,16 +36,18 @@ function Info() {
 
   const aiRecommendations = currentChallenge?.recommendations || [];
 
-  // skor efisien
+  // =========================
+  // SKOR EFISIENSI
+  // =========================
 
   const energyScore = Number(analysis?.energyScore) || 0;
-
   const energyCategory = analysis?.energyCategory || "Belum dianalisis";
 
-  // tantangan
+  // =========================
+  // PROGRESS TANTANGAN
+  // =========================
 
   const totalTantanganMingguIni = 3;
-
   const jumlahSelesai = completedChallenges?.length || 0;
 
   const progressTantangan = Math.min(
@@ -46,16 +55,42 @@ function Info() {
     100,
   );
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // =========================
+  // MODAL
+  // =========================
 
-  const { form } = Form.useForm();
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [energyResult, setEnergyResult] = useState(null);
 
-  const completingChallenge = (acceptedChallenge, values) => {
-    const electricBefore = Number(values.electricBefore);
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    form.setFieldsValue({
+      electricBefore: currentElectric,
+    });
+  }, [currentElectric, form]);
+
+  // =========================
+  // SELESAIKAN TANTANGAN
+  // =========================
+
+  const completingChallenge = (values) => {
+    if (!acceptedChallenge) {
+      message.warning("Tidak ada tantangan aktif yang bisa diselesaikan.");
+      return;
+    }
+
+    const electricBefore = Number(currentElectric) || 0;
     const electricAfter = Number(values.electricAfter);
 
-    setEnergyResult(electricAfter < electricBefore);
+    if (!electricAfter || electricAfter <= 0) {
+      message.error("Masukkan penggunaan listrik yang valid.");
+      return;
+    }
+
+    const isSaving = electricAfter < electricBefore;
+
+    setEnergyResult(isSaving);
 
     completeChallenge({
       ...acceptedChallenge,
@@ -63,15 +98,21 @@ function Info() {
       electricAfter,
     });
 
-    if (progressTantangan === 100) {
-      return;
-    }
+    // Form akan mengikuti challenge berikutnya
+    form.setFieldsValue({
+      electricBefore: electricAfter,
+      electricAfter: undefined,
+    });
 
     setIsModalOpen(true);
   };
 
   return (
     <div>
+      {/* =========================
+          HEADER
+      ========================= */}
+
       <div className="challenge-text-con-dashboard">
         <p>Tantangan</p>
 
@@ -81,7 +122,9 @@ function Info() {
         </p>
       </div>
 
-      {/* bagian atas */}
+      {/* =========================
+          BAGIAN ATAS
+      ========================= */}
 
       <div className="topCard">
         {/* SKOR */}
@@ -121,14 +164,20 @@ function Info() {
         </div>
       </div>
 
-      {/* bagian bawah */}
+      {/* =========================
+          BAGIAN BAWAH
+      ========================= */}
 
       <div className="challengeGrid">
+        {/* =========================
+            TANTANGAN AKTIF
+        ========================= */}
+
         <div className="activeCard">
           <h3>Tantangan Aktif</h3>
 
-          {activeChallenges.filter((item) => item.status !== "selesai").length >
-          0 ? (
+          {activeChallenges?.filter((item) => item.status !== "selesai")
+            .length > 0 ? (
             activeChallenges
               .filter((item) => item.status !== "selesai")
               .map((item, index) => (
@@ -154,6 +203,10 @@ function Info() {
           )}
         </div>
 
+        {/* =========================
+            SELESAIKAN TANTANGAN
+        ========================= */}
+
         <div className="CompletedCard">
           <h3>Selesaikan tantangan ini</h3>
 
@@ -161,17 +214,22 @@ function Info() {
             form={form}
             className="completeForm"
             layout="vertical"
-            initialValues={{ electricBefore: dashboardStats.totalKwhPerDay }}
-            onFinish={(values) =>
-              completingChallenge(acceptedChallenge, values)
-            }
+            initialValues={{
+              electricBefore: currentElectric,
+            }}
+            onFinish={completingChallenge}
           >
+            {/* SEBELUM */}
+
             <Form.Item
-              label=" Penggunaan Listrik Sebelum Tantangan"
+              label="Penggunaan Listrik Sebelum Tantangan"
               name="electricBefore"
             >
-              <Input readOnly suffix="kWh" />
+              <Input readOnly suffix="kWh/hari" />
             </Form.Item>
+
+            {/* SESUDAH */}
+
             <Form.Item
               label="Penggunaan Listrik Setelah Tantangan"
               name="electricAfter"
@@ -197,22 +255,28 @@ function Info() {
                 },
               ]}
             >
-              <Input type="number" min={0} step="0.01" suffix="kWh" />
+              <Input type="number" min={0} step="0.01" suffix="kWh/hari" />
             </Form.Item>
 
             <div>
-              <button type="submit" className="completeBtn ">
+              <button
+                type="submit"
+                className="completeBtn"
+                disabled={!acceptedChallenge}
+              >
                 Selesaikan
               </button>
             </div>
           </Form>
         </div>
 
-        {/* modal notif tantangan selesai */}
+        {/* =========================
+            MODAL HASIL TANTANGAN
+        ========================= */}
 
-        <Modal type="success" open={isModalOpen} footer={null} closable={false}>
+        <Modal open={isModalOpen} footer={null} closable={false} centered>
           {energyResult ? (
-            <>
+            <div className="modal-after-challenge success">
               <h3>🎉 Berhasil Menghemat Energi!</h3>
 
               <div>
@@ -223,9 +287,9 @@ function Info() {
                 Penggunaan listrik kamu berhasil diturunkan. Pertahankan
                 kebiasaan hemat energi ini!
               </p>
-            </>
+            </div>
           ) : (
-            <>
+            <div className="modal-after-challenge failed">
               <h3>💪 Tetap Semangat!</h3>
 
               <div>
@@ -236,19 +300,21 @@ function Info() {
                 Penggunaan listrik kamu belum mengalami penurunan. Coba terapkan
                 kembali rekomendasi hemat energi untuk hasil yang lebih baik.
               </p>
-            </>
+            </div>
           )}
 
           <button
+            type="submit"
             className="completeBtn"
-            onClick={() => {
-              setIsModalOpen(false);
-              setCurrentMenu("dashboard");
-            }}
+            disabled={!acceptedChallenge}
           >
-            Lanjut Ke tantangan berikutnya
+            Lanjut Ke Tantangan Berikutnya
           </button>
         </Modal>
+
+        {/* =========================
+            REKOMENDASI AI
+        ========================= */}
 
         <div className="aiCard">
           <h3>Rekomendasi AI</h3>

@@ -230,10 +230,9 @@ function ProfileContent() {
             </div>
 
             <div>
-              <strong>
-                Rp
-                {penghematanBiaya.toLocaleString("id-ID")}
-              </strong>
+              <strong>{penghematanBiaya.toLocaleString("id-ID")}</strong>
+
+              <span>Rp</span>
 
               <small>Estimasi biaya dihemat</small>
             </div>

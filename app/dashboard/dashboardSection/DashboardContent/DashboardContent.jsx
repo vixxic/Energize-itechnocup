@@ -63,7 +63,9 @@ function DashboardContent() {
     return (
       <div className="loading-analisis">
         <Spin size="large" style={{ margin: "auto 0" }} />
+
         <p>Sedang menganalisis data</p>
+
         <p className="loading-analisis-hint">
           Jangan tutup halaman ini selama analisis berlangsung
         </p>
@@ -88,7 +90,9 @@ function DashboardContent() {
     const sukses = acceptChallenge(tantangan);
 
     if (sukses) {
-      message.success("Tantangan berhasil diterima!");
+      message.success(
+        "Tantangan berhasil diterima! Buka halaman tantangan untuk melanjutkan",
+      );
     } else {
       message.warning(
         "Kamu hanya bisa memilih 1 tantangan sampai tantangan itu selesai",
@@ -102,6 +106,7 @@ function DashboardContent() {
         <p>
           Halo! <MdWavingHand color="#F6BB3C" />
         </p>
+
         <p>Berikut adalah hasil analisis penggunaan energi rumah anda</p>
       </div>
 
@@ -109,17 +114,32 @@ function DashboardContent() {
         {userDataListrik.map((data, index) => (
           <div key={index} className="data-con">
             <div>{data.icon}</div>
+
             <div className="data-con-info">
               <p>{data.title}</p>
+
               <p>
+                {/* JUMLAH PENGHUNI */}
                 {index === 0 && dashboardStats?.penghuni}
-                {index === 1 && (dashboardStats?.totalKwhPerDay ?? "") + " kWh"}
+
+                {/* TOTAL KONSUMSI ESTIMASI - PER BULAN */}
+                {index === 1 &&
+                  (dashboardStats?.totalKwhPerMonth ?? "") + " kWh/bulan"}
+
+                {/* BIAYA LISTRIK BULANAN */}
                 {index === 2 &&
                   (profilInfo?.biayaListrikBulanan
-                    ? `Rp${Number(profilInfo.biayaListrikBulanan).toLocaleString("id-ID")}`
-                    : `Rp${Number(dashboardStats?.estimasiBiaya || 0).toLocaleString("id-ID")}`)}
-                {index === 3 &&
-                  (dashboardStats?.rataPerPenghuni ?? "") + " kWh"}
+                    ? `Rp${Number(
+                        profilInfo.biayaListrikBulanan,
+                      ).toLocaleString("id-ID")}`
+                    : `Rp${Number(
+                        dashboardStats?.estimasiBiaya || 0,
+                      ).toLocaleString("id-ID")}`)}
+
+                {/* RATA-RATA PER HARI */}
+                {index === 3 && (dashboardStats?.totalKwhPerDay ?? "") + " kWh"}
+
+                {/* DIBANDING SEBELUMNYA */}
                 {index === 4 &&
                   (dashboardStats?.dibandingSebelumnya != null
                     ? dashboardStats.dibandingSebelumnya > 0
@@ -134,6 +154,7 @@ function DashboardContent() {
 
       <div className="div-2-con">
         <PresentaseBoros analysis={analysis} devicesData={devicesData} />
+
         <FollowUpAi />
       </div>
 
@@ -143,6 +164,7 @@ function DashboardContent() {
             <h3>
               Tiga langkah sederhana menuju penggunaan energi yang lebih efisien
             </h3>
+
             <p>Pilih tantangan pertama anda</p>
           </div>
 
@@ -153,6 +175,7 @@ function DashboardContent() {
                   (c.tantangan || c.title) ===
                   (tantangan.tantangan || tantangan.title),
               );
+
               return (
                 <div
                   className="tantangan-box"
@@ -167,6 +190,7 @@ function DashboardContent() {
                     <p className="title">
                       {tantangan.tantangan || tantangan.title}
                     </p>
+
                     <p>{tantangan.des || tantangan.description}</p>
                   </div>
 

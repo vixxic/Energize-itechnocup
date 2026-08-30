@@ -16,6 +16,10 @@
   justify-content: space-between;
 }
 
+.followUpCompleted .followHeader h2 {
+  text-align: center;
+}
+
 .followHeader {
   display: flex;
   text-align: center;
@@ -47,10 +51,6 @@
 
 .challengeReminder {
   text-align: center;
-}
-
-.followBody {
-  margin-top: 28px;
 }
 
 .followBody h3 {

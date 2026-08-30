@@ -112,13 +112,6 @@ export default function FollowUpAi() {
 
   return (
     <div className="followUpCard">
-      {/* <div className="followHeader">
-        <div>
-          <h2>Pertanyaan dari AI</h2>
-          <p>{summary}</p>
-        </div>
-      </div> */}
-
       <div className="followBody">
         <h3>{question}</h3>
 
