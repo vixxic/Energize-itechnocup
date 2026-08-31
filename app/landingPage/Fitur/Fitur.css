@@ -1,8 +1,3 @@
-* {
-  margin: 0;
-  box-sizing: border-box;
-}
-
 #fitur-section {
   width: 100%;
   background: #f8f5f5;
@@ -31,35 +26,53 @@
   margin: 0 auto;
 }
 
-.sub-title .card {
-  border-radius: 0%;
-}
-
 .fitur-card {
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 5vw;
-  width: 100%;
-  gap: 5px;
-}
-
-.main-fitur {
-  width: 40%;
-  height: 500px;
-  background-color: #2f2174;
-}
-
-.sub-fitur-con {
-  flex: 1;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 5px;
+  margin: 0 auto 5vw;
+  width: 80%;
+  gap: clamp(12px, 1.5vw, 24px);
 }
 
-.sub-fitur {
+.our-fitur {
   width: 100%;
   min-height: 247px;
   background-color: #2f2174;
+  display: flex;
+  border-radius: 10px;
+}
+
+.fitur-img-con {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2vw;
+  background: radial-gradient(circle at 30% 30%, #4840a1, #2f2174);
+  border-radius: 10px;
+}
+
+.fitur-img-con img {
+  width: 100%;
+}
+
+.fitur-des {
+  width: 50%;
+  padding: 2vw;
+}
+
+.fitur-des h3 {
+  color: #f8f5f5;
+  font-weight: 500;
+  font-size: clamp(18px, 1.5vw, 24px);
+  margin-bottom: 1vw;
+  line-height: 1.2;
+}
+
+.fitur-des p {
+  color: antiquewhite;
+  font-size: clamp(14px, 1vw, 17px);
+  line-height: 1.5;
 }
 
 .lencana-text {
@@ -87,7 +100,7 @@
 }
 
 @media (max-width: 1024px) {
-  .fitur-section {
+  #fitur-section {
     padding-bottom: 7vw;
   }
 
@@ -103,12 +116,18 @@
     gap: 4px;
   }
 
-  .main-fitur {
-    height: 400px;
+  .our-fitur {
+    min-height: 160px;
+    flex-direction: column;
   }
 
-  .sub-fitur {
-    min-height: 198px;
+  .fitur-img-con {
+    width: 100%;
+    padding: 4vw;
+  }
+
+  .fitur-des {
+    width: 100%;
   }
 
   .lencana-con {
@@ -118,7 +137,7 @@
 }
 
 @media (max-width: 768px) {
-  .fitur-section {
+  #fitur-section {
     padding-bottom: 12vw;
   }
 
@@ -141,24 +160,28 @@
   }
 
   .fitur-card {
+    display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 25px;
     margin-bottom: 12vw;
-  }
-
-  .main-fitur {
     width: 100%;
-    height: 300px;
   }
 
-  .sub-fitur-con {
-    width: 100%;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 5px;
-  }
-
-  .sub-fitur {
+  .our-fitur {
     min-height: 160px;
+    flex-direction: column;
+    width: 90%;
+    margin: 0 auto;
+  }
+
+  .fitur-img-con {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .fitur-des {
+    width: 100%;
+    padding: 20px;
   }
 
   .lencana-text {

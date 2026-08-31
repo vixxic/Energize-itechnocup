@@ -8,6 +8,7 @@ export default function Footer() {
         <div className="footer-brand">
           <div className="footer-logo">
             <img src="/logo.png" alt="Energize Logo" width={42} height={42} />
+
             <h2>Energize</h2>
           </div>
 
@@ -19,6 +20,7 @@ export default function Footer() {
 
         <div className="footer-column">
           <h3>Navigasi</h3>
+
           <a href="#home-section">Beranda</a>
           <a href="#problem-section">Tantangan</a>
           <a href="#fitur-section">Fitur</a>
@@ -28,13 +30,21 @@ export default function Footer() {
 
         <div className="footer-column">
           <h3>Aplikasi</h3>
-          <Link href="/dashboard">Mulai Analisis</Link>
-          <a href="#">Dashboard</a>
-          <a href="#">Riwayat</a>
+
+          <Link href="/dashboard?section=analisis">Mulai Analisis</Link>
+
+          <Link href="/dashboard?section=dashboard">Dashboard</Link>
+
+          <Link href="/dashboard?section=tantangan">Tantangan</Link>
+
+          <Link href="/dashboard?section=riwayat">Riwayat</Link>
+
+          <Link href="/dashboard?section=profil">Profil</Link>
         </div>
 
         <div className="footer-column">
           <h3>Tentang</h3>
+
           <Link href="/Tentang">SDGs</Link>
         </div>
       </div>

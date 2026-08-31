@@ -1,8 +1,12 @@
 "use client";
 
+import { useEffect, useContext } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+
 import "./dashboard.css";
-import { useContext } from "react";
+
 import { DashboardContext } from "./context/DashboardContext";
+
 import Link from "next/link";
 
 import { IoChevronBackOutline } from "react-icons/io5";
@@ -10,6 +14,7 @@ import { IoChevronBackOutline } from "react-icons/io5";
 // components
 import BottomNav from "./components/BottomNav/BottomNav";
 import SiderNav from "./components/SiderNav/SiderNav";
+
 import FormContent from "./dashboardSection/FormContent/FormContent";
 import DashboardContent from "./dashboardSection/DashboardContent/DashboardContent";
 import ChallengeContent from "./dashboardSection/ChallengeContent/ChallengeContent";
@@ -24,8 +29,11 @@ function BlokirAnalisis({ setCurrentMenu }) {
   return (
     <div className="blokir-analisis">
       <img src="/lock-img.svg" alt="lock-img" width={100} height={80} />
+
       <h3>Fitur Belum Tersedia</h3>
+
       <p>Lakukan analisis energi untuk membuka fitur ini.</p>
+
       <button type="button" onClick={() => setCurrentMenu("analisis")}>
         Lakukan Analisis
       </button>
@@ -34,8 +42,32 @@ function BlokirAnalisis({ setCurrentMenu }) {
 }
 
 function Dashboard() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
   const { currentMenu, setCurrentMenu, analysis, analysisLoading } =
     useContext(DashboardContext);
+
+  const section = searchParams.get("section");
+
+  useEffect(() => {
+    if (!section) return;
+
+    const validSections = [
+      "dashboard",
+      "analisis",
+      "tantangan",
+      "riwayat",
+      "profil",
+    ];
+
+    if (validSections.includes(section)) {
+      setCurrentMenu(section);
+
+      router.replace("/dashboard");
+    }
+  }, [section, setCurrentMenu, router]);
+
   const terkunci = !analysis && currentMenu !== "analisis" && !analysisLoading;
 
   return (
@@ -70,6 +102,7 @@ function Dashboard() {
           "404 Halaman Tidak di Temukan"
         )}
       </Content>
+
       <Footer className="bottom-nav-dashboard">
         <BottomNav />
       </Footer>

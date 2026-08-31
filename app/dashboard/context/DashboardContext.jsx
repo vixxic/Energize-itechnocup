@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { UserAnalysisContext } from "@/app/context/UserAnalysisContext";
+import { useSearchParams } from "next/navigation";
 
 export const DashboardContext = createContext();
 
@@ -36,6 +37,9 @@ function saveState(key, value) {
 
 export function DashboardProvider({ children }) {
   const { analysis, setAnalysis } = useContext(UserAnalysisContext);
+
+  const searchParams = useSearchParams();
+  const section = searchParams.get("section");
 
   // ====================
   // DEFAULT STATE
@@ -107,8 +111,23 @@ export function DashboardProvider({ children }) {
 
     setAnalysisHistory(savedAnalysisHistory);
     setLencanas(savedLencanas);
+    // ==========================================
+    // TENTUKAN MENU AWAL
+    // ==========================================
 
-    setCurrentMenu(savedAnalysis ? "dashboard" : "analisis");
+    const validSections = [
+      "dashboard",
+      "analisis",
+      "tantangan",
+      "riwayat",
+      "profil",
+    ];
+
+    if (validSections.includes(section)) {
+      setCurrentMenu(section);
+    } else {
+      setCurrentMenu(savedAnalysis ? "dashboard" : "analisis");
+    }
 
     setIsInitialized(true);
   }, []);

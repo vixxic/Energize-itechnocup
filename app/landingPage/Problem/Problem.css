@@ -114,7 +114,7 @@
 }
 
 @media (max-width: 1024px) {
-  .problem-section {
+  #problem-section {
     padding-inline: 5vw;
   }
 
@@ -124,7 +124,7 @@
 }
 
 @media (max-width: 768px) {
-  .problem-section {
+  #problem-section {
     min-height: auto;
     padding: 80px 5vw;
   }
@@ -178,7 +178,7 @@
 }
 
 @media (max-width: 480px) {
-  .problem-section {
+  #problem-section {
     padding: 65px 5vw;
   }
 

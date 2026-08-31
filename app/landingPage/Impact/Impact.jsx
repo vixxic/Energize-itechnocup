@@ -14,16 +14,22 @@ function Impact() {
 
       <div className="impact-grid-con">
         <div className="impact-box">
-          <img src="/impact-img/impact1.png" />
+          <img src="/impact-img/impact1.png" alt="Dampak penggunaan energi" />
         </div>
         <div className="impact-box">
-          <img src="/impact-img/impact2.png" />
+          <img
+            src="/impact-img/impact2.png"
+            alt="Dampak energi bagi masyarakat"
+          />
         </div>
         <div className="impact-box">
-          <img src="/impact-img/impact3.png" />
+          <img src="/impact-img/impact3.png" alt="Manfaat efisiensi energi" />
         </div>
         <div className="impact-box">
-          <img src="/impact-img/impact4.png" />
+          <img
+            src="/impact-img/impact4.png"
+            alt="Dampak energi terhadap lingkungan"
+          />
         </div>
       </div>
     </div>

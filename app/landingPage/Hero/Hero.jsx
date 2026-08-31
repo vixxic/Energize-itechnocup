@@ -11,53 +11,53 @@ gsap.registerPlugin(ScrollTrigger);
 
 function Hero() {
   useEffect(() => {
-    const triggers = [];
+    const ctx = gsap.context(() => {
+      gsap.to(".layer1", {
+        y: -50,
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#home-section",
+          start: "10% top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
 
-    gsap.to(".layer1", {
-      y: -50,
-      ease: "none",
-      scrollTrigger: {
-        trigger: "#home-section",
-        start: "10% top",
-        end: "bottom top",
-        scrub: true,
-      },
-    });
-    gsap.to(".layer2", {
-      y: 120,
-      ease: "none",
-      scrollTrigger: {
-        trigger: "#home-section",
-        start: "10% top",
-        end: "bottom top",
-        scrub: true,
-      },
-    });
-    gsap.to(".hero-text-con", {
-      y: 120,
-      ease: "none",
-      scrollTrigger: {
-        trigger: "#home-section",
-        start: "10% top",
-        end: "bottom top",
-        scrub: true,
-      },
+      gsap.to(".layer2", {
+        y: 120,
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#home-section",
+          start: "10% top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+
+      gsap.to(".hero-text-con", {
+        y: 120,
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#home-section",
+          start: "10% top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+
+      gsap.to(".layer3", {
+        y: 250,
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#home-section",
+          start: "10% top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
     });
 
-    gsap.to(".layer3", {
-      y: 250,
-      ease: "none",
-      scrollTrigger: {
-        trigger: "#home-section",
-        start: "10% top",
-        end: "bottom top",
-        scrub: true,
-      },
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-    };
+    return () => ctx.revert();
   }, []);
 
   return (

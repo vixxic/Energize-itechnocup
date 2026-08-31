@@ -1,5 +1,28 @@
 import "./Fitur.css";
 
+const fiturFitur = [
+  {
+    img: "/img-fitur/fitur-form-analisis.svg",
+    nama: "Analisis AI",
+    des: "Analisis data penggunaan listrik rumah untuk menemukan pola konsumsi dan perangkat yang paling banyak menggunakan energi.",
+  },
+  {
+    img: "/img-fitur/fitur-tantangan-dan-badges.svg",
+    nama: "Badge & Pencapaian",
+    des: "Dapatkan badge sebagai penghargaan setelah berhasil menyelesaikan tantangan hemat energi.",
+  },
+  {
+    img: "/img-fitur/fitur-rekomendasi-ai.svg",
+    nama: "Rekomendasi AI",
+    des: "Dapatkan langkah penghematan yang personal dan mudah diterapkan selama menjalankan tantangan.",
+  },
+  {
+    img: "/img-fitur/fitur-pantau-perubahan.svg",
+    nama: "Dashboard & Profil",
+    des: "Pantau perkembangan konsumsi listrik, hasil penghematan, dan pencapaianmu dalam satu dashboard.",
+  },
+];
+
 function Fitur() {
   return (
     <div id="fitur-section" className="padding">
@@ -12,13 +35,18 @@ function Fitur() {
       </div>
 
       <div className="fitur-card">
-        <div className="main-fitur"></div>
-        <div className="sub-fitur-con">
-          <div className="sub-fitur card"></div>
-          <div className="sub-fitur card"></div>
-          <div className="sub-fitur card"></div>
-          <div className="sub-fitur card"></div>
-        </div>
+        {fiturFitur.map((fitur, index) => (
+          <div key={index} className="our-fitur ">
+            <div className="fitur-img-con">
+              <img src={fitur.img} />
+            </div>
+
+            <div className="fitur-des">
+              <h3>{fitur.nama}</h3>
+              <p>{fitur.des}</p>
+            </div>
+          </div>
+        ))}
       </div>
 
       <p className="lencana-text">
