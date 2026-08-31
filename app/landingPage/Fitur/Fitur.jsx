@@ -21,11 +21,11 @@ function Fitur() {
         </div>
       </div>
 
-      <p className="badge-text">
+      <p className="lencana-text">
         Selesaikan Tantangan dan Dapatkan Penghargaan Anda!!
       </p>
 
-      <div className="badge-con">
+      <div className="lencana-con">
         <img src="/badge-img/badge-efisien.png" />
         <img src="/badge-img/badge-tantangan-pertama.png" />
         <img src="/badge-img/badge-tantangan-kedua.png" />

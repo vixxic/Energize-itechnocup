@@ -1,14 +1,13 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-
 import { UserAnalysisContext } from "@/app/context/UserAnalysisContext";
 
 export const DashboardContext = createContext();
 
-// =========================
+// ====================
 // LOCAL STORAGE
-// =========================
+// ====================
 
 function loadState(key, fallback) {
   if (typeof window === "undefined") {
@@ -31,26 +30,24 @@ function saveState(key, value) {
   try {
     window.localStorage.setItem(key, JSON.stringify(value));
   } catch {
-    // biarin error localStorage
+    // Abaikan error localStorage
   }
 }
 
 export function DashboardProvider({ children }) {
   const { analysis, setAnalysis } = useContext(UserAnalysisContext);
 
-  // =========================
+  // ====================
   // DEFAULT STATE
-  // =========================
+  // ====================
 
   const [isInitialized, setIsInitialized] = useState(false);
 
   const [challenge, setChallenge] = useState(null);
-
   const [activeChallenges, setActiveChallenges] = useState([]);
-
   const [completedChallenges, setCompletedChallenges] = useState([]);
 
-  const [badges, setBadges] = useState([]);
+  const [lencanas, setLencanas] = useState(() => loadState("lencanas", []));
 
   const [currentMenu, setCurrentMenu] = useState("analisis");
 
@@ -65,27 +62,23 @@ export function DashboardProvider({ children }) {
 
   const [dashboardStats, setDashboardStats] = useState(null);
 
-  const [currentElectric, setCurrentElectric] = useState(0);
+  // Konsumsi listrik terbaru
+  const [currentElectric, setCurrentElectric] = useState(null);
 
   const [analysisHistory, setAnalysisHistory] = useState([]);
 
   const [analysisLoading, setAnalysisLoading] = useState(false);
-
   const [analysisError, setAnalysisError] = useState("");
 
-  // =========================
-  // LOAD DATA FROM LOCAL STORAGE
-  // =========================
+  // ====================
+  // LOAD DATA
+  // ====================
 
   useEffect(() => {
     const savedAnalysis = loadState("analysis", null);
-
     const savedChallenge = loadState("challenge", null);
-
     const savedActiveChallenges = loadState("activeChallenges", []);
-
     const savedCompletedChallenges = loadState("completedChallenges", []);
-
     const savedDevices = loadState("devicesData", []);
 
     const savedProfile = loadState("profilInfo", {
@@ -96,160 +89,262 @@ export function DashboardProvider({ children }) {
     });
 
     const savedDashboardStats = loadState("dashboardStats", null);
-
-    const savedCurrentElectric = loadState("currentElectric", 0);
-
+    const savedCurrentElectric = loadState("currentElectric", null);
     const savedAnalysisHistory = loadState("analysisHistory", []);
 
-    const savedBadges = savedAnalysis?.earnedBadges?.length
-      ? savedAnalysis.earnedBadges
-      : loadState("badges", []);
+    const savedLencanas = loadState("lencanas", []);
 
     setChallenge(savedChallenge);
-
     setActiveChallenges(savedActiveChallenges);
-
     setCompletedChallenges(savedCompletedChallenges);
-
     setDevicesData(savedDevices);
-
     setProfilInfo(savedProfile);
-
     setDashboardStats(savedDashboardStats);
 
-    setCurrentElectric(savedCurrentElectric);
+    setCurrentElectric(
+      savedCurrentElectric ?? savedDashboardStats?.totalKwhPerDay ?? null,
+    );
 
     setAnalysisHistory(savedAnalysisHistory);
-
-    setBadges(savedBadges);
+    setLencanas(savedLencanas);
 
     setCurrentMenu(savedAnalysis ? "dashboard" : "analisis");
 
     setIsInitialized(true);
   }, []);
 
-  // =========================
-  // SAVE DEVICES
-  // =========================
+  // ====================
+  // SAVE DATA
+  // ====================
 
   useEffect(() => {
     if (!isInitialized) return;
-
     saveState("devicesData", devicesData);
   }, [devicesData, isInitialized]);
 
-  // =========================
-  // SAVE PROFILE
-  // =========================
-
   useEffect(() => {
     if (!isInitialized) return;
-
     saveState("profilInfo", profilInfo);
   }, [profilInfo, isInitialized]);
 
-  // =========================
-  // SAVE ANALYSIS
-  // =========================
-
   useEffect(() => {
     if (!isInitialized) return;
-
     saveState("analysis", analysis);
   }, [analysis, isInitialized]);
 
-  // =========================
-  // SAVE CHALLENGE
-  // =========================
-
   useEffect(() => {
     if (!isInitialized) return;
-
     saveState("challenge", challenge);
   }, [challenge, isInitialized]);
 
-  // =========================
-  // SAVE ACTIVE CHALLENGES
-  // =========================
-
   useEffect(() => {
     if (!isInitialized) return;
-
     saveState("activeChallenges", activeChallenges);
   }, [activeChallenges, isInitialized]);
 
-  // =========================
-  // SAVE DASHBOARD STATS
-  // =========================
+  useEffect(() => {
+    if (!isInitialized) return;
+    saveState("completedChallenges", completedChallenges);
+  }, [completedChallenges, isInitialized]);
 
   useEffect(() => {
     if (!isInitialized) return;
-
     saveState("dashboardStats", dashboardStats);
   }, [dashboardStats, isInitialized]);
-
-  // =========================
-  // SAVE CURRENT ELECTRIC
-  // =========================
 
   useEffect(() => {
     if (!isInitialized) return;
     saveState("currentElectric", currentElectric);
   }, [currentElectric, isInitialized]);
 
-  // =========================
-  // SAVE ANALYSIS HISTORY
-  // =========================
-
   useEffect(() => {
     if (!isInitialized) return;
-
     saveState("analysisHistory", analysisHistory);
   }, [analysisHistory, isInitialized]);
 
-  // =========================
-  // SAVE COMPLETED CHALLENGES
-  // =========================
-
   useEffect(() => {
     if (!isInitialized) return;
+    saveState("lencanas", lencanas);
+  }, [lencanas, isInitialized]);
 
-    saveState("completedChallenges", completedChallenges);
-  }, [completedChallenges, isInitialized]);
+  // ====================
+  // HITUNG PENGHEMATAN DARI ANALISIS
+  // ====================
 
-  // =========================
-  // SAVE BADGES
-  // =========================
+  const hitungPenghematanAnalisis = (history = analysisHistory) => {
+    if (!history || history.length < 2) {
+      return 0;
+    }
 
-  useEffect(() => {
-    if (!isInitialized) return;
+    let totalHemat = 0;
 
-    saveState("badges", badges);
-  }, [badges, isInitialized]);
+    for (let i = 1; i < history.length; i++) {
+      const sebelumnya = Number(history[i - 1]?.totalKwhPerDay) || 0;
 
-  // =========================
+      const sekarang = Number(history[i]?.totalKwhPerDay) || 0;
+
+      const selisih = sebelumnya - sekarang;
+
+      // Hanya menghitung jika terjadi penurunan
+      if (selisih > 0) {
+        totalHemat += selisih;
+      }
+    }
+
+    return Math.round(totalHemat * 100) / 100;
+  };
+
+  // ====================
+  // HITUNG PENGHEMATAN DARI TANTANGAN
+  // ====================
+
+  const hitungPenghematanTantangan = (challenges = completedChallenges) => {
+    if (!challenges || challenges.length === 0) {
+      return 0;
+    }
+
+    let totalHemat = 0;
+
+    challenges.forEach((item) => {
+      const sebelum = Number(item?.electricBefore) || 0;
+      const sesudah = Number(item?.electricAfter) || 0;
+
+      const selisih = sebelum - sesudah;
+
+      if (selisih > 0) {
+        totalHemat += selisih;
+      }
+    });
+
+    return Math.round(totalHemat * 100) / 100;
+  };
+
+  // ====================
+  // TOTAL PENGHEMATAN
+  // ====================
+
+  const hitungTotalPenghematan = (
+    history = analysisHistory,
+    challenges = completedChallenges,
+  ) => {
+    const dariAnalisis = hitungPenghematanAnalisis(history);
+    const dariTantangan = hitungPenghematanTantangan(challenges);
+
+    return Math.round((dariAnalisis + dariTantangan) * 100) / 100;
+  };
+
+  // ====================
+  // HITUNG CO2
+  // ====================
+
+  const hitungCO2 = (kwh) => {
+    const faktorEmisi = 0.85;
+
+    return Math.round(kwh * faktorEmisi * 100) / 100;
+  };
+
+  // ====================
+  // HITUNG BIAYA
+  // ====================
+
+  const hitungBiayaHemat = (kwh) => {
+    const tarifListrik = 1444.7;
+
+    // kWh/hari × 30 hari × tarif
+    return Math.round(kwh * 30 * tarifListrik);
+  };
+
+  // ====================
+  // CEK LENCANA
+  // ====================
+
+  const checkLencanas = (
+    score = analysis?.energyScore,
+    challenges = completedChallenges,
+    history = analysisHistory,
+  ) => {
+    const energyScore = Number(score) || 0;
+    const jumlahTantangan = challenges?.length || 0;
+
+    const hitungPersentasePenurunan = (history = analysisHistory) => {
+      if (!history || history.length < 2) {
+        return 0;
+      }
+
+      const sebelumnya =
+        Number(history[history.length - 2]?.totalKwhPerMonth) || 0;
+
+      const sekarang =
+        Number(history[history.length - 1]?.totalKwhPerMonth) || 0;
+
+      if (sebelumnya <= 0 || sekarang >= sebelumnya) {
+        return 0;
+      }
+
+      const persentase = ((sebelumnya - sekarang) / sebelumnya) * 100;
+
+      return Math.round(persentase * 100) / 100;
+    };
+
+    const persentasePenurunan = hitungPersentasePenurunan(history);
+
+    const lencanaBaru = [];
+
+    if (energyScore >= 60) {
+      lencanaBaru.push("Energi Efisien");
+    }
+
+    if (jumlahTantangan >= 1) {
+      lencanaBaru.push("Mulai Berhemat");
+    }
+
+    if (jumlahTantangan >= 2) {
+      lencanaBaru.push("Pejuang Energi");
+    }
+
+    if (jumlahTantangan >= 3) {
+      lencanaBaru.push("Ahli Hemat");
+    }
+
+    if (persentasePenurunan >= 10) {
+      lencanaBaru.push("Penjaga Energi");
+    }
+
+    setLencanas((prev) => {
+      const semuaLencana = [...new Set([...prev, ...lencanaBaru])];
+
+      saveState("lencanas", semuaLencana);
+
+      return semuaLencana;
+    });
+  };
+
+  // ====================
   // ACCEPT CHALLENGE
-  // =========================
+  // ====================
 
   const acceptChallenge = (tantangan) => {
     const nama = tantangan.tantangan || tantangan.title;
 
+    // Jangan menerima challenge yang sama
     const sudahAda = activeChallenges.some(
-      (c) => (c.tantangan || c.title) === nama,
+      (item) => (item.tantangan || item.title) === nama,
     );
 
     if (sudahAda) {
       return true;
     }
 
+    // Hanya satu challenge yang boleh aktif
     const adaYangBerjalan = activeChallenges.some(
-      (c) => c.status === "berlangsung",
+      (item) => item.status === "berlangsung",
     );
 
     if (adaYangBerjalan) {
       return false;
     }
 
+    // Konsumsi sebelum challenge
     const electricBefore =
       Number(currentElectric) || Number(dashboardStats?.totalKwhPerDay) || 0;
 
@@ -266,23 +361,32 @@ export function DashboardProvider({ children }) {
     return true;
   };
 
-  // =========================
+  // ====================
   // COMPLETE CHALLENGE
-  // =========================
+  // ====================
 
   const completeChallenge = (tantangan) => {
     const nama = tantangan.tantangan || tantangan.title;
+
     const completedAt = new Date().toISOString();
 
-    // Nilai setelah tantangan menjadi konsumsi terbaru
+    const electricBefore = Number(tantangan.electricBefore) || 0;
+
     const electricAfter = Number(tantangan.electricAfter) || 0;
 
-    // Simpan konsumsi terbaru
+    // Update konsumsi terbaru
     setCurrentElectric(electricAfter);
+
+    // Hapus challenge aktif
+    setActiveChallenges((prev) =>
+      prev.filter((item) => (item.tantangan || item.title) !== nama),
+    );
 
     // Simpan challenge yang selesai
     setCompletedChallenges((prev) => {
-      const sudahAda = prev.some((c) => (c.tantangan || c.title) === nama);
+      const sudahAda = prev.some(
+        (item) => (item.tantangan || item.title) === nama,
+      );
 
       if (sudahAda) {
         return prev;
@@ -294,24 +398,28 @@ export function DashboardProvider({ children }) {
           ...tantangan,
           status: "selesai",
           completedAt,
+          electricBefore,
+          electricAfter,
         },
       ];
     });
 
-    // Cari challenge berikutnya
+    // ====================
+    // CARI CHALLENGE BERIKUTNYA
+    // ====================
+
     const daftarChallenge = challenge?.challenges || [];
 
-    const sudahSelesai = [...completedChallenges, tantangan].map(
-      (c) => c.tantangan || c.title,
+    const namaSelesai = [...completedChallenges, tantangan].map(
+      (item) => item.tantangan || item.title,
     );
 
-    const nextChallenge = daftarChallenge.find((c) => {
-      const namaChallenge = c.tantangan || c.title;
+    const nextChallenge = daftarChallenge.find((item) => {
+      const namaChallenge = item.tantangan || item.title;
 
-      return !sudahSelesai.includes(namaChallenge);
+      return !namaSelesai.includes(namaChallenge);
     });
 
-    // Ganti challenge aktif dengan challenge berikutnya
     if (nextChallenge) {
       setActiveChallenges([
         {
@@ -322,64 +430,61 @@ export function DashboardProvider({ children }) {
         },
       ]);
     } else {
-      // Kalau sudah tidak ada challenge lagi
+      // Semua challenge sudah selesai
       setActiveChallenges([]);
     }
   };
 
-  // =========================
+  // ====================
+  // NEXT CHALLENGE
+  // ====================
+
+  const goToNextChallenge = () => {
+    const daftarChallenge = challenge?.challenges || [];
+
+    const sudahSelesai = completedChallenges.map(
+      (item) => item.tantangan || item.title,
+    );
+
+    const nextChallenge = daftarChallenge.find((item) => {
+      const namaChallenge = item.tantangan || item.title;
+
+      return !sudahSelesai.includes(namaChallenge);
+    });
+
+    if (!nextChallenge) {
+      setActiveChallenges([]);
+      return;
+    }
+
+    setActiveChallenges([
+      {
+        ...nextChallenge,
+        acceptedAt: new Date().toISOString(),
+        status: "berlangsung",
+        electricBefore: currentElectric,
+      },
+    ]);
+  };
+
+  // ====================
   // RUN AI ANALYSIS
-  // =========================
+  // ====================
 
   const runAnalysis = async () => {
     if (devicesData.length === 0) {
       setAnalysisError("Tambahkan minimal satu perangkat.");
-
       return;
     }
 
     setCurrentMenu("dashboard");
-
     setAnalysisLoading(true);
-
     setAnalysisError("");
 
-    // ==========================================
-    // HITUNG CO2
-    // ==========================================
-
-    const hitungCo2 = () => {
-      const totals = analysisHistory.map(
-        (h) => parseFloat(h.totalKwhPerDay) || 0,
-      );
-
-      let simpan = 0;
-
-      for (let i = 1; i < totals.length; i++) {
-        const selisih = totals[i - 1] - totals[i];
-
-        if (selisih > 0) {
-          simpan += selisih;
-        }
-      }
-
-      return Math.round(simpan * 0.85 * 10) / 10;
-    };
-
-    // ==========================================
-    // STATISTIK BADGE
-    // ==========================================
-
-    const statistikBadge = {
-      tantanganSelesai: completedChallenges.length,
-
-      co2HematKg: hitungCo2(),
-    };
-
     try {
-      // ==========================================
+      // ====================
       // REQUEST AI
-      // ==========================================
+      // ====================
 
       const response = await fetch("/api/analyze", {
         method: "POST",
@@ -391,7 +496,14 @@ export function DashboardProvider({ children }) {
         body: JSON.stringify({
           profilInfo,
           devicesData,
-          statistikBadge,
+
+          // Statistik sebelum analisis terbaru
+          statistiklencana: {
+            tantanganSelesai: completedChallenges.length,
+            co2HematKg: hitungCO2(
+              hitungTotalPenghematan(analysisHistory, completedChallenges),
+            ),
+          },
         }),
       });
 
@@ -401,91 +513,86 @@ export function DashboardProvider({ children }) {
         throw new Error(data.error || "Error menganalisis data.");
       }
 
-      // ==========================================
-      // SAVE AI ANALYSIS
-      // ==========================================
+      // ====================
+      // DATA ANALISIS BARU
+      // ====================
 
-      setAnalysis(data);
-
-      setBadges(data.earnedBadges || []);
-
-      // ==========================================
-      // HITUNG DASHBOARD
-      // ==========================================
-
-      // Konsumsi per hari
       const totalKwhPerDay = parseFloat(data.totalKwhPerDay) || 0;
 
-      // Estimasi konsumsi 30 hari
       const totalKwhPerMonth = totalKwhPerDay * 30;
 
-      // Biaya listrik bulanan
       const biayaEstimasi = Math.round(totalKwhPerMonth * 1444.7);
 
-      // Rata-rata konsumsi per penghuni
       const rataKwhPerPenghuni =
         profilInfo.penghuni > 0 ? totalKwhPerDay / profilInfo.penghuni : 0;
 
-      // ==========================================
-      // DATA ANALISIS SEBELUMNYA
-      // ==========================================
+      // ====================
+      // BANDINGKAN DENGAN ANALISIS SEBELUMNYA
+      // ====================
 
       const terakhir =
-        analysisHistory[analysisHistory.length - 1]?.totalKwhPerDay;
+        analysisHistory.length > 0
+          ? Number(
+              analysisHistory[analysisHistory.length - 1]?.totalKwhPerDay,
+            ) || 0
+          : 0;
 
       const dibanding =
-        terakhir && Number(terakhir) > 0
-          ? Math.round(
-              ((totalKwhPerDay - Number(terakhir)) / Number(terakhir)) * 100,
-            )
+        terakhir > 0
+          ? Math.round(((totalKwhPerDay - terakhir) / terakhir) * 100)
           : null;
 
-      // ==========================================
-      // SAVE DASHBOARD STATS
-      // ==========================================
+      // ====================
+      // SIMPAN HISTORY BARU
+      // ====================
 
-      setDashboardStats({
-        penghuni: profilInfo.penghuni,
-
-        // Total konsumsi bulanan
-        totalKwhPerMonth: Math.round(totalKwhPerMonth * 100) / 100,
-
-        // Konsumsi per hari
+      const newHistoryItem = {
         totalKwhPerDay: Math.round(totalKwhPerDay * 100) / 100,
 
-        // Biaya bulanan
+        totalKwhPerMonth: Math.round(totalKwhPerMonth * 100) / 100,
+
+        tanggal: new Date().toISOString(),
+
+        dayaListrik: profilInfo.dayaListrikRumah || "",
+
+        biayaBulanan: biayaEstimasi,
+
+        perangkat: devicesData.length,
+
+        wastePart: data.wastefulDevices || [],
+      };
+
+      const newAnalysisHistory = [...analysisHistory, newHistoryItem];
+
+      // ====================
+      // DASHBOARD STATS
+      // ====================
+
+      const newDashboardStats = {
+        penghuni: profilInfo.penghuni,
+
+        totalKwhPerMonth: Math.round(totalKwhPerMonth * 100) / 100,
+
+        totalKwhPerDay: Math.round(totalKwhPerDay * 100) / 100,
+
         estimasiBiaya: biayaEstimasi,
 
-        // Rata-rata per penghuni
         rataPerPenghuni: Math.round(rataKwhPerPenghuni * 100) / 100,
 
-        // Perbandingan analisis sebelumnya
         dibandingSebelumnya: dibanding,
-      });
+      };
 
-      // ==========================================
-      // SAVE HISTORY
-      // ==========================================
+      // ====================
+      // UPDATE STATE
+      // ====================
 
-      setAnalysisHistory((prev) => [
-        ...prev,
+      setAnalysis(data);
 
-        {
-          totalKwhPerDay: Math.round(totalKwhPerDay * 100) / 100,
+      setDashboardStats(newDashboardStats);
 
-          totalKwhPerMonth: Math.round(totalKwhPerMonth * 100) / 100,
+      setCurrentElectric(newDashboardStats.totalKwhPerDay);
 
-          tanggal: new Date().toISOString(),
-
-          dayaListrik: profilInfo.dayaListrikRumah || "",
-
-          biayaBulanan: biayaEstimasi,
-
-          perangkat: devicesData.length,
-
-          wastePart: data.wastefulDevices || [],
-        },
-      ]);
+      setAnalysisHistory(newAnalysisHistory);
     } catch (error) {
       setAnalysisError(error.message || "Error saat menganalisis data.");
 
@@ -495,9 +602,19 @@ export function DashboardProvider({ children }) {
     }
   };
 
-  // =========================
+  // ====================
+  // CEK LENCANA SETIAP DATA BERUBAH
+  // ====================
+
+  useEffect(() => {
+    if (!isInitialized) return;
+
+    checkLencanas();
+  }, [analysis, completedChallenges, analysisHistory, isInitialized]);
+
+  // ====================
   // CONTEXT VALUE
-  // =========================
+  // ====================
 
   return (
     <DashboardContext.Provider
@@ -531,9 +648,10 @@ export function DashboardProvider({ children }) {
         setCompletedChallenges,
 
         completeChallenge,
+        goToNextChallenge,
 
-        badges,
-        setBadges,
+        lencanas,
+        setLencanas,
 
         profilInfo,
         setProfilInfo,
@@ -545,6 +663,12 @@ export function DashboardProvider({ children }) {
         setCurrentElectric,
 
         analysisHistory,
+
+        hitungPenghematanAnalisis,
+        hitungPenghematanTantangan,
+        hitungTotalPenghematan,
+        hitungCO2,
+        hitungBiayaHemat,
 
         isInitialized,
       }}

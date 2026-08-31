@@ -1,6 +1,5 @@
 import "./DashboardContent.css";
 
-// icons
 import { MdWavingHand } from "react-icons/md";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 import { IoWallet } from "react-icons/io5";
@@ -8,18 +7,16 @@ import { HiOutlineChartBar } from "react-icons/hi";
 import { TbPercentage25 } from "react-icons/tb";
 import { IoMdPeople } from "react-icons/io";
 
-// components
-import { App, Spin } from "antd";
+import { App, Spin, Modal } from "antd";
 
-// context
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
+
 import { DashboardContext } from "../../context/DashboardContext";
 
-// data
 import challengeData from "../../data/challengeData";
 
-// components
 import PresentaseBoros from "../../components/PresentaseBoros/PresentaseBoros";
+
 import FollowUpAi from "../../components/FollowUpAi/FollowUpAi";
 
 const userDataListrik = [
@@ -53,11 +50,36 @@ function DashboardContent() {
     challenge,
     devicesData,
     activeChallenges,
+    completedChallenges,
     acceptChallenge,
     profilInfo,
+    setCurrentMenu,
+    lencanas,
   } = useContext(DashboardContext);
 
   const { message } = App.useApp();
+
+  const [showBadgeModal, setShowBadgeModal] = useState(false);
+
+  useEffect(() => {
+    if (!analysis) return;
+
+    if (!lencanas?.includes("Energi Efisien")) return;
+
+    const sudahPernahLihat = localStorage.getItem(
+      "modalEnergiEfisienSudahDilihat",
+    );
+
+    if (!sudahPernahLihat) {
+      setShowBadgeModal(true);
+    }
+  }, [analysis, lencanas]);
+
+  const handleCloseBadgeModal = () => {
+    setShowBadgeModal(false);
+
+    localStorage.setItem("modalEnergiEfisienSudahDilihat", "true");
+  };
 
   if (analysisLoading) {
     return (
@@ -90,9 +112,9 @@ function DashboardContent() {
     const sukses = acceptChallenge(tantangan);
 
     if (sukses) {
-      message.success(
-        "Tantangan berhasil diterima! Buka halaman tantangan untuk melanjutkan",
-      );
+      message.success("Tantangan berhasil diterima!");
+
+      setCurrentMenu("tantangan");
     } else {
       message.warning(
         "Kamu hanya bisa memilih 1 tantangan sampai tantangan itu selesai",
@@ -102,6 +124,45 @@ function DashboardContent() {
 
   return (
     <div>
+      <Modal
+        open={showBadgeModal}
+        footer={null}
+        closable={true}
+        onCancel={handleCloseBadgeModal}
+        centered
+      >
+        <div className="modal-after-challenge success">
+          <h2>Berhasil Menghemat Energi!</h2>
+
+          <p>
+            Penggunaan listrik kamu sudah cukup efisien. Pertahankan kebiasaan
+            hemat energi ini!
+          </p>
+
+          <p style={{ fontWeight: "bold" }}>
+            Kamu mendapatkan skor energi lebih dari 60
+          </p>
+
+          <div className="badge-modal-con">
+            <div className="badge-bg">
+              <img src="/badge-bg-modal.svg" alt="badge background" />
+            </div>
+
+            <div className="badge-con">
+              <img
+                src="/badge-img/badge-efisien.png"
+                alt="Badge Energi Efisien"
+              />
+            </div>
+          </div>
+
+          <div className="get-badge-text">
+            <p>Selamat! Kamu mendapatkan lencana</p>
+            <h5>Energi Efisien</h5>
+          </div>
+        </div>
+      </Modal>
+
       <div className="header-text-con-dashboard">
         <p>
           Halo! <MdWavingHand color="#F6BB3C" />
@@ -119,14 +180,13 @@ function DashboardContent() {
               <p>{data.title}</p>
 
               <p>
-                {/* JUMLAH PENGHUNI */}
                 {index === 0 && dashboardStats?.penghuni}
 
-                {/* TOTAL KONSUMSI ESTIMASI - PER BULAN */}
                 {index === 1 &&
-                  (dashboardStats?.totalKwhPerMonth ?? "") + " kWh/bulan"}
+                  (profilInfo?.listrikBulanan
+                    ? profilInfo.listrikBulanan
+                    : (dashboardStats?.totalKwhPerMonth ?? "")) + " kWh/bulan"}
 
-                {/* BIAYA LISTRIK BULANAN */}
                 {index === 2 &&
                   (profilInfo?.biayaListrikBulanan
                     ? `Rp${Number(
@@ -136,10 +196,8 @@ function DashboardContent() {
                         dashboardStats?.estimasiBiaya || 0,
                       ).toLocaleString("id-ID")}`)}
 
-                {/* RATA-RATA PER HARI */}
                 {index === 3 && (dashboardStats?.totalKwhPerDay ?? "") + " kWh"}
 
-                {/* DIBANDING SEBELUMNYA */}
                 {index === 4 &&
                   (dashboardStats?.dibandingSebelumnya != null
                     ? dashboardStats.dibandingSebelumnya > 0
@@ -158,57 +216,69 @@ function DashboardContent() {
         <FollowUpAi />
       </div>
 
-      {challenge && (
-        <div className="challenge-div">
-          <div className="text-container-challenge">
-            <h3>
-              Tiga langkah sederhana menuju penggunaan energi yang lebih efisien
-            </h3>
+      {completedChallenges.length >= 3
+        ? null
+        : challenge && (
+            <div className="challenge-div">
+              <div className="text-container-challenge">
+                <h3>
+                  Tiga langkah sederhana menuju penggunaan energi yang lebih
+                  efisien
+                </h3>
 
-            <p>Pilih tantangan pertama anda</p>
-          </div>
+                <p>Pilih tantangan pertama anda</p>
+              </div>
 
-          <div className="div-3-con pilihan-tantangan">
-            {tantanganAi.map((tantangan) => {
-              const diterima = activeChallenges.some(
-                (c) =>
-                  (c.tantangan || c.title) ===
-                  (tantangan.tantangan || tantangan.title),
-              );
+              <div className="div-3-con pilihan-tantangan">
+                {tantanganAi.map((tantangan) => {
+                  const namaTantangan = tantangan.tantangan || tantangan.title;
 
-              return (
-                <div
-                  className="tantangan-box"
-                  key={
-                    tantangan.id ??
-                    tantangan.urutan ??
-                    tantangan.tantangan ??
-                    tantangan.title
-                  }
-                >
-                  <div>
-                    <p className="title">
-                      {tantangan.tantangan || tantangan.title}
-                    </p>
+                  const diterima = activeChallenges.some(
+                    (c) => (c.tantangan || c.title) === namaTantangan,
+                  );
 
-                    <p>{tantangan.des || tantangan.description}</p>
-                  </div>
+                  const sudahSelesai = completedChallenges.some(
+                    (c) => (c.tantangan || c.title) === namaTantangan,
+                  );
 
-                  <button
-                    disabled={diterima}
-                    onClick={() => handleAccept(tantangan)}
-                    style={{
-                      backgroundColor: diterima ? "#756CE1" : "",
-                    }}
-                  >
-                    {diterima ? "Sudah diterima ✓" : "Terima tantangan"}
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
+                  return (
+                    <div
+                      className="tantangan-box"
+                      key={
+                        tantangan.id ??
+                        tantangan.urutan ??
+                        tantangan.tantangan ??
+                        tantangan.title
+                      }
+                    >
+                      <div>
+                        <p className="title">
+                          {tantangan.tantangan || tantangan.title}
+                        </p>
+
+                        <p>{tantangan.des || tantangan.description}</p>
+                      </div>
+
+                      <button
+                        disabled={diterima || sudahSelesai}
+                        onClick={() => handleAccept(tantangan)}
+                        style={{
+                          backgroundColor:
+                            diterima || sudahSelesai ? "#756CE1" : "",
+                        }}
+                      >
+                        {sudahSelesai
+                          ? "Sudah selesai ✓"
+                          : diterima
+                            ? "Sudah diterima ✓"
+                            : "Terima tantangan"}
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
     </div>
   );
 }

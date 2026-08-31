@@ -6,7 +6,7 @@ import { useContext } from "react";
 
 import { DashboardContext } from "../../context/DashboardContext";
 
-import badgeData from "../../data/badgeData";
+import lencanaData from "../../data/badgeData";
 
 import {
   FaTrophy,
@@ -18,18 +18,9 @@ import {
   FaLock,
 } from "react-icons/fa";
 
-const iconMap = {
-  FaTrophy: <FaTrophy />,
-  FaStar: <FaStar />,
-  FaLeaf: <FaLeaf />,
-  FaLock: <FaLock />,
-  FaBolt: <FaBolt />,
-  FaChartLine: <FaChartLine />,
-};
-
 function ProfileContent() {
   const {
-    badges = [],
+    lencanas = [],
     analysisHistory = [],
     completedChallenges = [],
     analysis,
@@ -40,45 +31,112 @@ function ProfileContent() {
   // =========================
 
   const totalAnalisis = analysisHistory.length;
-
   const tantanganSelesai = completedChallenges.length;
 
   // =========================
-  // ENERGI TERHEMAT
+  // HITUNG ENERGI TERHEMAT
   // =========================
-  // Membandingkan konsumsi dari analisis sebelumnya
-  // dengan analisis berikutnya.
+  //
+  // Penghematan dihitung dari:
+  // 1. Penurunan konsumsi antar analisis
+  // 2. Penurunan konsumsi dari tantangan
+  //
+  // Hanya penurunan yang dihitung.
+  // Jika konsumsi naik/tetap → tidak dihitung sebagai penghematan.
+  //
 
-  const energiHemat = (() => {
-    const totals = analysisHistory.map((h) => Number(h.totalKwhPerDay) || 0);
+  const hitungPenghematanAnalisis = () => {
+    if (!analysisHistory || analysisHistory.length < 2) {
+      return 0;
+    }
 
-    let simpan = 0;
+    let totalHemat = 0;
 
-    for (let i = 1; i < totals.length; i++) {
-      const sebelumnya = totals[i - 1];
-      const sekarang = totals[i];
+    for (let i = 1; i < analysisHistory.length; i++) {
+      const sebelumnya = Number(analysisHistory[i - 1]?.totalKwhPerDay) || 0;
 
-      const selisih = sebelumnya - sekarang;
+      const sekarang = Number(analysisHistory[i]?.totalKwhPerDay) || 0;
 
-      if (selisih > 0) {
-        simpan += selisih;
+      if (sebelumnya > 0 && sekarang > 0) {
+        const selisih = sebelumnya - sekarang;
+
+        if (selisih > 0) {
+          totalHemat += selisih;
+        }
       }
     }
 
-    return Math.round(simpan * 100) / 100;
-  })();
+    return totalHemat;
+  };
 
   // =========================
-  // CO2 TERHEMAT
+  // HITUNG PENGHEMATAN TANTANGAN
   // =========================
 
-  const totalCO2 = Math.round(energiHemat * 0.85 * 100) / 100;
+  const hitungPenghematanTantangan = () => {
+    if (!completedChallenges || completedChallenges.length === 0) {
+      return 0;
+    }
+
+    let totalHemat = 0;
+
+    completedChallenges.forEach((challenge) => {
+      const sebelum = Number(challenge?.electricBefore) || 0;
+      const sesudah = Number(challenge?.electricAfter) || 0;
+
+      if (sebelum > 0 && sesudah > 0) {
+        const selisih = sebelum - sesudah;
+
+        if (selisih > 0) {
+          totalHemat += selisih;
+        }
+      }
+    });
+
+    return totalHemat;
+  };
 
   // =========================
-  // BIAYA TERHEMAT
+  // TOTAL ENERGI TERHEMAT
   // =========================
 
-  const penghematanBiaya = Math.round(energiHemat * 30 * 1444.7);
+  const energiHematAnalisis = hitungPenghematanAnalisis();
+  const energiHematTantangan = hitungPenghematanTantangan();
+
+  const energiHemat =
+    Math.round((energiHematAnalisis + energiHematTantangan) * 100) / 100;
+
+  // =========================
+  // HITUNG BIAYA DIHEMAT
+  // =========================
+
+  const hitungBiayaHemat = (kwh) => {
+    const tarifListrik = 1444.7;
+
+    // Penghematan kWh/hari
+    // dikalikan 30 hari
+    // lalu dikalikan tarif listrik per kWh
+
+    const biaya = kwh * 30 * tarifListrik;
+
+    return Math.round(biaya);
+  };
+
+  const penghematanBiaya = hitungBiayaHemat(energiHemat);
+
+  // =========================
+  // HITUNG CO2 DIHINDARI
+  // =========================
+
+  const hitungCO2 = (kwh) => {
+    const faktorEmisi = 0.85;
+
+    const co2 = kwh * faktorEmisi;
+
+    return Math.round(co2 * 100) / 100;
+  };
+
+  const totalCO2 = hitungCO2(energiHemat);
 
   // =========================
   // SCORE
@@ -87,10 +145,10 @@ function ProfileContent() {
   const energyScore = Number(analysis?.energyScore) || 0;
 
   // =========================
-  // BADGE
+  // lencana
   // =========================
 
-  const jumlahBadge = badges.length;
+  const jumlahlencana = lencanas.length;
 
   return (
     <main className="profile-page">
@@ -105,30 +163,6 @@ function ProfileContent() {
           <h1>Profil Energi</h1>
 
           <p>Lihat perjalanan dan pencapaianmu dalam menghemat energi.</p>
-        </div>
-      </section>
-
-      {/* ================= PROFILE CARD ================= */}
-
-      <section className="profile-card">
-        <div className="profile-avatar">
-          <FaBolt />
-        </div>
-
-        <div className="profile-info">
-          <h2>Pengguna Energize</h2>
-
-          <p>Eco Energy Saver</p>
-
-          <span>Terus jaga kebiasaan hemat energimu!</span>
-        </div>
-
-        <div className="profile-badge-count">
-          <FaMedal />
-
-          <strong>{jumlahBadge}</strong>
-
-          <span>Badge diperoleh</span>
         </div>
       </section>
 
@@ -176,35 +210,35 @@ function ProfileContent() {
             </div>
           </div>
 
-          {/* LISTRIK */}
+          {/* skor energi */}
 
           <div className="stat-card">
             <div className="stat-icon">
-              <FaBolt />
+              <FaStar />
             </div>
 
             <div>
-              <span>Energi Terhemat</span>
+              <span>Skor Efisiensi Terakhir</span>
 
-              <strong>{energiHemat}</strong>
+              <strong>{energyScore}</strong>
 
-              <small>kWh</small>
+              <small>/ 100</small>
             </div>
           </div>
 
-          {/* CO2 */}
+          {/* lencana diperoleh*/}
 
           <div className="stat-card">
             <div className="stat-icon">
-              <FaLeaf />
+              <FaMedal />
             </div>
 
             <div>
-              <span>CO₂ Dihindari</span>
+              <span>lencana diperoleh</span>
 
-              <strong>{totalCO2}</strong>
+              <strong>{jumlahlencana}</strong>
 
-              <small>kg CO₂</small>
+              <small>lencana</small>
             </div>
           </div>
         </div>
@@ -221,6 +255,8 @@ function ProfileContent() {
           <span>Estimasi Dampak Penghematan</span>
 
           <div className="saving-row">
+            {/* ENERGI */}
+
             <div>
               <strong>{energiHemat}</strong>
 
@@ -229,13 +265,15 @@ function ProfileContent() {
               <small>Energi dihemat</small>
             </div>
 
-            <div>
-              <strong>{penghematanBiaya.toLocaleString("id-ID")}</strong>
+            {/* BIAYA */}
 
-              <span>Rp</span>
+            <div>
+              <strong>Rp{penghematanBiaya.toLocaleString("id-ID")}</strong>
 
               <small>Estimasi biaya dihemat</small>
             </div>
+
+            {/* CO2 */}
 
             <div>
               <strong>{totalCO2}</strong>
@@ -248,65 +286,37 @@ function ProfileContent() {
         </div>
       </section>
 
-      {/* ================= SCORE ================= */}
+      {/* ================= lencana ================= */}
 
-      <section className="score-card">
-        <div className="score-icon">
-          <FaStar />
-        </div>
-
-        <div className="score-content">
-          <span>Skor Efisiensi Terakhir</span>
-
-          <div className="score-row">
-            <strong>{energyScore}</strong>
-
-            <span>/100</span>
-          </div>
-
-          <p>
-            {energyScore >= 80
-              ? "Performa energimu sangat baik!"
-              : energyScore >= 60
-                ? "Kamu sudah berada di jalur yang baik."
-                : energyScore > 0
-                  ? "Masih ada peluang untuk meningkatkan efisiensi."
-                  : "Lakukan analisis untuk mendapatkan skor efisiensi."}
-          </p>
-        </div>
-      </section>
-
-      {/* ================= BADGE ================= */}
-
-      <section className="profile-section badge-section">
+      <section className="profile-section lencana-section">
         <div className="section-heading">
           <div>
             <h2>Pencapaian</h2>
 
-            <p>Kumpulkan badge dengan membangun kebiasaan hemat energi.</p>
+            <p>Kumpulkan lencana dengan membangun kebiasaan hemat energi.</p>
           </div>
 
-          <span className="badge-progress">
-            {badges.length}/{badgeData.length}
+          <span className="lencana-progress">
+            {lencanas.length}/{lencanaData.length}
           </span>
         </div>
 
-        <div className="badge-list">
-          {badgeData.map((item) => {
-            const diperoleh = badges.includes(item.nama);
+        <div className="lencana-list">
+          {lencanaData.map((item) => {
+            const diperoleh = lencanas.includes(item.nama);
 
             return (
               <div
-                className={`badge-item ${
-                  diperoleh ? "badge-unlocked" : "badge-locked"
+                className={`lencana-item ${
+                  diperoleh ? "lencana-unlocked" : "lencana-locked"
                 }`}
                 key={item.id}
               >
-                <div className={`badge-icon ${diperoleh ? item.color : ""}`}>
-                  {diperoleh ? iconMap[item.icon] || <FaMedal /> : <FaLock />}
+                <div className={`lencana-icon ${diperoleh ? item.color : ""}`}>
+                  {diperoleh ? <img src={item.img} /> : <FaLock />}
                 </div>
 
-                <div className="badge-info">
+                <div className="lencana-info">
                   <h3>{item.nama}</h3>
 
                   <p>{item.syarat}</p>

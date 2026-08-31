@@ -116,7 +116,7 @@
   font-size: 13px;
 }
 
-.profile-badge-count {
+.profile-lencana-count {
   min-width: 120px;
 
   display: flex;
@@ -131,17 +131,17 @@
   color: #33187e;
 }
 
-.profile-badge-count svg {
+.profile-lencana-count svg {
   font-size: 24px;
   margin-bottom: 5px;
 }
 
-.profile-badge-count strong {
+.profile-lencana-count strong {
   font-size: 25px;
   color: #333;
 }
 
-.profile-badge-count span {
+.profile-lencana-count span {
   font-size: 11px;
   color: #888;
   text-align: center;
@@ -446,10 +446,10 @@
 }
 
 /* =====================================================
-   BADGE
+   lencana
 ===================================================== */
 
-.badge-progress {
+.lencana-progress {
   padding: 6px 12px;
 
   border-radius: 20px;
@@ -465,7 +465,7 @@
   white-space: nowrap;
 }
 
-.badge-list {
+.lencana-list {
   display: grid;
 
   grid-template-columns: repeat(2, 1fr);
@@ -473,7 +473,7 @@
   gap: 15px;
 }
 
-.badge-item {
+.lencana-item {
   min-height: 125px;
 
   display: flex;
@@ -496,15 +496,15 @@
     box-shadow 0.2s ease;
 }
 
-.badge-item.badge-unlocked:hover {
+.lencana-item.lencana-unlocked:hover {
   transform: translateY(-3px);
 
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
 }
 
-/* BADGE ICON */
+/* lencana ICON */
 
-.badge-icon {
+.lencana-icon {
   width: 52px;
   height: 52px;
 
@@ -523,28 +523,15 @@
   font-size: 22px;
 }
 
-/* warna badge */
-
-.badge-icon.gold {
-  background: #fff3d0;
-  color: #f5a623;
+.lencana-icon img {
+  width: 100%;
 }
 
-.badge-icon.purple {
-  background: #f0ecff;
-  color: #7444ff;
-}
-
-.badge-icon.green {
-  background: #e8f9ee;
-  color: #2da348;
-}
-
-.badge-info {
+.lencana-info {
   min-width: 0;
 }
 
-.badge-info h3 {
+.lencana-info h3 {
   margin: 0 0 4px;
 
   font-size: 15px;
@@ -552,7 +539,7 @@
   color: #24196d;
 }
 
-.badge-info p {
+.lencana-info p {
   margin: 0 0 8px;
 
   color: #888;
@@ -562,7 +549,7 @@
   line-height: 1.4;
 }
 
-.badge-info span {
+.lencana-info span {
   font-size: 10px;
 
   font-weight: 600;
@@ -570,17 +557,17 @@
   color: #756ce1;
 }
 
-.badge-locked {
+.lencana-locked {
   opacity: 0.48;
 }
 
-.badge-locked .badge-icon {
+.lencana-locked .lencana-icon {
   background: #f2f2f2;
 
   color: #999;
 }
 
-.badge-locked .badge-info span {
+.lencana-locked .lencana-info span {
   color: #999;
 }
 
@@ -597,7 +584,7 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .badge-list {
+  .lencana-list {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -683,7 +670,7 @@
     font-size: 11px;
   }
 
-  .profile-badge-count {
+  .profile-lencana-count {
     width: 100%;
 
     min-width: 0;
@@ -826,32 +813,32 @@
     line-height: 1.5;
   }
 
-  /* BADGE */
+  /* lencana */
 
-  .badge-list {
+  .lencana-list {
     grid-template-columns: 1fr;
 
     gap: 10px;
   }
 
-  .badge-item {
+  .lencana-item {
     min-height: 105px;
 
     padding: 15px;
   }
 
-  .badge-icon {
+  .lencana-icon {
     width: 45px;
     height: 45px;
 
     font-size: 19px;
   }
 
-  .badge-info h3 {
+  .lencana-info h3 {
     font-size: 14px;
   }
 
-  .badge-info p {
+  .lencana-info p {
     font-size: 10px;
   }
 }
@@ -882,11 +869,11 @@
     font-size: 11px;
   }
 
-  .badge-item {
+  .lencana-item {
     gap: 10px;
   }
 
-  .badge-icon {
+  .lencana-icon {
     width: 42px;
     height: 42px;
 

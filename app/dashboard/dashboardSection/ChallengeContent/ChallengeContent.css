@@ -1,3 +1,30 @@
+.clear-all-challenge-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.clear-all-challenge-page img {
+  opacity: 0.5;
+  width: 5%;
+  margin-bottom: 1vw;
+}
+
+.clear-all-challenge-page h3 {
+  color: rgb(35, 4, 71);
+  opacity: 0.5;
+  margin: 0;
+}
+
+.clear-all-challenge-page p {
+  margin: 0;
+  color: rgb(35, 4, 71);
+  opacity: 0.8;
+  text-align: center;
+}
+
 .css-var-root.ant-progress {
   --ant-progress-default-color: linear-gradient(
     90deg,
@@ -76,7 +103,7 @@
   font-size: 13px;
 }
 
-.goodBadge {
+.goodlencana {
   background: #d8f7dc;
   color: #2da348;
   font-size: 11px;
@@ -133,7 +160,7 @@
 .activeCard,
 .aiCard,
 .CompletedCard,
-.badgeCard {
+.lencanaCard {
   background: white;
   border-radius: 12px;
   padding: 14px;
@@ -143,10 +170,38 @@
 .activeCard h3,
 .aiCard h3,
 .CompletedCard h3,
-.badgeCard h3 {
+.lencanaCard h3 {
   font-size: 14px;
   margin: 0 0 14px;
   color: #1d1352;
+}
+
+.aiCard p {
+  margin-bottom: 14px;
+}
+
+.electric-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: -8px;
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #efe9ff;
+  border: 1px solid #dce9df;
+}
+
+.electric-note span {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.electric-note p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: #5b47a1;
 }
 
 .recommendationList {
@@ -344,28 +399,28 @@
   background: #fff5d8;
 }
 
-.badgeHeader {
+.lencanaHeader {
   display: flex;
   justify-content: space-between;
 }
 
-.badgeHeader a {
+.lencanaHeader a {
   font-size: 10px;
   color: #6633ff;
 }
 
-.badgeList {
+.lencanaList {
   display: flex;
   gap: 8px;
 }
 
-.badgeItem {
+.lencanaItem {
   flex: 1;
   text-align: center;
   font-size: 10px;
 }
 
-.badgeItem svg {
+.lencanaItem svg {
   width: 35px;
   height: 35px;
   padding: 8px;
@@ -374,12 +429,12 @@
   color: #6633ff;
 }
 
-.badgeItem span,
-.badgeItem small {
+.lencanaItem span,
+.lencanaItem small {
   display: block;
 }
 
-.badgeItem small {
+.lencanaItem small {
   color: #888;
 }
 
@@ -387,78 +442,76 @@
    MODAL AFTER CHALLENGE
 ========================= */
 
-.modal-after-challenge {
-  width: 100%;
-  padding: 10px 4px 8px;
+.energy-result-modal .ant-modal-content {
+  padding: 0;
+  overflow: hidden;
+  border-radius: 7px;
+  background: #fef8f4;
+}
 
+.energy-result-modal .ant-modal-close {
+  top: 14px;
+  right: 14px;
+  z-index: 20;
+}
+
+.energy-result-modal .ant-modal-close:hover {
+  background: transparent;
+}
+
+.modal-after-challenge h2,
+.modal-after-challenge p {
+  color: #33187e;
+  text-align: center;
+  margin: 5px 0;
+}
+
+.modal-after-challenge p {
+  font-size: 10px;
+  margin-bottom: 14px;
+}
+
+.badge-modal-con {
+  width: 100%;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  margin: 40px 0;
+  align-items: center;
+}
+
+.badge-con {
+  width: 25%;
+}
+
+.badge-con img {
+  position: relative;
+  width: 100%;
+  z-index: 1000;
+}
+
+.badge-bg {
+  position: absolute;
+}
+
+.badge-bg img {
+  width: 100%;
+}
+
+.get-badge-text {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-/* Judul */
-.modal-after-challenge h3 {
-  width: 100%;
-  margin: 0 0 24px;
-
-  font-size: 19px;
-  font-weight: 700;
-  color: #303030;
-
-  text-align: left;
-}
-
-/* Icon */
-.modal-after-challenge > div {
-  width: 58px;
-  height: 58px;
-
-  margin-bottom: 20px;
-
-  display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 
-  border-radius: 50%;
-  background: #f1edff;
-
-  font-size: 25px;
-  color: #6c4cff;
+  margin-bottom: 10px;
 }
 
-/* Text */
-.modal-after-challenge p {
-  margin: 0;
-
-  font-size: 14px;
-  line-height: 1.6;
-  color: #777;
-
-  text-align: left;
+.get-badge-text p,
+.get-badge-text h5 {
+  margin: 0%;
+  color: #33187e;
 }
-
-/* =========================
-   SUCCESS
-========================= */
-
-.modal-after-challenge.success > div {
-  color: #4caf50;
-  background: #eaf8ed;
-}
-
-/* =========================
-   FAILED
-========================= */
-
-.modal-after-challenge.failed > div {
-  color: #e89b2c;
-  background: #fff5e6;
-}
-
-/* =========================
-   BUTTON
-========================= */
 
 .completeBtn {
   width: calc(100% - 8px);
@@ -466,9 +519,16 @@
 
   margin: 18px 4px 4px;
 
-  border: 2px solid linear-gradient(90deg, rgb(138, 79, 255), rgb(168, 94, 255));
+  border: 2px solid transparent;
   border-radius: 10px;
 
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(90deg, rgb(138, 79, 255), rgb(168, 94, 255)) border-box;
+
+  color: #8a4fff;
+
+  font-family: inherit;
   font-size: 13px;
   font-weight: 500;
 
@@ -478,9 +538,13 @@
 }
 
 .completeBtn:hover {
-  background: linear-gradient(90deg, rgb(138, 79, 255), rgb(168, 94, 255));
-  border-color: linear-gradient(90deg, rgb(138, 79, 255), rgb(168, 94, 255));
+  background:
+    linear-gradient(90deg, rgb(138, 79, 255), rgb(168, 94, 255)) padding-box,
+    linear-gradient(90deg, rgb(138, 79, 255), rgb(168, 94, 255)) border-box;
+
   color: #fff;
+
+  box-shadow: 0 4px 12px rgba(138, 79, 255, 0.2);
 }
 
 @media (max-width: 900px) {
@@ -495,5 +559,13 @@
   .line {
     width: 100%;
     height: 1px;
+  }
+
+  .clear-all-challenge-page img {
+    width: 10%;
+  }
+
+  .clear-all-challenge-page p {
+    display: none;
   }
 }

@@ -8,7 +8,8 @@ import "./FollowUpAi.css";
 import { FaRegHandPointDown } from "react-icons/fa";
 
 export default function FollowUpAi() {
-  const { analysis, challenge, setChallenge } = useContext(DashboardContext);
+  const { analysis, challenge, setChallenge, completedChallenges } =
+    useContext(DashboardContext);
 
   const { message } = App.useApp();
 
@@ -79,35 +80,64 @@ export default function FollowUpAi() {
   }
 
   if (challenge) {
-    return (
-      <div className="followUpCard followUpCompleted">
-        <div className="followHeader">
-          <div>
-            <h2>Tantangan kamu sudah siap!</h2>
+    if (completedChallenges.length >= 3) {
+      return (
+        <div className="followUpCard followUpCompleted">
+          <div className="followHeader">
+            <div>
+              <h2>Semua Tantangan Selesai!</h2>
+            </div>
+          </div>
 
+          <div className="challenge-icon">
+            <img style={{ width: "70%" }} src="./cup-img.svg" />
+          </div>
+
+          <div className="challengeReminder">
             <p>
-              Berdasarkan jawaban kamu, kami sudah menyiapkan 3 tantangan hemat
-              energi yang sesuai.
+              Total tantangan selesai:{" "}
+              <strong>{completedChallenges.length}/3</strong>
             </p>
+
+            <strong>
+              Kamu telah menyelesaikan semua tantangan hemat energi. Pertahankan
+              kebiasaan hemat listrik setiap hari!
+            </strong>
           </div>
         </div>
+      );
+    } else {
+      return (
+        <div className="followUpCard followUpCompleted">
+          <div className="followHeader">
+            <div>
+              <h2>Tantangan kamu sudah siap!</h2>
 
-        <div className="challenge-icon">
-          <img src="./challenge-img.svg" />
+              <p>
+                Berdasarkan jawaban kamu, kami sudah menyiapkan 3 tantangan
+                hemat energi yang sesuai.
+              </p>
+            </div>
+          </div>
+
+          <div className="challenge-icon">
+            <img src="./challenge-img.svg" />
+          </div>
+
+          <div className="challengeReminder">
+            <p>
+              <FaRegHandPointDown /> Pilih dan mulai salah satu tantangan di
+              bawah
+            </p>
+
+            <strong>
+              Selesaikan tantangan untuk membantu mengurangi penggunaan energi
+              di rumahmu!
+            </strong>
+          </div>
         </div>
-
-        <div className="challengeReminder">
-          <p>
-            <FaRegHandPointDown /> Pilih dan mulai salah satu tantangan di bawah
-          </p>
-
-          <strong>
-            Selesaikan tantangan untuk membantu mengurangi penggunaan energi di
-            rumahmu!
-          </strong>
-        </div>
-      </div>
-    );
+      );
+    }
   }
 
   return (

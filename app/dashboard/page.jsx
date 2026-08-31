@@ -2,7 +2,6 @@
 
 import "./dashboard.css";
 import { useContext } from "react";
-import Image from "next/image"
 import { DashboardContext } from "./context/DashboardContext";
 import Link from "next/link";
 
@@ -24,7 +23,7 @@ const { Sider, Content, Footer } = Layout;
 function BlokirAnalisis({ setCurrentMenu }) {
   return (
     <div className="blokir-analisis">
-      <Image src="/lock-img.svg" alt="lock-img" width={100} height={80} />
+      <img src="/lock-img.svg" alt="lock-img" width={100} height={80} />
       <h3>Fitur Belum Tersedia</h3>
       <p>Lakukan analisis energi untuk membuka fitur ini.</p>
       <button type="button" onClick={() => setCurrentMenu("analisis")}>

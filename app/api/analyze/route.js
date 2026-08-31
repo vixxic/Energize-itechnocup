@@ -251,11 +251,11 @@ const hitungFallback = (devicesData) => {
       top[0]?.nama || "perangkat dengan konsumsi tertinggi"
     }.`,
 
-    earnedBadges: [],
+    earnedlencanas: [],
   };
 };
 
-const buildPrompt = (profilInfo, devicesText, statistikBadge, retry) => {
+const buildPrompt = (profilInfo, devicesText, statistiklencana, retry) => {
   const profil = profilInfo || {};
 
   return `Kamu adalah analis energi listrik rumah tangga Indonesia yang KRITIS, OBJEKTIF, dan BERBASIS DATA.
@@ -284,8 +284,8 @@ ${devicesText}
 STATISTIK USER
 =========================
 
-- Tantangan selesai: ${statistikBadge.tantanganSelesai}
-- Streak hari berturut-turut: ${statistikBadge.streakHari}
+- Tantangan selesai: ${statistiklencana.tantanganSelesai}
+- Streak hari berturut-turut: ${statistiklencana.streakHari}
 
 =========================
 TUGAS 1 — ANALISIS PERANGKAT
@@ -365,10 +365,10 @@ Prioritaskan perangkat yang memiliki kombinasi:
 Buat 4 pilihan jawaban yang masuk akal dan berhubungan langsung dengan pertanyaan.
 
 =========================
-TUGAS 4 — BADGE
+TUGAS 4 — lencana
 =========================
 
-Evaluasi badge berdasarkan statistik user.
+Evaluasi lencana berdasarkan statistik user.
 
 "Hemat Pemula"
 Jika tantangan selesai >= 1
@@ -379,7 +379,7 @@ Jika streak hari berturut-turut >= 7
 "Ahli Hemat"
 Jika tantangan selesai >= 20
 
-Masukkan badge yang memenuhi syarat ke "earnedBadges".
+Masukkan lencana yang memenuhi syarat ke "earnedlencanas".
 
 Jika tidak ada, gunakan [].
 
@@ -467,7 +467,7 @@ Format:
     "Kadang-kadang tetap menyala",
     "Lainnya"
   ],
-  "earnedBadges": []
+  "earnedlencanas": []
 }
 
 ${
@@ -489,7 +489,7 @@ Jangan menambahkan teks apa pun.
 
 export const POST = async (request) => {
   try {
-    const { profilInfo, devicesData, statistikBadge } = await request.json();
+    const { profilInfo, devicesData, statistiklencana } = await request.json();
 
     if (!Array.isArray(devicesData) || devicesData.length === 0) {
       return NextResponse.json(
@@ -515,7 +515,7 @@ export const POST = async (request) => {
       );
     }
 
-    const sb = statistikBadge || {};
+    const sb = statistiklencana || {};
 
     const stats = {
       tantanganSelesai: Number(sb.tantanganSelesai) || 0,
@@ -685,8 +685,10 @@ export const POST = async (request) => {
             finalWastefulDevices[0] || "perangkat dengan konsumsi tertinggi"
           }.`,
 
-          earnedBadges: Array.isArray(parsed.earnedBadges)
-            ? parsed.earnedBadges.filter((badge) => typeof badge === "string")
+          earnedlencanas: Array.isArray(parsed.earnedlencanas)
+            ? parsed.earnedlencanas.filter(
+                (lencana) => typeof lencana === "string",
+              )
             : [],
         };
 

@@ -1,12 +1,16 @@
 import "./ChallengeContent.css";
 
 import { useContext, useEffect, useState } from "react";
+
 import { DashboardContext } from "../../context/DashboardContext";
 
 import { FaTrophy } from "react-icons/fa";
-import { FaArrowTrendDown, FaArrowTrendUp } from "react-icons/fa6";
+
+import { HiOutlineLightBulb } from "react-icons/hi";
 
 import { Progress, Modal, Form, Input, message } from "antd";
+
+import lencanaData from "../../data/badgeData";
 
 function Info() {
   const {
@@ -14,18 +18,14 @@ function Info() {
     completedChallenges,
     challenge,
     completeChallenge,
+    goToNextChallenge,
     analysis,
-    dashboardStats,
-    currentElectric,
     setCurrentMenu,
+    lencanas,
   } = useContext(DashboardContext);
 
-  // =========================
-  // DATA AI
-  // =========================
-
   const acceptedChallenge = activeChallenges?.find(
-    (item) => item.status === "aktif" || item.status === "diterima",
+    (item) => item.status === "berlangsung",
   );
 
   const currentChallenge = challenge?.challenges?.find(
@@ -36,16 +36,8 @@ function Info() {
 
   const aiRecommendations = currentChallenge?.recommendations || [];
 
-  // =========================
-  // SKOR EFISIENSI
-  // =========================
-
   const energyScore = Number(analysis?.energyScore) || 0;
   const energyCategory = analysis?.energyCategory || "Belum dianalisis";
-
-  // =========================
-  // PROGRESS TANTANGAN
-  // =========================
 
   const totalTantanganMingguIni = 3;
   const jumlahSelesai = completedChallenges?.length || 0;
@@ -55,24 +47,20 @@ function Info() {
     100,
   );
 
-  // =========================
-  // MODAL
-  // =========================
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [energyResult, setEnergyResult] = useState(null);
+  const [isLastChallenge, setIsLastChallenge] = useState(false);
+  const [showAllCompleted, setShowAllCompleted] = useState(false);
 
   const [form] = Form.useForm();
 
   useEffect(() => {
-    form.setFieldsValue({
-      electricBefore: currentElectric,
-    });
-  }, [currentElectric, form]);
-
-  // =========================
-  // SELESAIKAN TANTANGAN
-  // =========================
+    if (acceptedChallenge) {
+      form.setFieldsValue({
+        electricBefore: acceptedChallenge.electricBefore,
+      });
+    }
+  }, [acceptedChallenge, form]);
 
   const completingChallenge = (values) => {
     if (!acceptedChallenge) {
@@ -80,7 +68,7 @@ function Info() {
       return;
     }
 
-    const electricBefore = Number(currentElectric) || 0;
+    const electricBefore = Number(acceptedChallenge?.electricBefore) || 0;
     const electricAfter = Number(values.electricAfter);
 
     if (!electricAfter || electricAfter <= 0) {
@@ -90,7 +78,10 @@ function Info() {
 
     const isSaving = electricAfter < electricBefore;
 
+    const lastChallenge = completedChallenges.length === 2;
+
     setEnergyResult(isSaving);
+    setIsLastChallenge(lastChallenge);
 
     completeChallenge({
       ...acceptedChallenge,
@@ -98,7 +89,6 @@ function Info() {
       electricAfter,
     });
 
-    // Form akan mengikuti challenge berikutnya
     form.setFieldsValue({
       electricBefore: electricAfter,
       electricAfter: undefined,
@@ -107,12 +97,55 @@ function Info() {
     setIsModalOpen(true);
   };
 
+  const getBadgeModal = () => {
+    const urutanBadge = [
+      "Penjaga Energi",
+      "Ahli Hemat",
+      "Pejuang Energi",
+      "Mulai Berhemat",
+      "Energi Efisien",
+    ];
+
+    const badgeYangDidapat = urutanBadge.find((nama) =>
+      lencanas?.includes(nama),
+    );
+
+    if (!badgeYangDidapat) {
+      return null;
+    }
+
+    const badge = lencanaData.find((item) => item.nama === badgeYangDidapat);
+
+    if (!badge) {
+      return null;
+    }
+
+    return {
+      id: badge.id,
+      nama: badge.nama,
+      img: badge.img,
+      syarat: badge.syarat,
+    };
+  };
+
+  if (showAllCompleted) {
+    return (
+      <div className="clear-all-challenge-page">
+        <img src="/cup-img.svg" alt="cup" width={100} height={80} />
+
+        <h3>Semua Tantangan Selesai!</h3>
+
+        <p>
+          Kamu telah menyelesaikan 3 tantangan hemat energi. Pertahankan
+          <br />
+          kebiasaan baikmu untuk penggunaan energi yang lebih efisien.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div>
-      {/* =========================
-          HEADER
-      ========================= */}
-
       <div className="challenge-text-con-dashboard">
         <p>Tantangan</p>
 
@@ -122,13 +155,7 @@ function Info() {
         </p>
       </div>
 
-      {/* =========================
-          BAGIAN ATAS
-      ========================= */}
-
       <div className="topCard">
-        {/* SKOR */}
-
         <div className="topItem">
           <div className="topIcon trophy">
             <FaTrophy />
@@ -142,14 +169,12 @@ function Info() {
 
               <span>/100</span>
 
-              <div className="goodBadge">{energyCategory}</div>
+              <div className="goodlencana">{energyCategory}</div>
             </div>
           </div>
         </div>
 
         <div className="line"></div>
-
-        {/* PROGRESS */}
 
         <div className="progressSection">
           <p className="topLabel">Progress Minggu Ini</p>
@@ -164,15 +189,7 @@ function Info() {
         </div>
       </div>
 
-      {/* =========================
-          BAGIAN BAWAH
-      ========================= */}
-
       <div className="challengeGrid">
-        {/* =========================
-            TANTANGAN AKTIF
-        ========================= */}
-
         <div className="activeCard">
           <h3>Tantangan Aktif</h3>
 
@@ -203,10 +220,6 @@ function Info() {
           )}
         </div>
 
-        {/* =========================
-            SELESAIKAN TANTANGAN
-        ========================= */}
-
         <div className="CompletedCard">
           <h3>Selesaikan tantangan ini</h3>
 
@@ -215,20 +228,16 @@ function Info() {
             className="completeForm"
             layout="vertical"
             initialValues={{
-              electricBefore: currentElectric,
+              electricBefore: acceptedChallenge?.electricBefore || 0,
             }}
             onFinish={completingChallenge}
           >
-            {/* SEBELUM */}
-
             <Form.Item
               label="Penggunaan Listrik Sebelum Tantangan"
               name="electricBefore"
             >
               <Input readOnly suffix="kWh/hari" />
             </Form.Item>
-
-            {/* SESUDAH */}
 
             <Form.Item
               label="Penggunaan Listrik Setelah Tantangan"
@@ -258,6 +267,18 @@ function Info() {
               <Input type="number" min={0} step="0.01" suffix="kWh/hari" />
             </Form.Item>
 
+            <div className="electric-note">
+              <span>
+                <HiOutlineLightBulb color="rgb(140, 92, 255)" size={20} />
+              </span>
+
+              <p>
+                Untuk mengetahui rata-rata penggunaan listrik setelah tantangan,
+                lakukan analisis kembali setelah menerapkan kebiasaan hemat
+                energi.
+              </p>
+            </div>
+
             <div>
               <button
                 type="submit"
@@ -270,51 +291,99 @@ function Info() {
           </Form>
         </div>
 
-        {/* =========================
-            MODAL HASIL TANTANGAN
-        ========================= */}
-
         <Modal open={isModalOpen} footer={null} closable={false} centered>
           {energyResult ? (
             <div className="modal-after-challenge success">
-              <h3>🎉 Berhasil Menghemat Energi!</h3>
-
-              <div>
-                <FaArrowTrendDown />
-              </div>
+              <h2>Berhasil Menghemat Energi!</h2>
 
               <p>
                 Penggunaan listrik kamu berhasil diturunkan. Pertahankan
                 kebiasaan hemat energi ini!
               </p>
+
+              {getBadgeModal() && (
+                <>
+                  <p style={{ fontWeight: "bold" }}>
+                    Kamu {getBadgeModal().syarat}
+                  </p>
+
+                  <div className="badge-modal-con">
+                    <div className="badge-bg">
+                      <img src="./badge-bg-modal.svg" alt="badge background" />
+                    </div>
+
+                    <div className="badge-con">
+                      <img
+                        src={getBadgeModal().img}
+                        alt={getBadgeModal().nama}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="get-badge-text">
+                    <p>Selamat kamu mendapatkan lencana</p>
+
+                    <h5>{getBadgeModal().nama}</h5>
+                  </div>
+                </>
+              )}
             </div>
           ) : (
             <div className="modal-after-challenge failed">
-              <h3>💪 Tetap Semangat!</h3>
-
-              <div>
-                <FaArrowTrendUp />
-              </div>
+              <h2>Tantangan Belum Berhasil</h2>
 
               <p>
-                Penggunaan listrik kamu belum mengalami penurunan. Coba terapkan
-                kembali rekomendasi hemat energi untuk hasil yang lebih baik.
+                Penggunaan listrik kamu belum mencapai target penghematan. Yuk,
+                coba lagi dan lakukan perubahan kecil untuk menghemat lebih
+                banyak energi!
               </p>
+
+              {getBadgeModal() && (
+                <>
+                  <p style={{ fontWeight: "bold" }}>
+                    Kamu {getBadgeModal().syarat}
+                  </p>
+
+                  <div className="badge-modal-con">
+                    <div className="badge-bg">
+                      <img src="./badge-bg-modal.svg" alt="badge background" />
+                    </div>
+
+                    <div className="badge-con">
+                      <img
+                        src={getBadgeModal().img}
+                        alt={getBadgeModal().nama}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="get-badge-text">
+                    <p>Selamat kamu mendapatkan lencana</p>
+                    <h5>{getBadgeModal().nama}</h5>
+                  </div>
+                </>
+              )}
             </div>
           )}
 
           <button
-            type="submit"
+            type="button"
             className="completeBtn"
-            disabled={!acceptedChallenge}
+            onClick={() => {
+              setIsModalOpen(false);
+
+              if (isLastChallenge) {
+                setShowAllCompleted(true);
+                setCurrentMenu("profil");
+                return;
+              }
+
+              goToNextChallenge();
+            }}
           >
-            Lanjut Ke Tantangan Berikutnya
+            {isLastChallenge ? "Lihat Hasil" : "Lanjutkan Tantangan Berikutnya"}
           </button>
         </Modal>
-
-        {/* =========================
-            REKOMENDASI AI
-        ========================= */}
 
         <div className="aiCard">
           <h3>Rekomendasi AI</h3>
