@@ -1,34 +1,34 @@
 "use client";
 
-import { useEffect, useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
+import { Layout } from "antd";
+const { Sider, Content, Footer } = Layout;
+
+import { IoChevronBackOutline } from "react-icons/io5";
 
 import "./dashboard.css";
 
 import { DashboardContext } from "./context/DashboardContext";
 
-import Link from "next/link";
-
-import { IoChevronBackOutline } from "react-icons/io5";
-
-// components
+// component
 import BottomNav from "./components/BottomNav/BottomNav";
 import SiderNav from "./components/SiderNav/SiderNav";
 
+// halaman aplikatif
 import FormContent from "./dashboardSection/FormContent/FormContent";
 import DashboardContent from "./dashboardSection/DashboardContent/DashboardContent";
 import ChallengeContent from "./dashboardSection/ChallengeContent/ChallengeContent";
 import HistoryContent from "./dashboardSection/HistoryContent/HistoryContent";
 import ProfileContent from "./dashboardSection/Profile/ProfileContent";
 
-import { Layout } from "antd";
-
-const { Sider, Content, Footer } = Layout;
-
+// halaman saat user belum melakukan analisis pertama
+// halaman terkunci
 function BlokirAnalisis({ setCurrentMenu }) {
   return (
     <div className="blokir-analisis">
-      <img src="/lock-img.svg" alt="lock-img" width={100} height={80} />
+      <img src="/lock-img.svg" alt="Fitur terkunci" width={100} height={80} />
 
       <h3>Fitur Belum Tersedia</h3>
 
@@ -41,7 +41,8 @@ function BlokirAnalisis({ setCurrentMenu }) {
   );
 }
 
-function Dashboard() {
+export default function Dashboard() {
+  // agar halaman di page dashboard bisa di aksses lewat halaman landing page
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -50,6 +51,7 @@ function Dashboard() {
 
   const section = searchParams.get("section");
 
+  // agar user bisa akses dari footer landing page ke dashboard
   useEffect(() => {
     if (!section) return;
 
@@ -63,12 +65,38 @@ function Dashboard() {
 
     if (validSections.includes(section)) {
       setCurrentMenu(section);
-
       router.replace("/dashboard");
     }
   }, [section, setCurrentMenu, router]);
 
   const terkunci = !analysis && currentMenu !== "analisis" && !analysisLoading;
+
+  const renderContent = () => {
+    if (currentMenu === "analisis") {
+      return <FormContent />;
+    }
+
+    if (terkunci) {
+      return <BlokirAnalisis setCurrentMenu={setCurrentMenu} />;
+    }
+
+    switch (currentMenu) {
+      case "dashboard":
+        return <DashboardContent />;
+
+      case "tantangan":
+        return <ChallengeContent />;
+
+      case "riwayat":
+        return <HistoryContent />;
+
+      case "profil":
+        return <ProfileContent />;
+
+      default:
+        return "404 Halaman Tidak Ditemukan";
+    }
+  };
 
   return (
     <Layout>
@@ -78,7 +106,7 @@ function Dashboard() {
 
       <Content className="content-dashboard">
         <Link href="/">
-          <button className="back-to-landing-btn">
+          <button className="back-to-landing-btn" type="button">
             <span>
               <IoChevronBackOutline />
             </span>
@@ -86,21 +114,7 @@ function Dashboard() {
           </button>
         </Link>
 
-        {currentMenu === "analisis" ? (
-          <FormContent />
-        ) : terkunci ? (
-          <BlokirAnalisis setCurrentMenu={setCurrentMenu} />
-        ) : currentMenu === "dashboard" ? (
-          <DashboardContent />
-        ) : currentMenu === "tantangan" ? (
-          <ChallengeContent />
-        ) : currentMenu === "riwayat" ? (
-          <HistoryContent />
-        ) : currentMenu === "profil" ? (
-          <ProfileContent />
-        ) : (
-          "404 Halaman Tidak di Temukan"
-        )}
+        {renderContent()}
       </Content>
 
       <Footer className="bottom-nav-dashboard">
@@ -109,5 +123,3 @@ function Dashboard() {
     </Layout>
   );
 }
-
-export default Dashboard;

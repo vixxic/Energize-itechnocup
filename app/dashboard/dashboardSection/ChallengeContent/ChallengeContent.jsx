@@ -1,11 +1,9 @@
 import "./ChallengeContent.css";
 
 import { useContext, useEffect, useState } from "react";
-
 import { DashboardContext } from "../../context/DashboardContext";
 
 import { FaTrophy } from "react-icons/fa";
-
 import { HiOutlineLightBulb } from "react-icons/hi";
 
 import { Progress, Modal, Form, Input, message } from "antd";
@@ -24,36 +22,43 @@ function Info() {
     lencanas,
   } = useContext(DashboardContext);
 
+  // mencari tantangan dengan status berlangsung
   const acceptedChallenge = activeChallenges?.find(
     (item) => item.status === "berlangsung",
   );
 
+  // Mencari detail tantangan yang sedang dikerjakan
+  // berdasarkan nama tantangan yang diterima user
   const currentChallenge = challenge?.challenges?.find(
     (item) =>
       (item.tantangan || item.title) ===
       (acceptedChallenge?.tantangan || acceptedChallenge?.title),
   );
 
+  // data rekomendasi ai dari tantangan yang sedang di kerjakan
   const aiRecommendations = currentChallenge?.recommendations || [];
 
+  // score energi hasil analisis dan kategori nya (contoh: efisien atau boros)
   const energyScore = Number(analysis?.energyScore) || 0;
   const energyCategory = analysis?.energyCategory || "Belum dianalisis";
 
+  // menghitung presentase progress tantangan
   const totalTantanganMingguIni = 3;
   const jumlahSelesai = completedChallenges?.length || 0;
-
   const progressTantangan = Math.min(
     Math.round((jumlahSelesai / totalTantanganMingguIni) * 100),
     100,
   );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // melihat energi berhasil turun atau gagal
   const [energyResult, setEnergyResult] = useState(null);
   const [isLastChallenge, setIsLastChallenge] = useState(false);
   const [showAllCompleted, setShowAllCompleted] = useState(false);
 
   const [form] = Form.useForm();
 
+  // memperbaharui nilai electric before setelah user memasukan nilai baru
   useEffect(() => {
     if (acceptedChallenge) {
       form.setFieldsValue({
@@ -62,6 +67,7 @@ function Info() {
     }
   }, [acceptedChallenge, form]);
 
+  // function untuk selesain tantangan
   const completingChallenge = (values) => {
     if (!acceptedChallenge) {
       message.warning("Tidak ada tantangan aktif yang bisa diselesaikan.");
@@ -97,6 +103,7 @@ function Info() {
     setIsModalOpen(true);
   };
 
+  // untuk menentukan badge apa yang di dapat user
   const getBadgeModal = () => {
     const urutanBadge = [
       "Penjaga Energi",
@@ -128,6 +135,7 @@ function Info() {
     };
   };
 
+  // tampilan ketika semua tantangan sudah selesai
   if (showAllCompleted) {
     return (
       <div className="clear-all-challenge-page">
@@ -155,33 +163,34 @@ function Info() {
         </p>
       </div>
 
-      <div className="topCard">
-        <div className="topItem">
-          <div className="topIcon trophy">
+      {/* card score dan progress */}
+      <div className="top-card">
+        <div className="top-item">
+          <div className="top-icon  trophy">
             <FaTrophy />
           </div>
 
           <div>
-            <p className="topLabel">Skor Efisiensi Anda</p>
+            <p className="top-label ">Skor Efisiensi Anda</p>
 
-            <div className="scoreNumber">
+            <div className="score-number">
               <h2>{energyScore}</h2>
 
               <span>/100</span>
 
-              <div className="goodlencana">{energyCategory}</div>
+              <div className="good-lencana">{energyCategory}</div>
             </div>
           </div>
         </div>
 
         <div className="line"></div>
 
-        <div className="progressSection">
-          <p className="topLabel">Progress Minggu Ini</p>
+        <div className="progress-section">
+          <p className="top-label ">Progress Minggu Ini</p>
 
           <Progress percent={progressTantangan} showInfo={false} />
 
-          <div className="progressBottom">
+          <div className="progress-bottom">
             <small>
               {jumlahSelesai} dari {totalTantanganMingguIni} tantangan selesai
             </small>
@@ -189,8 +198,9 @@ function Info() {
         </div>
       </div>
 
-      <div className="challengeGrid">
-        <div className="activeCard">
+      <div className="challenge-grid">
+        {/* card tantangan aktif */}
+        <div className="active-challenge-card">
           <h3>Tantangan Aktif</h3>
 
           {activeChallenges?.filter((item) => item.status !== "selesai")
@@ -198,9 +208,12 @@ function Info() {
             activeChallenges
               .filter((item) => item.status !== "selesai")
               .map((item, index) => (
-                <div className="acBox" key={`${item.acceptedAt}-${index}`}>
-                  <div className="acContent">
-                    <div className="titleRow">
+                <div
+                  className="active-challenge-item"
+                  key={`${item.acceptedAt}-${index}`}
+                >
+                  <div className="active-challenge-content">
+                    <div className="challenge-title">
                       <h1>{item.tantangan || item.title}</h1>
                     </div>
 
@@ -220,7 +233,8 @@ function Info() {
           )}
         </div>
 
-        <div className="CompletedCard">
+        {/* card selesaikan tantangan */}
+        <div className="complete-challenge-card">
           <h3>Selesaikan tantangan ini</h3>
 
           <Form
@@ -282,7 +296,7 @@ function Info() {
             <div>
               <button
                 type="submit"
-                className="completeBtn"
+                className="complete-challenge-btn"
                 disabled={!acceptedChallenge}
               >
                 Selesaikan
@@ -291,6 +305,7 @@ function Info() {
           </Form>
         </div>
 
+        {/* modal jika user mendapatkan badge */}
         <Modal open={isModalOpen} footer={null} closable={false} centered>
           {energyResult ? (
             <div className="modal-after-challenge success">
@@ -368,7 +383,7 @@ function Info() {
 
           <button
             type="button"
-            className="completeBtn"
+            className="complete-challenge-btn"
             onClick={() => {
               setIsModalOpen(false);
 
@@ -385,15 +400,16 @@ function Info() {
           </button>
         </Modal>
 
-        <div className="aiCard">
+        {/* card rekomendasi ai */}
+        <div className="ai-recommendation-card">
           <h3>Rekomendasi AI</h3>
 
           <p>Berdasarkan pola penggunaan energi Anda:</p>
 
-          <div className="recommendationList">
+          <div className="ai-recommendation-list">
             {aiRecommendations.length > 0 ? (
               aiRecommendations.map((recommendation, index) => (
-                <div className="recommendationItem" key={index}>
+                <div className="ai-recommendation-item" key={index}>
                   <p>{recommendation}</p>
                 </div>
               ))

@@ -1,5 +1,5 @@
 .header-text-con-dashboard p:first-child {
-  margin: 0%;
+  margin: 0;
   font-size: clamp(20px, 1.5vw, 30px);
   font-weight: bold;
   color: var(--pallet-nila);
@@ -10,6 +10,8 @@
   color: var(--pallet-nila);
   font-weight: 400;
 }
+
+/* data listrik hasil analisis */
 
 .data-listrik-user {
   width: 100%;
@@ -34,7 +36,6 @@
   align-items: center;
   padding: 1vw;
   border-radius: 15px;
-
   background-color: #f1f1f9;
   color: #2f2074;
 }
@@ -54,6 +55,8 @@
   margin: 0;
 }
 
+/* loading analisis */
+
 .div-2-con {
   display: flex;
   gap: 2vw;
@@ -63,8 +66,10 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20vw;
   justify-content: center;
+
+  padding: 20vw;
+
   gap: 16px;
   text-align: center;
 }
@@ -82,9 +87,7 @@
   color: #777777;
 }
 
-hr {
-  margin: 2vw 0;
-}
+/* bagian tantangan ai */
 
 .text-container-challenge h3 {
   color: #2f2074;
@@ -93,14 +96,17 @@ hr {
 
 .text-container-challenge p {
   color: rgb(58, 58, 58);
-  margin-top: 0%;
+  margin-top: 0;
+}
+
+.challenge-div {
+  margin: 2vw 0;
 }
 
 .div-3-con {
   display: flex;
   width: 100%;
   justify-content: space-between;
-
   gap: 1vw;
 }
 
@@ -111,6 +117,7 @@ hr {
   padding: 1vw;
 
   box-sizing: border-box;
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -119,7 +126,6 @@ hr {
 .tantangan-box .title {
   font-weight: bold;
   color: #2f2074;
-
   font-size: 20px;
   margin-bottom: 0.5vw;
 }
@@ -128,15 +134,13 @@ hr {
   background-color: #2f2074;
   color: #f1f1f9;
   font-weight: bold;
+
   padding: 1vw 2vw;
 
   border: none;
   border-radius: 10px;
-  width: max-content;
-}
 
-.challenge-div {
-  margin: 2vw 0;
+  width: max-content;
 }
 
 @media (max-width: 900px) {
@@ -189,6 +193,7 @@ hr {
     width: 100%;
     min-width: 0;
     box-sizing: border-box;
+
     padding: 8px;
     gap: 8px;
     border-radius: 10px;
@@ -236,6 +241,15 @@ hr {
   .pilihan-tantangan button {
     width: 100%;
     margin-top: 10px;
+  }
+
+  .text-container-challenge {
+    margin: 20px 0;
+    text-align: center;
+  }
+
+  .text-container-challenge p {
+    display: none;
   }
 }
 

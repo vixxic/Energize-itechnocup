@@ -3,26 +3,48 @@
   min-height: 100vh;
 }
 
-.bottom-nav-dashboard {
-  display: none;
-  height: 70px;
-  padding: 0 7vw !important;
-}
-
 .sider-dashboard-con {
-  width: 20%;
   min-height: 100vh;
-
   overflow-y: auto;
   background-color: var(--pallet-nila) !important;
 }
 
 .content-dashboard {
-  background-color: var(--pallet-gading);
-  padding: 2vw;
-  min-height: 100vh;
-  box-sizing: border-box;
   min-width: 0;
+  min-height: 100vh;
+  padding: 2vw;
+  box-sizing: border-box;
+  background-color: var(--pallet-gading);
+}
+
+.back-to-landing-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0;
+  margin-bottom: 20px;
+
+  border: none;
+  background: none;
+
+  color: #201942;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.back-to-landing-btn span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 30px;
+  height: 30px;
+
+  border-radius: 50%;
+  background-color: #2f1f75;
+
+  color: white;
 }
 
 .blokir-analisis {
@@ -30,19 +52,22 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+
+  min-height: calc(100vh - 100px);
+  text-align: center;
 }
 
 .blokir-analisis img {
+  width: 80px;
+  height: auto;
+  margin-bottom: 20px;
   opacity: 0.5;
-  width: 5%;
-  margin-bottom: 1vw;
 }
 
 .blokir-analisis h3 {
+  margin: 0;
   color: rgb(35, 4, 71);
   opacity: 0.5;
-  margin: 0;
 }
 
 .blokir-analisis p {
@@ -52,82 +77,19 @@
 }
 
 .blokir-analisis button {
-  width: max-content;
+  margin-top: 20px;
   padding: 14px;
+
   border: none;
   border-radius: 10px;
-  cursor: pointer;
+
+  background: #2f1f75;
   color: white;
+
   font-size: 14px;
   font-weight: 600;
-  background: #2f1f75;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-  margin-top: 1vw;
-}
 
-.back-to-landing-btn {
-  display: flex;
-  background: none;
-  border: none;
-  margin-bottom: 20px;
-
-  align-items: center;
-  gap: 10px;
-  padding: 0;
-  color: #201942;
-  font-weight: bold;
-}
-
-.back-to-landing-btn span {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 30px;
-  height: 30px;
-  background-color: #2f1f75;
-  border-radius: 50%;
-  color: aliceblue;
-  font-weight: bold;
-}
-
-@media screen and (max-width: 768px) {
-  .sider-dashboard-con {
-    display: none;
-  }
-
-  .content-dashboard {
-    padding: 20px;
-    padding-bottom: 90px;
-  }
-
-  .bottom-nav-dashboard {
-    display: flex;
-    bottom: 0;
-    left: 0;
-
-    width: 100%;
-    z-index: 999;
-
-    padding: 0;
-    margin: 0;
-
-    background-color: var(--pallet-nila);
-  }
-
-  .blokir-analisis img {
-    margin-bottom: 3vw;
-  }
-
-  .blokir-analisis button {
-    margin-top: 3vw;
-  }
-
-  .blokir-analisis img {
-    width: 10%;
-  }
+  cursor: pointer;
 }
 
 .topSection {
@@ -138,10 +100,7 @@
   margin-top: 24px;
 }
 
-.leftSection {
-  min-width: 0;
-}
-
+.leftSection,
 .rightSection {
   min-width: 0;
 }
@@ -149,5 +108,52 @@
 @media (max-width: 1100px) {
   .topSection {
     grid-template-columns: 1fr;
+  }
+}
+
+.bottom-nav-dashboard {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .sider-dashboard-con {
+    display: none;
+  }
+
+  .content-dashboard {
+    padding: 20px;
+    padding-bottom: 90px;
+  }
+
+  .bottom-nav-dashboard {
+    position: fixed;
+    display: flex;
+    align-items: center;
+
+    bottom: 0;
+    left: 0;
+
+    width: 100%;
+    height: 70px;
+
+    margin: 0;
+    padding: 0 7vw !important;
+
+    z-index: 999;
+
+    background-color: var(--pallet-nila);
+  }
+
+  .blokir-analisis {
+    min-height: calc(100vh - 130px);
+  }
+
+  .blokir-analisis img {
+    width: 70px;
+    margin-bottom: 15px;
+  }
+
+  .blokir-analisis button {
+    margin-top: 20px;
   }
 }

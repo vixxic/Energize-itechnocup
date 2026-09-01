@@ -34,7 +34,7 @@
 }
 
 .challenge-text-con-dashboard p:first-child {
-  margin: 0%;
+  margin: 0;
   font-size: clamp(20px, 1.5vw, 30px);
   font-weight: bold;
   color: var(--pallet-nila);
@@ -46,138 +46,117 @@
   font-weight: 400;
 }
 
-.topCard {
-  background: #33187e;
-  border-radius: 14px;
-  padding: 18px 22px;
+.top-card {
   display: flex;
   align-items: center;
-  color: white;
   gap: 20px;
+  padding: 18px 22px;
+  background: #33187e;
+  border-radius: 14px;
+  color: white;
 }
 
-.topItem {
+.top-item {
   display: flex;
   align-items: center;
   gap: 14px;
   flex: 1;
 }
 
-.topIcon {
+.top-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 48px;
   height: 48px;
   border-radius: 50%;
   background: #4930b7;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-size: 22px;
 }
 
-.topIcon.trophy {
+.top-icon .trophy {
   color: #ffc928;
 }
 
-.topIcon.fire {
-  color: #ff7433;
-}
-
-.topLabel {
-  font-size: 11px;
+.top-label {
   margin: 0 0 5px;
+  font-size: 11px;
   opacity: 0.9;
 }
 
-.scoreNumber {
+.score-number {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.scoreNumber h2 {
-  font-size: 30px;
+.score-number h2 {
   margin: 0;
+  font-size: 30px;
 }
 
-.scoreNumber span {
+.score-number span {
   font-size: 13px;
 }
 
-.goodlencana {
+.good-lencana {
+  margin-left: 8px;
+  padding: 4px 10px;
+  border-radius: 15px;
   background: #d8f7dc;
   color: #2da348;
   font-size: 11px;
-  padding: 4px 10px;
-  border-radius: 15px;
-  margin-left: 8px;
 }
 
-.topItem h3 {
-  margin: 0;
-  font-size: 22px;
-}
-
-.topCard small {
+.top-card small {
   font-size: 11px;
   opacity: 0.8;
 }
 
 .line {
-  height: 45px;
   width: 1px;
+  height: 45px;
   background: #ffffff30;
 }
 
-.progressSection {
+.progress-section {
   flex: 1.2;
 }
 
-.progressBar {
-  height: 7px;
-  width: 100%;
-  background: #ddd;
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-.topCard .progressBar {
-  background: #ffffff40;
-}
-
-.progressBottom {
+.progress-bottom {
   display: flex;
   justify-content: space-between;
   margin-top: 8px;
 }
 
-.challengeGrid {
-  margin-top: 14px;
+.challenge-grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr 0.85fr;
   gap: 14px;
+  margin-top: 14px;
 }
 
-.activeCard,
-.aiCard,
-.CompletedCard,
-.lencanaCard {
-  background: white;
-  border-radius: 12px;
+.active-challenge-card,
+.ai-recommendation-card,
+.complete-challenge-card {
   padding: 14px;
+  border-radius: 12px;
+  background: white;
   box-shadow: 0 5px 15px #00000008;
 }
 
-.activeCard h3,
-.aiCard h3,
-.CompletedCard h3,
-.lencanaCard h3 {
-  font-size: 14px;
+.active-challenge-card h3,
+.ai-recommendation-card h3,
+.complete-challenge-card h3 {
   margin: 0 0 14px;
   color: #1d1352;
+  font-size: 14px;
 }
 
-.aiCard p {
+.ai-recommendation-card p {
   margin-bottom: 14px;
+  color: #666;
+  font-size: 11px;
 }
 
 .electric-note {
@@ -187,9 +166,9 @@
   margin-top: -8px;
   margin-bottom: 16px;
   padding: 10px 12px;
+  border: 1px solid #dce9df;
   border-radius: 10px;
   background: #efe9ff;
-  border: 1px solid #dce9df;
 }
 
 .electric-note span {
@@ -199,248 +178,78 @@
 
 .electric-note p {
   margin: 0;
+  color: #5b47a1;
   font-size: 12px;
   line-height: 1.5;
-  color: #5b47a1;
 }
 
-.recommendationList {
+.ai-recommendation-list {
   display: flex;
   flex-direction: column;
   gap: 0.5vw;
 }
 
-.recommendationItem {
-  background-color: #efe9ff;
+.ai-recommendation-item {
   padding: 10px;
   border-radius: 10px;
-
+  background: #efe9ff;
   box-sizing: border-box;
 }
 
-.recommendationItem p {
+.ai-recommendation-item p {
+  margin: 0;
   color: #1d1352 !important;
-  margin: 0%;
 }
 
-/* ACTIVE */
-
-.acBox {
-  border: 1px solid #eee;
-  border-radius: 10px;
-  padding: 10px;
+.active-challenge-item {
   display: flex;
   flex-direction: column;
   gap: 10px;
-}
-
-.acContent {
-  flex: 1;
-}
-
-.acImage {
-  width: 55px;
-  height: 55px;
-  background: #eee5ff;
-  color: #7b35ff;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 25px;
-}
-
-.titleRow {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-
-  color: #1d1352;
-}
-
-.titleRow span {
-  background: #c9f4d1;
-  color: #22933c;
-  font-size: 10px;
-  padding: 3px 8px;
+  padding: 10px;
+  border: 1px solid #eee;
   border-radius: 10px;
 }
 
-.acContent p {
-  font-size: 11px;
-  color: #777;
+.active-challenge-content {
+  flex: 1;
 }
 
-.completeBtn {
-  margin-top: 20px;
-  width: 100%;
-  height: 34px;
-  border: 1px solid #33187e;
-  background: white;
-  color: #6330ff;
-  border-radius: 8px;
+.challenge-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #1d1352;
+}
+
+.active-challenge-content p {
+  color: #777;
   font-size: 11px;
+}
+
+.complete-challenge-btn {
+  width: calc(100% - 8px);
+  height: 46px;
+  margin: 18px 4px 4px;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(90deg, #8a4fff, #a85eff) border-box;
+  color: #8a4fff;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  transition:
-    background 0.2s,
-    color 0.2s;
+  transition: all 0.2s ease;
 }
 
-.completeBtn:hover {
-  background: #33187e;
+.complete-challenge-btn:hover {
+  background:
+    linear-gradient(90deg, #8a4fff, #a85eff) padding-box,
+    linear-gradient(90deg, #8a4fff, #a85eff) border-box;
   color: #fff;
+  box-shadow: 0 4px 12px rgba(138, 79, 255, 0.2);
 }
-
-.completedLabel {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  width: 100%;
-  padding: 8px 0;
-  background: #c9f4d1;
-  color: #22933c;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.detailList {
-  margin-top: 15px;
-}
-
-.detailList div {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 11px;
-  padding: 8px 0;
-  border-bottom: 1px solid #eee;
-}
-
-.detailList svg {
-  color: #6d4cff;
-}
-
-.detailList span {
-  flex: 1;
-}
-
-.detailList b {
-  font-size: 11px;
-}
-
-.purple {
-  color: #6633ff;
-}
-
-.progressTitle {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 15px;
-  font-size: 11px;
-}
-
-.light {
-  margin-top: 8px;
-}
-
-.activeCard button {
-  margin-top: 15px;
-  width: 100%;
-  height: 34px;
-  border: 1px solid #7440ff;
-  background: white;
-  color: #6330ff;
-  border-radius: 8px;
-  font-size: 11px;
-}
-
-.aiCard p {
-  font-size: 11px;
-  color: #666;
-}
-
-.aiItem {
-  display: flex;
-  gap: 10px;
-  background: #f7f5ff;
-  padding: 9px;
-  border-radius: 8px;
-  margin-bottom: 8px;
-}
-
-.aiItem svg {
-  color: #7650ff;
-}
-
-.aiItem b {
-  display: block;
-  font-size: 11px;
-}
-
-.aiItem small {
-  font-size: 9px;
-  color: #777;
-}
-
-.tipsBox {
-  background: #fff4c9;
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 10px;
-}
-
-.green {
-  background: #e8f9ee;
-}
-
-.yellow {
-  background: #fff5d8;
-}
-
-.lencanaHeader {
-  display: flex;
-  justify-content: space-between;
-}
-
-.lencanaHeader a {
-  font-size: 10px;
-  color: #6633ff;
-}
-
-.lencanaList {
-  display: flex;
-  gap: 8px;
-}
-
-.lencanaItem {
-  flex: 1;
-  text-align: center;
-  font-size: 10px;
-}
-
-.lencanaItem svg {
-  width: 35px;
-  height: 35px;
-  padding: 8px;
-  border-radius: 50%;
-  background: #eee;
-  color: #6633ff;
-}
-
-.lencanaItem span,
-.lencanaItem small {
-  display: block;
-}
-
-.lencanaItem small {
-  color: #888;
-}
-
-/* =========================
-   MODAL AFTER CHALLENGE
-========================= */
 
 .energy-result-modal .ant-modal-content {
   padding: 0;
@@ -461,23 +270,23 @@
 
 .modal-after-challenge h2,
 .modal-after-challenge p {
+  margin: 5px 0;
   color: #33187e;
   text-align: center;
-  margin: 5px 0;
 }
 
 .modal-after-challenge p {
-  font-size: 10px;
   margin-bottom: 14px;
+  font-size: 10px;
 }
 
 .badge-modal-con {
-  width: 100%;
-  background-color: transparent;
   display: flex;
-  justify-content: center;
-  margin: 40px 0;
   align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin: 40px 0;
+  background: transparent;
 }
 
 .badge-con {
@@ -501,58 +310,23 @@
 .get-badge-text {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-
+  justify-content: center;
   margin-bottom: 10px;
 }
 
 .get-badge-text p,
 .get-badge-text h5 {
-  margin: 0%;
+  margin: 0;
   color: #33187e;
 }
 
-.completeBtn {
-  width: calc(100% - 8px);
-  height: 46px;
-
-  margin: 18px 4px 4px;
-
-  border: 2px solid transparent;
-  border-radius: 10px;
-
-  background:
-    linear-gradient(#ffffff, #ffffff) padding-box,
-    linear-gradient(90deg, rgb(138, 79, 255), rgb(168, 94, 255)) border-box;
-
-  color: #8a4fff;
-
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 500;
-
-  cursor: pointer;
-
-  transition: all 0.2s ease;
-}
-
-.completeBtn:hover {
-  background:
-    linear-gradient(90deg, rgb(138, 79, 255), rgb(168, 94, 255)) padding-box,
-    linear-gradient(90deg, rgb(138, 79, 255), rgb(168, 94, 255)) border-box;
-
-  color: #fff;
-
-  box-shadow: 0 4px 12px rgba(138, 79, 255, 0.2);
-}
-
 @media (max-width: 900px) {
-  .topCard {
+  .top-card {
     flex-direction: column;
   }
 
-  .challengeGrid {
+  .challenge-grid {
     grid-template-columns: 1fr;
   }
 

@@ -52,10 +52,7 @@ export default function FormContent() {
     { value: "6600", label: "6600 VA" },
   ];
 
-  // =========================
-  // DEVICE CHANGE
-  // =========================
-
+  // masukin data dari form tembah perangkat ke usestate deviceData
   const handleDeviceChange = (name, value) => {
     setDeviceData((prev) => ({
       ...prev,
@@ -63,41 +60,8 @@ export default function FormContent() {
     }));
   };
 
-  // =========================
-  // PROFILE CHANGE
-  // =========================
-
-  const handleProfileChange = (name, value) => {
-    setProfilInfo((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  // =========================
-  // PROFILE SUBMIT
-  // =========================
-
-  const handleProfileSubmit = () => {
-    if (
-      !profilInfo.penghuni ||
-      profilInfo.penghuni <= 0 ||
-      !profilInfo.dayaListrikRumah
-    ) {
-      setErrorProfil("Harap lengkapi semua data yang wajib diisi.");
-      return;
-    }
-
-    setErrorProfil("");
-
-    message.success("Data berhasil disimpan");
-  };
-
-  // =========================
-  // DEVICE SUBMIT
-  // =========================
-
-  const getFormData = () => {
+  // memasukan perangkat ke daftar perangkat (form tambah perangkat listrik)
+  const handleAddDevice = () => {
     let hasError = false;
 
     // cek nama perangkat
@@ -115,7 +79,7 @@ export default function FormContent() {
       setErrorName("");
     }
 
-    // cek quantity
+    // cek kuantitas
     if (!deviceData.quantity || deviceData.quantity <= 0) {
       setErrorQuantity("Jumlah perangkat minimal 1");
       hasError = true;
@@ -123,7 +87,7 @@ export default function FormContent() {
       setErrorQuantity("");
     }
 
-    // cek power
+    // cek daya
     if (deviceData.estimatedPower) {
       setErrorPower("");
     } else if (!deviceData.devicePower || deviceData.devicePower <= 0) {
@@ -167,20 +131,38 @@ export default function FormContent() {
     message.success("Perangkat berhasil ditambahkan");
   };
 
-  // =========================
-  // DELETE DEVICE
-  // =========================
+  // masukin data dari form profil rumah ke usestate profilInfo
+  const handleProfileChange = (name, value) => {
+    setProfilInfo((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
+  // submit profil rumah
+  const handleProfileSubmit = () => {
+    if (
+      !profilInfo.penghuni ||
+      profilInfo.penghuni <= 0 ||
+      !profilInfo.dayaListrikRumah
+    ) {
+      setErrorProfil("Harap lengkapi semua data yang wajib diisi.");
+      return;
+    }
+
+    setErrorProfil("");
+
+    message.success("Data berhasil disimpan");
+  };
+
+  // menghapus perangkat dari daftar perangkat
   const handleDelete = (targetIndex) => {
     const newData = devicesData.filter((_, index) => index !== targetIndex);
 
     setDevicesData(newData);
   };
 
-  // =========================
-  // START ANALYSIS
-  // =========================
-
+  // memulai analisis (btn analisis sekarang)
   const handleStartAnalysis = () => {
     if (
       !profilInfo.penghuni ||
@@ -206,10 +188,7 @@ export default function FormContent() {
     runAnalysis();
   };
 
-  // =========================
-  // AUTO FILL
-  // =========================
-
+  // data auto untuk fill
   const handleAutoFill = () => {
     setDevicesData([
       {
@@ -304,10 +283,7 @@ export default function FormContent() {
   return (
     <div className="analisis-page">
       <div>
-        {/* =========================
-            PROFIL RUMAH
-        ========================= */}
-
+        {/* form profil rumah */}
         <Form
           className="home-profile-form"
           onFinish={handleProfileSubmit}
@@ -321,9 +297,8 @@ export default function FormContent() {
           </p>
 
           <div className="home-profile-form-input-con">
-            {/* JUMLAH PENGHUNI */}
-
-            <div className="formGroup home-profile-item">
+            {/* jumlah penghuni */}
+            <div className="form-group home-profile-item">
               <label>Jumlah Penghuni</label>
 
               <div className="inputIcon">
@@ -341,9 +316,8 @@ export default function FormContent() {
               </div>
             </div>
 
-            {/* DAYA LISTRIK */}
-
-            <div className="formGroup home-profile-item">
+            {/* daya listrik rumah */}
+            <div className="form-group home-profile-item">
               <label>Daya Listrik Rumah</label>
 
               <div className="selectWrapper">
@@ -358,9 +332,8 @@ export default function FormContent() {
               </div>
             </div>
 
-            {/* BIAYA LISTRIK */}
-
-            <div className="formGroup home-profile-item">
+            {/* biaya listrik bulanan */}
+            <div className="form-group home-profile-item">
               <label>Biaya Listrik Bulanan (opsional)</label>
 
               <div className="inputIcon">
@@ -386,9 +359,8 @@ export default function FormContent() {
               </div>
             </div>
 
-            {/* PENGGUNAAN LISTRIK BULANAN */}
-
-            <div className="formGroup home-profile-item">
+            {/* penggunaan listrik bulanan */}
+            <div className="form-group home-profile-item">
               <label>Penggunaan Listrik Bulanan (opsional)</label>
 
               <div className="inputIcon">
@@ -410,7 +382,10 @@ export default function FormContent() {
             </div>
           </div>
 
-          <div style={{ justifyContent: "space-between" }} className="infoCard">
+          <div
+            style={{ justifyContent: "space-between" }}
+            className="info-card"
+          >
             <HiOutlineLightBulb className="lamp" />
 
             <div>
@@ -439,16 +414,12 @@ export default function FormContent() {
           </p>
         </Form>
 
-        {/* =========================
-            DEVICE SECTION
-        ========================= */}
-
-        <div className="midle-section">
-          {/* DEVICE FORM */}
-
+        {/* form tambah perangkat dan daftar perangkat */}
+        <div className="device-section">
+          {/* form tambah perangkat */}
           <Form
             className="device-form-card"
-            onFinish={getFormData}
+            onFinish={handleAddDevice}
             layout="vertical"
           >
             <div className="device-form-grid">
@@ -458,9 +429,8 @@ export default function FormContent() {
                 Isi informasi perangkat yang Anda gunakan
               </p>
 
-              {/* NAMA PERANGKAT */}
-
-              <div className="formGroup">
+              {/* nama perangkat */}
+              <div className="form-group">
                 <label>Nama perangkat</label>
 
                 <div className="inputIcon">
@@ -478,9 +448,8 @@ export default function FormContent() {
                 <p className="error">{errorName}</p>
               </div>
 
-              {/* KUANTITAS */}
-
-              <div className="formGroup">
+              {/* kuantitas */}
+              <div className="form-group">
                 <label>Kuantitas</label>
 
                 <div className="quantityInput">
@@ -498,9 +467,8 @@ export default function FormContent() {
                 <p className="error">{errorQuantity}</p>
               </div>
 
-              {/* DAYA */}
-
-              <div className="formGroup">
+              {/* daya */}
+              <div className="form-group">
                 <label>Daya (Watt/perangkat)</label>
 
                 <div className="inputIcon">
@@ -520,9 +488,8 @@ export default function FormContent() {
                 <p className="error">{errorPower}</p>
               </div>
 
-              {/* DURASI */}
-
-              <div className="formGroup">
+              {/* durasi */}
+              <div className="form-group">
                 <label>Waktu penggunaan (jam/hari)</label>
 
                 <div className="inputIcon">
@@ -546,8 +513,7 @@ export default function FormContent() {
               </div>
             </div>
 
-            {/* ESTIMATED POWER */}
-
+            {/* estimasi data */}
             <div className="checkbox">
               <Checkbox
                 checked={deviceData.estimatedPower}
@@ -559,9 +525,8 @@ export default function FormContent() {
               </Checkbox>
             </div>
 
-            {/* INFO */}
-
-            <div className="infoCard">
+            {/* info estimasi box */}
+            <div className="info-card">
               <HiOutlineLightBulb className="lamp" />
 
               <div>
@@ -579,10 +544,7 @@ export default function FormContent() {
             </Button>
           </Form>
 
-          {/* =========================
-              DEVICE LIST
-          ========================= */}
-
+          {/* daftar perangkat */}
           <div className="device-list-container">
             <div className="device-list-header">
               <div>
@@ -590,7 +552,7 @@ export default function FormContent() {
                 <p>Perangkat yang telah Anda tambahkan</p>
               </div>
 
-              <Button className="purple-btn isi-btn" onClick={handleAutoFill}>
+              <Button className="purple-btn fill-btn" onClick={handleAutoFill}>
                 Isi Otomatis
               </Button>
             </div>
@@ -625,10 +587,7 @@ export default function FormContent() {
           </div>
         </div>
 
-        {/* =========================
-            START ANALYSIS
-        ========================= */}
-
+        {/* analisis sekarang btn */}
         <div className="start-analisis-button-con">
           <div>
             <p>Siap untuk analisis energi anda?</p>

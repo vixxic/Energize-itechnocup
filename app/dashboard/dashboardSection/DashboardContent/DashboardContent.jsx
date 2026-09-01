@@ -1,5 +1,6 @@
 import "./DashboardContent.css";
 
+// icons
 import { MdWavingHand } from "react-icons/md";
 import { BsFillLightningChargeFill } from "react-icons/bs";
 import { IoWallet } from "react-icons/io5";
@@ -14,11 +15,10 @@ import { useContext, useEffect, useState } from "react";
 import { DashboardContext } from "../../context/DashboardContext";
 
 import challengeData from "../../data/challengeData";
-
 import PresentaseBoros from "../../components/PresentaseBoros/PresentaseBoros";
-
 import FollowUpAi from "../../components/FollowUpAi/FollowUpAi";
 
+// isi dashboard stats
 const userDataListrik = [
   {
     icon: <IoMdPeople size={30} />,
@@ -61,6 +61,7 @@ function DashboardContent() {
 
   const [showBadgeModal, setShowBadgeModal] = useState(false);
 
+  // mengatur kapan modal energi efisien boleh muncul
   useEffect(() => {
     if (!analysis) return;
 
@@ -81,6 +82,7 @@ function DashboardContent() {
     localStorage.setItem("modalEnergiEfisienSudahDilihat", "true");
   };
 
+  // loading setelah melakukan analisis (load data)
   if (analysisLoading) {
     return (
       <div className="loading-analisis">
@@ -95,8 +97,10 @@ function DashboardContent() {
     );
   }
 
+  // variable menyimpan 3 tantanfan dari ai
   const tantanganAi = challenge?.challenges || challengeData;
 
+  // function menerima tantangan
   const handleAccept = (tantangan) => {
     const nama = tantangan.tantangan || tantangan.title;
 
@@ -124,6 +128,7 @@ function DashboardContent() {
 
   return (
     <div>
+      {/* modal saat user mendapat lencana energi sudah efisien */}
       <Modal
         open={showBadgeModal}
         footer={null}
@@ -171,6 +176,7 @@ function DashboardContent() {
         <p>Berikut adalah hasil analisis penggunaan energi rumah anda</p>
       </div>
 
+      {/* dahsboard stats */}
       <div className="div-1-con data-listrik-user">
         {userDataListrik.map((data, index) => (
           <div key={index} className="data-con">
@@ -210,12 +216,13 @@ function DashboardContent() {
         ))}
       </div>
 
+      {/* hasil perhitunagn energi dan pertanyaan dari ai */}
       <div className="div-2-con">
         <PresentaseBoros analysis={analysis} devicesData={devicesData} />
-
         <FollowUpAi />
       </div>
 
+      {/* tantangan setelah menjawab pertanyaan ai */}
       {completedChallenges.length >= 3
         ? null
         : challenge && (
