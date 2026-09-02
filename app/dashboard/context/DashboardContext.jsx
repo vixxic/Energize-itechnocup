@@ -13,6 +13,8 @@ import { useSearchParams } from "next/navigation";
 export const DashboardContext = createContext();
 
 // local storage
+
+// Mengambil data yang sebelumnya di local storage
 function loadState(key, fallback) {
   if (typeof window === "undefined") {
     return fallback;
@@ -26,6 +28,7 @@ function loadState(key, fallback) {
   }
 }
 
+// Menyimpan data ke localStorage
 function saveState(key, value) {
   if (typeof window === "undefined") {
     return;
@@ -189,10 +192,7 @@ function DashboardProviderContent({ children }) {
     saveState("lencanas", lencanas);
   }, [lencanas, isInitialized]);
 
-  // ====================
-  // HITUNG PENGHEMATAN DARI ANALISIS
-  // ====================
-
+  // menghitung total energi yang di hemat dari sebelumnya, dari analisis
   const hitungPenghematanAnalisis = (history = analysisHistory) => {
     if (!history || history.length < 2) {
       return 0;
@@ -216,10 +216,7 @@ function DashboardProviderContent({ children }) {
     return Math.round(totalHemat * 100) / 100;
   };
 
-  // ====================
-  // HITUNG PENGHEMATAN DARI TANTANGAN
-  // ====================
-
+  // menghitung total energi yang di hemat dari sebelumnya, dari tantangan
   const hitungPenghematanTantangan = (challenges = completedChallenges) => {
     if (!challenges || challenges.length === 0) {
       return 0;
@@ -241,10 +238,7 @@ function DashboardProviderContent({ children }) {
     return Math.round(totalHemat * 100) / 100;
   };
 
-  // ====================
-  // TOTAL PENGHEMATAN
-  // ====================
-
+  // total di hemat
   const hitungTotalPenghematan = (
     history = analysisHistory,
     challenges = completedChallenges,
@@ -255,30 +249,21 @@ function DashboardProviderContent({ children }) {
     return Math.round((dariAnalisis + dariTantangan) * 100) / 100;
   };
 
-  // ====================
-  // HITUNG CO2
-  // ====================
-
+  // Menghitung co2 yang di hemat
   const hitungCO2 = (kwh) => {
     const faktorEmisi = 0.85;
 
     return Math.round(kwh * faktorEmisi * 100) / 100;
   };
 
-  // ====================
-  // HITUNG BIAYA
-  // ====================
-
+  // Menghitung biaya yang di hemat
   const hitungBiayaHemat = (kwh) => {
     const tarifListrik = 1444.7;
 
     return Math.round(kwh * tarifListrik);
   };
 
-  // ====================
-  // CEK LENCANA
-  // ====================
-
+  // Menentukan lenana yang bisa di dapat user
   const checkLencanas = (
     score = analysis?.energyScore,
     challenges = completedChallenges,
@@ -340,10 +325,7 @@ function DashboardProviderContent({ children }) {
     });
   };
 
-  // ====================
-  // ACCEPT CHALLENGE
-  // ====================
-
+  // Ketika user meneria tantangan
   const acceptChallenge = (tantangan) => {
     const nama = tantangan.tantangan || tantangan.title;
 
@@ -382,10 +364,7 @@ function DashboardProviderContent({ children }) {
     return true;
   };
 
-  // ====================
-  // COMPLETE CHALLENGE
-  // ====================
-
+  // mengubah status tantangan dari berjalan menjadi selesai dan mencatat konsumsi listrik sebelum/sesudah.
   const completeChallenge = (tantangan) => {
     const nama = tantangan.tantangan || tantangan.title;
 
@@ -456,10 +435,7 @@ function DashboardProviderContent({ children }) {
     }
   };
 
-  // ====================
-  // NEXT CHALLENGE
-  // ====================
-
+  // cari tantangan berikutnya
   const goToNextChallenge = () => {
     const daftarChallenge = challenge?.challenges || [];
 
@@ -488,10 +464,8 @@ function DashboardProviderContent({ children }) {
     ]);
   };
 
-  // ====================
-  // RUN AI ANALYSIS
-  // ====================
-
+  // bagian API
+  // mengirim data perangkat dan profil ke ai untuk dianalisis
   const runAnalysis = async () => {
     if (devicesData.length === 0) {
       setAnalysisError("Tambahkan minimal satu perangkat.");
@@ -503,10 +477,7 @@ function DashboardProviderContent({ children }) {
     setAnalysisError("");
 
     try {
-      // ====================
-      // REQUEST AI
-      // ====================
-
+      // Mengirim data ke API untuk dianalisis
       const response = await fetch("/api/analyze", {
         method: "POST",
 
@@ -534,10 +505,7 @@ function DashboardProviderContent({ children }) {
         throw new Error(data.error || "Error menganalisis data.");
       }
 
-      // ====================
-      // DATA ANALISIS BARU
-      // ====================
-
+      // Mengolah hasil analisis untuk dashboard
       const totalKwhPerDay = parseFloat(data.totalKwhPerDay) || 0;
 
       const totalKwhPerMonth = totalKwhPerDay * 30;
@@ -547,10 +515,7 @@ function DashboardProviderContent({ children }) {
       const rataKwhPerPenghuni =
         profilInfo.penghuni > 0 ? totalKwhPerDay / profilInfo.penghuni : 0;
 
-      // ====================
-      // BANDINGKAN DENGAN ANALISIS SEBELUMNYA
-      // ====================
-
+      // Mengambil hasil analsis sebelumnya untuk di bandingin sama yang sekarang
       const terakhir =
         analysisHistory.length > 0
           ? Number(
@@ -563,10 +528,7 @@ function DashboardProviderContent({ children }) {
           ? Math.round(((totalKwhPerDay - terakhir) / terakhir) * 100)
           : null;
 
-      // ====================
-      // SIMPAN HISTORY BARU
-      // ====================
-
+      // Simpan history baru
       const newHistoryItem = {
         totalKwhPerDay: Math.round(totalKwhPerDay * 100) / 100,
 
@@ -585,32 +547,18 @@ function DashboardProviderContent({ children }) {
 
       const newAnalysisHistory = [...analysisHistory, newHistoryItem];
 
-      // ====================
-      // DASHBOARD STATS
-      // ====================
-
+      // data dashbard yang baru setelah analisis
       const newDashboardStats = {
         penghuni: profilInfo.penghuni,
-
         totalKwhPerMonth: Math.round(totalKwhPerMonth * 100) / 100,
-
         totalKwhPerDay: Math.round(totalKwhPerDay * 100) / 100,
-
         estimasiBiaya: biayaEstimasi,
-
         rataPerPenghuni: Math.round(rataKwhPerPenghuni * 100) / 100,
-
         dibandingSebelumnya: dibanding,
       };
 
-      // ====================
-      // UPDATE STATE
-      // ====================
-
       setAnalysis(data);
-
       setDashboardStats(newDashboardStats);
-
       setCurrentElectric(newDashboardStats.totalKwhPerDay);
 
       setAnalysisHistory(newAnalysisHistory);
@@ -622,10 +570,6 @@ function DashboardProviderContent({ children }) {
       setAnalysisLoading(false);
     }
   };
-
-  // ====================
-  // CEK LENCANA SETIAP DATA BERUBAH
-  // ====================
 
   useEffect(() => {
     if (!isInitialized) return;
