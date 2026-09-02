@@ -43,19 +43,19 @@ Penggunaan Teknologi
    git clone https://github.com/vixxic/Energize-itechnocup.git
    cd Energize-itechnocup
    
-2. Install dependency
+3. Install dependency
    npm install
 
-3. Buat File Environment Variable
+4. Buat File Environment Variable
    buat file .env.local dan tambahkan API key Gemini
    GEMINI_API_KEY=YOUR_GEMINI_API_KEY
    
    Catatan: API Key Gemini tidak dicantumkan dalam repository untuk menjaga keamanan credential. Untuk menjalankan fitur AI secara lokal, pengguna perlu memasukkan API Key     Gemini milik sendiri ke dalam file .env.local. Alternatifnya, aplikasi dapat langsung digunakan melalui versi yang telah di-deploy.
 
-4. Setelah proses instalasi selesai, jalankan aplikasi menggunakan perintah:
+5. Setelah proses instalasi selesai, jalankan aplikasi menggunakan perintah:
    npm run dev
    
-5. Kemudian buka aplikasi melalui browser:
+6. Kemudian buka aplikasi melalui browser:
    http://localhost:3000
 
 **Cara Penggunaan**
