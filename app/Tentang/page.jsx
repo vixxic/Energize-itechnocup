@@ -18,7 +18,7 @@ function Page() {
           <p>Kembali</p>
         </div>
 
-        <section className="sdg-content">
+        <div className="sdg-content">
           <div className="sdg-heading">
             <span>SDG</span>
             <h2>Kontribusi Energize</h2>
@@ -81,7 +81,7 @@ function Page() {
               </p>
             </div>
           </div>
-        </section>
+        </div>
       </div>
 
       <Footer />

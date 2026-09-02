@@ -106,7 +106,6 @@ function Info() {
   // untuk menentukan badge apa yang di dapat user
   const getBadgeModal = () => {
     const urutanBadge = [
-      "Penjaga Energi",
       "Ahli Hemat",
       "Pejuang Energi",
       "Mulai Berhemat",

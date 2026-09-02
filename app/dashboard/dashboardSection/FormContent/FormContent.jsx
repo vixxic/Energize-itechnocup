@@ -504,7 +504,7 @@ export default function FormContent() {
                     step={0.5}
                     precision={1}
                     controls={false}
-                    placeholder="Contoh: 5"
+                    placeholder="Contoh: 5, 1.5, 0.5"
                     suffix={<LuClock3 className="icon" />}
                   />
                 </div>

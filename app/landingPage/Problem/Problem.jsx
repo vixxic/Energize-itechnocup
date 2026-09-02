@@ -29,7 +29,7 @@ const problemsData = [
 
 function Problem() {
   return (
-    <section id="problem-section">
+    <div id="problem-section">
       <div className="problem-header">
         <p className="problem-title">Dampak Pemborosan Energi</p>
 
@@ -64,7 +64,7 @@ function Problem() {
           );
         })}
       </div>
-    </section>
+    </div>
   );
 }
 

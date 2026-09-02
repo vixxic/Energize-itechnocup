@@ -137,7 +137,7 @@ function DashboardContent() {
         centered
       >
         <div className="modal-after-challenge success">
-          <h2>Berhasil Menghemat Energi!</h2>
+          <h2>Hey! Energimu Efisien</h2>
 
           <p>
             Penggunaan listrik kamu sudah cukup efisien. Pertahankan kebiasaan

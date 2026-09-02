@@ -8,6 +8,7 @@ import { DashboardContext } from "../../context/DashboardContext";
 
 import lencanaData from "../../data/badgeData";
 
+// icons
 import {
   FaTrophy,
   FaBolt,
@@ -24,162 +25,51 @@ function ProfileContent() {
     analysisHistory = [],
     completedChallenges = [],
     analysis,
+    hitungTotalPenghematan,
+    hitungCO2,
+    hitungBiayaHemat,
   } = useContext(DashboardContext);
 
-  // =========================
-  // STATISTIK AKUN
-  // =========================
-
+  // statistik akun
   const totalAnalisis = analysisHistory.length;
   const tantanganSelesai = completedChallenges.length;
+  const energyScore = Number(analysis?.energyScore) || 0;
+  const jumlahLencana = lencanas.length;
 
-  // =========================
-  // HITUNG ENERGI TERHEMAT
-  // =========================
-  //
-  // Penghematan dihitung dari:
-  // 1. Penurunan konsumsi antar analisis
-  // 2. Penurunan konsumsi dari tantangan
-  //
-  // Hanya penurunan yang dihitung.
-  // Jika konsumsi naik/tetap → tidak dihitung sebagai penghematan.
-  //
-
-  const hitungPenghematanAnalisis = () => {
-    if (!analysisHistory || analysisHistory.length < 2) {
-      return 0;
-    }
-
-    let totalHemat = 0;
-
-    for (let i = 1; i < analysisHistory.length; i++) {
-      const sebelumnya = Number(analysisHistory[i - 1]?.totalKwhPerDay) || 0;
-
-      const sekarang = Number(analysisHistory[i]?.totalKwhPerDay) || 0;
-
-      if (sebelumnya > 0 && sekarang > 0) {
-        const selisih = sebelumnya - sekarang;
-
-        if (selisih > 0) {
-          totalHemat += selisih;
-        }
-      }
-    }
-
-    return totalHemat;
-  };
-
-  // =========================
-  // HITUNG PENGHEMATAN TANTANGAN
-  // =========================
-
-  const hitungPenghematanTantangan = () => {
-    if (!completedChallenges || completedChallenges.length === 0) {
-      return 0;
-    }
-
-    let totalHemat = 0;
-
-    completedChallenges.forEach((challenge) => {
-      const sebelum = Number(challenge?.electricBefore) || 0;
-      const sesudah = Number(challenge?.electricAfter) || 0;
-
-      if (sebelum > 0 && sesudah > 0) {
-        const selisih = sebelum - sesudah;
-
-        if (selisih > 0) {
-          totalHemat += selisih;
-        }
-      }
-    });
-
-    return totalHemat;
-  };
-
-  // =========================
-  // TOTAL ENERGI TERHEMAT
-  // =========================
-
-  const energiHematAnalisis = hitungPenghematanAnalisis();
-  const energiHematTantangan = hitungPenghematanTantangan();
-
-  const energiHemat =
-    Math.round((energiHematAnalisis + energiHematTantangan) * 100) / 100;
-
-  // =========================
-  // HITUNG BIAYA DIHEMAT
-  // =========================
-
-  const hitungBiayaHemat = (kwh) => {
-    const tarifListrik = 1444.7;
-
-    // Penghematan kWh/hari
-    // dikalikan 30 hari
-    // lalu dikalikan tarif listrik per kWh
-
-    const biaya = kwh * 30 * tarifListrik;
-
-    return Math.round(biaya);
-  };
+  // dampak penghematan
+  const energiHemat = hitungTotalPenghematan(
+    analysisHistory,
+    completedChallenges,
+  );
 
   const penghematanBiaya = hitungBiayaHemat(energiHemat);
 
-  // =========================
-  // HITUNG CO2 DIHINDARI
-  // =========================
-
-  const hitungCO2 = (kwh) => {
-    const faktorEmisi = 0.85;
-
-    const co2 = kwh * faktorEmisi;
-
-    return Math.round(co2 * 100) / 100;
-  };
-
   const totalCO2 = hitungCO2(energiHemat);
 
-  // =========================
-  // SCORE
-  // =========================
-
-  const energyScore = Number(analysis?.energyScore) || 0;
-
-  // =========================
-  // lencana
-  // =========================
-
-  const jumlahlencana = lencanas.length;
-
   return (
-    <main className="profile-page">
-      {/* ================= HEADER ================= */}
-
-      <section className="profile-header">
+    <div className="profile-page">
+      <div className="profile-header">
         <div className="profile-header-icon">
           <FaLeaf />
         </div>
 
         <div>
           <h1>Profil Energi</h1>
-
           <p>Lihat perjalanan dan pencapaianmu dalam menghemat energi.</p>
         </div>
-      </section>
+      </div>
 
-      {/* ================= STATISTIK ================= */}
-
-      <section className="profile-section">
+      {/* statistik akun */}
+      <div className="profile-section">
         <div className="section-heading">
           <div>
             <h2>Statistik Akun</h2>
-
             <p>Perkembangan aktivitasmu di Energize.</p>
           </div>
         </div>
 
+        {/* jumlah analisis di lakukan */}
         <div className="stats-grid">
-          {/* ANALISIS */}
-
           <div className="stat-card">
             <div className="stat-icon">
               <FaBolt />
@@ -187,15 +77,12 @@ function ProfileContent() {
 
             <div>
               <span>Analisis Dilakukan</span>
-
               <strong>{totalAnalisis}</strong>
-
               <small>kali analisis</small>
             </div>
           </div>
 
-          {/* TANTANGAN */}
-
+          {/* tantangan selesai */}
           <div className="stat-card">
             <div className="stat-icon">
               <FaTrophy />
@@ -203,15 +90,12 @@ function ProfileContent() {
 
             <div>
               <span>Tantangan Selesai</span>
-
               <strong>{tantanganSelesai}</strong>
-
               <small>tantangan</small>
             </div>
           </div>
 
           {/* skor energi */}
-
           <div className="stat-card">
             <div className="stat-icon">
               <FaStar />
@@ -219,80 +103,64 @@ function ProfileContent() {
 
             <div>
               <span>Skor Efisiensi Terakhir</span>
-
               <strong>{energyScore}</strong>
-
               <small>/ 100</small>
             </div>
           </div>
 
-          {/* lencana diperoleh*/}
-
+          {/* lencana di peroleh */}
           <div className="stat-card">
             <div className="stat-icon">
               <FaMedal />
             </div>
 
             <div>
-              <span>lencana diperoleh</span>
-
-              <strong>{jumlahlencana}</strong>
-
+              <span>Lencana Diperoleh</span>
+              <strong>{jumlahLencana}</strong>
               <small>lencana</small>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* ================= PENGHEMATAN ================= */}
-
-      <section className="efficiency-card">
+      {/* dampak penghematan */}
+      <div className="efficiency-card">
         <div className="efficiency-icon">
           <FaChartLine />
         </div>
 
         <div className="efficiency-content">
-          <span>Estimasi Dampak Penghematan</span>
+          <span>Total Dampak Penghematan</span>
 
           <div className="saving-row">
-            {/* ENERGI */}
-
+            {/* energi dihemat */}
             <div>
               <strong>{energiHemat}</strong>
-
               <span>kWh</span>
-
-              <small>Energi dihemat</small>
+              <small>Total energi dikurangi</small>
             </div>
 
-            {/* BIAYA */}
-
+            {/* biaya di hemat */}
             <div>
               <strong>Rp{penghematanBiaya.toLocaleString("id-ID")}</strong>
-
-              <small>Estimasi biaya dihemat</small>
+              <small>Estimasi biaya listrik dihemat</small>
             </div>
 
-            {/* CO2 */}
-
+            {/* CO2 di hindari */}
             <div>
               <strong>{totalCO2}</strong>
-
               <span>kg</span>
-
-              <small>CO₂ dihindari</small>
+              <small>Estimasi CO₂ dihindari</small>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* ================= lencana ================= */}
-
-      <section className="profile-section lencana-section">
+      {/* bagian pencapaian */}
+      <div className="profile-section lencana-section">
         <div className="section-heading">
           <div>
             <h2>Pencapaian</h2>
-
             <p>Kumpulkan lencana dengan membangun kebiasaan hemat energi.</p>
           </div>
 
@@ -313,12 +181,15 @@ function ProfileContent() {
                 key={item.id}
               >
                 <div className={`lencana-icon ${diperoleh ? item.color : ""}`}>
-                  {diperoleh ? <img src={item.img} /> : <FaLock />}
+                  {diperoleh ? (
+                    <img src={item.img} alt={item.nama} />
+                  ) : (
+                    <FaLock />
+                  )}
                 </div>
 
                 <div className="lencana-info">
                   <h3>{item.nama}</h3>
-
                   <p>{item.syarat}</p>
 
                   <span>{diperoleh ? "✓ Diperoleh" : "🔒 Terkunci"}</span>
@@ -327,8 +198,8 @@ function ProfileContent() {
             );
           })}
         </div>
-      </section>
-    </main>
+      </div>
+    </div>
   );
 }
 

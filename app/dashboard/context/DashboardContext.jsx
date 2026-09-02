@@ -6,10 +6,7 @@ import { useSearchParams } from "next/navigation";
 
 export const DashboardContext = createContext();
 
-// ====================
-// LOCAL STORAGE
-// ====================
-
+// local storage
 function loadState(key, fallback) {
   if (typeof window === "undefined") {
     return fallback;
@@ -269,8 +266,7 @@ export function DashboardProvider({ children }) {
   const hitungBiayaHemat = (kwh) => {
     const tarifListrik = 1444.7;
 
-    // kWh/hari × 30 hari × tarif
-    return Math.round(kwh * 30 * tarifListrik);
+    return Math.round(kwh * tarifListrik);
   };
 
   // ====================
@@ -630,10 +626,6 @@ export function DashboardProvider({ children }) {
 
     checkLencanas();
   }, [analysis, completedChallenges, analysisHistory, isInitialized]);
-
-  // ====================
-  // CONTEXT VALUE
-  // ====================
 
   return (
     <DashboardContext.Provider
