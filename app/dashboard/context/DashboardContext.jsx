@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  Suspense,
+} from "react";
 import { UserAnalysisContext } from "@/app/context/UserAnalysisContext";
 import { useSearchParams } from "next/navigation";
 
@@ -32,7 +38,7 @@ function saveState(key, value) {
   }
 }
 
-export function DashboardProvider({ children }) {
+function DashboardProviderContent({ children }) {
   const { analysis, setAnalysis } = useContext(UserAnalysisContext);
 
   const searchParams = useSearchParams();
@@ -686,5 +692,13 @@ export function DashboardProvider({ children }) {
     >
       {children}
     </DashboardContext.Provider>
+  );
+}
+
+export function DashboardProvider({ children }) {
+  return (
+    <Suspense fallback={null}>
+      <DashboardProviderContent>{children}</DashboardProviderContent>
+    </Suspense>
   );
 }
